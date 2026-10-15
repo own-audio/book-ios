@@ -132,16 +132,18 @@ client's mojibake repair, applied to display only).
   3600 s. Still open: whether an open stream survives the token's expiry (an hour-long test,
   in B1).
 
-- [ ] **B1: AudiobookshelfKit.** A hand-written client with the same shape as `OwnAudioKit`:
-  `status`, sign-in with `x-return-tokens`, a token session with single-flight rotating refresh
-  (reuse detection means two refreshes at once sign the device out), `authorize`, `logout`;
-  libraries filtered to books; items paging with sort and filters; item detail (`expanded=1`,
-  progress included); series, authors, narrators, collections, `personalized`, search; progress
-  read, patch and batch; bookmarks; play sessions (`play`, `sync`, `close`, `local`,
-  `local-all`); file and cover URLs; the mojibake repair. `MockURLProtocol` unit tests from
-  recorded answers plus live tests gated on `AUDIOBOOKSHELF_HOST`. Version gating on
-  `serverVersion` for anything that changed in 2.26 (tokens) so older servers still sign in
-  with the legacy token.
+- [x] **B1: AudiobookshelfKit.** Done 2026-10-15; 27 unit tests on a stubbed session and 7
+  live tests against a 2.37.1 server (sign-in, rotation, the library, progress, bookmarks,
+  sessions, a transcode). A hand-written client with the same shape as `OwnAudioKit`: `status`,
+  sign-in with `x-return-tokens`, a `TokenSession` with single-flight rotating refresh (the
+  JWT's `exp` is the expiry; a pre-2.26 token has none and is never refreshed), `authorize`,
+  `me`, `signOut`; book libraries only; items paging with sort and URL-safe base64 filters;
+  item detail (`expanded=1`, progress included); series, authors, narrators, collections,
+  `personalized`, search; progress read, patch, batch and delete; bookmarks by time; play
+  sessions (`play`, `sync`, `close`, `local-all`); file, media and cover URLs with the token
+  in the query; `Mojibake.repair` for UTF-8 read as Latin-1. Library reads are cached and
+  answer offline; search, `me` and sessions are not.
+
 - [ ] **B2: BookLibrary.** Models: `Book` (id, title, subtitle, authors, narrators, series with
   position, description, duration, cover, files, chapters, added, visibility), `Contributor`,
   `Series`, `Collection`, `Progress` (book time, finished, updated, device list), `Bookmark`,

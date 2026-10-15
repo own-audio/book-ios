@@ -13,3 +13,7 @@ All notable changes to this project are documented here. The format follows
   launch UI test (B0).
 - `ServerSupport`, `OwnAudioKit` and `PlayerCore`, copied from own.audio Music without their
   music-only parts; `scripts/` for tests against real servers, TestFlight and the App Store.
+- `AudiobookshelfKit`: a client for Audiobookshelf 2.x — sign-in with rotating tokens (2.26+)
+  or the older single token, libraries, items, series, authors, narrators, collections, the
+  home shelves, search, progress, bookmarks, play sessions and local sessions, media and cover
+  URLs, and a repair for mis-encoded titles (B1).
