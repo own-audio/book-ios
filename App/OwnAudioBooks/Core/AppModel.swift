@@ -33,8 +33,6 @@ final class AppModel {
     let covers = CoverLoader()
     let network = NetworkMonitor()
     let downloads = DownloadManager()
-    /// Something worth telling once, not an error: "Moved to 4:12 from your iPad".
-    var notice: String?
     /// The book in the engine, with the server it came from.
     private(set) var nowPlayingBook: Book?
     private(set) var nowPlayingServerId: UUID?
@@ -51,6 +49,7 @@ final class AppModel {
     private let offlineSwitch = OfflineSwitch()
     private let catalogueStore = CatalogueStore()
     private let pendingProgress = PendingProgress()
+    private let knownPositions = KnownPositions()
     private let resumeStore = UserDefaultsResumeStore(key: "books.resume")
     private var loadTask: Task<Void, Never>?
     private var liveUpdates: Task<Void, Never>?
@@ -158,6 +157,7 @@ final class AppModel {
             responseCache.removeAll()
             catalogueStore.removeAll()
             pendingProgress.removeAll()
+            knownPositions.removeAll()
             downloads.removeAll()
             settings.offlineMode = false
         }
@@ -172,6 +172,7 @@ final class AppModel {
         activeServerId = servers.contains { $0.id == saved } ? saved : servers.first?.id
         hasLoaded = true
         downloads.resume()
+        keepProgressFresh()
         Task {
             await chooseAddresses()
             await syncCatalogues()
@@ -619,6 +620,30 @@ final class AppModel {
             Task {
                 await syncCatalogues()
                 await flushPendingProgress()
+                await refreshProgress()
+            }
+        }
+    }
+
+    private var progressRefresh: Task<Void, Never>?
+
+    /// Positions made elsewhere, from the active server: at foreground, and every few minutes
+    /// while a book plays (own.audio's feed brings them too; Audiobookshelf has no feed).
+    func refreshProgress() async {
+        guard !isOffline, let id = activeServerId, let source = sources[id], let all = try? await source.allProgress() else { return }
+        for (bookId, p) in all {
+            let composite = BookID.make(serverId: id, bookId: bookId)
+            if engine.book?.id != composite { progress[composite] = p }
+        }
+    }
+
+    private func keepProgressFresh() {
+        progressRefresh?.cancel()
+        progressRefresh = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(180))
+                guard !Task.isCancelled, let self, self.engine.isPlaying else { continue }
+                await self.refreshProgress()
             }
         }
     }
@@ -652,9 +677,24 @@ final class AppModel {
 
     // MARK: - Playing
 
+    /// Another device went on with the book since this phone last saved: the listener picks
+    /// where to start.
+    struct PendingResume: Identifiable {
+        let id = UUID()
+        let book: Book
+        let serverId: UUID
+        let localMs: Int64
+        let otherMs: Int64
+        let otherDevice: String?
+    }
+
+    var pendingResume: PendingResume?
+
     /// Starts `book` where the listener left it: the server's position, else the one this phone
-    /// remembers, else the start (and the start again for a finished book).
-    func play(_ book: Book, serverId: UUID) async {
+    /// remembers, else the start (and the start again for a finished book). When the server's
+    /// position is another device's and far from this phone's, the listener is asked first;
+    /// `startAt` is their answer.
+    func play(_ book: Book, serverId: UUID, startAt: Int64? = nil) async {
         guard let source = sources[serverId] else { return }
         let composite = BookID.make(serverId: serverId, bookId: book.id)
         do {
@@ -679,10 +719,19 @@ final class AppModel {
             }
             let serverProgress = isOffline ? progress[composite] : try? await source.progress(bookId: book.id)
             if let serverProgress { progress[composite] = serverProgress }
+            if startAt == nil, !isOffline, let known = knownPositions[composite] {
+                let local = ListeningProgress(positionMs: known.positionMs, finished: known.finished, updatedAt: known.at)
+                if case .ask(let localMs, let otherMs, let device) = ResumeChoice.decide(local: local, server: serverProgress) {
+                    pendingResume = PendingResume(book: detail, serverId: serverId, localMs: localMs, otherMs: otherMs, otherDevice: device)
+                    return
+                }
+            }
             let chapters = await chapters(for: detail, parts: parts)
             let spoken = SpokenBook(id: composite, title: detail.title, author: detail.authorLine.isEmpty ? nil : detail.authorLine, parts: parts, chapters: chapters, linksExpireAt: plan?.expiresAt)
             let start: Int64
-            if let serverProgress, !serverProgress.finished {
+            if let startAt {
+                start = startAt
+            } else if let serverProgress, !serverProgress.finished {
                 start = serverProgress.positionMs
             } else if let local = resumeStore.loadResume(containerId: composite), serverProgress?.finished != true {
                 start = Int64(local.positionSecs * 1000)
@@ -749,6 +798,7 @@ final class AppModel {
         guard let (serverId, bookId) = BookID.parse(position.bookId) else { return }
         let composite = position.bookId
         progress[composite] = ListeningProgress(positionMs: position.positionMs, finished: position.finished, updatedAt: position.at, devices: progress[composite]?.devices ?? [])
+        knownPositions.set(composite, .init(positionMs: position.positionMs, finished: position.finished, at: position.at))
         let closes = position.reason == .stop || position.reason == .finished || position.reason == .teardown
         pendingProgress.record(.init(
             id: UUID().uuidString, serverId: serverId, bookId: bookId, sessionId: nowPlayingPlan?.sessionId,
@@ -773,16 +823,7 @@ final class AppModel {
                 ))
                 pendingProgress.remove(id: entry.id)
                 let composite = BookID.make(serverId: entry.serverId, bookId: entry.bookId)
-                if let answer, engine.book?.id != composite {
-                    progress[composite] = answer
-                    // Another device went further meanwhile: say so, once.
-                    if abs(answer.positionMs - entry.positionMs) > 30_000, answer.updatedAt > entry.at,
-                       let title = downloads.books[composite]?.book.title ?? nowPlayingBook.flatMap({ $0.id == entry.bookId ? $0.title : nil }) {
-                        let from = answer.devices.first { !$0.isThisDevice && $0.positionMs == answer.positionMs }?.name
-                        notice = from.map { String(localized: "\(title): moved to \(ProgressText.clock(answer.positionMs)), where \($0) left off.") }
-                            ?? String(localized: "\(title): moved to \(ProgressText.clock(answer.positionMs)), where another device left off.")
-                    }
-                }
+                if let answer, engine.book?.id != composite { progress[composite] = answer }
             } catch SourceError.network, SourceError.offline {
                 return
             } catch SourceError.notFound {
@@ -838,6 +879,7 @@ final class AppModel {
             nowPlayingPlan = nil
         }
         pendingProgress.remove(serverId: serverId, bookId: bookId)
+        knownPositions.set(composite, nil)
     }
 
     func clearProgress(_ book: Book, serverId: UUID) async {

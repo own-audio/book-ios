@@ -50,7 +50,10 @@ All notable changes to this project are documented here. The format follows
 - Downloads: a book on the phone through a background session that survives the app being
   killed, Wi-Fi only, a storage limit with finished books going first; Offline Mode and the
   no-network state show and play what is on the iPhone; positions reported when the network is
-  back, and a newer position from another device told once (B6).
+  back (B6).
+
+- Positions from other devices: a question before playing when another device went on with
+  the book ("Continue from Car?"), and positions refreshed at foreground and while playing (B7).
 
 ### Fixed
 

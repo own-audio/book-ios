@@ -248,12 +248,19 @@ client's mojibake repair, applied to display only).
   screens hide them offline), Audiobookshelf's local sessions (an offline listen reaches the
   server as a position, not as listening time).
 
-- [ ] **B7: Live updates and other devices.** own.audio: `/events` in the foreground triggers a
-  feed sync; the `devices[]` of a book's progress become "Continue from the car (40:02)?" when
-  another device is ahead. Audiobookshelf: `/api/me` re-read on foreground and every few
-  minutes while playing, `lastUpdate` compared; socket.io (`user_item_progress_updated`,
-  `item_added/updated/removed`) over `URLSessionWebSocketTask` with a hand-written engine.io
-  handshake if the polling proves too slow — it is the only signal for deletions.
+- [x] **B7: Live updates and other devices.** Done 2026-10-15; the resume rule has unit tests,
+  a live test plays a second device on the demo server and sees its position by name, and a
+  UI test does the same through the API and gets the question on screen. own.audio: `/events`
+  in the foreground triggers a feed sync (since B4); the phone keeps the last position it saved
+  for each book (`KnownPositions`), and when the server's position is another device's and
+  more than 30 s away, Play asks "Continue from Car (6:40)?" against "Keep this iPhone's
+  position" (`ResumeChoice`); a notice at launch was tried first and dropped — it sat over the
+  screen and said the same thing as the question. Both kinds: positions re-read at foreground and every three
+  minutes while a book plays, so Continue Listening and the cards follow the other devices
+  (Audiobookshelf has no feed; its `/api/me` is cheap). Not done: socket.io for
+  Audiobookshelf's deletions — the polling is enough for positions, and a removed book is
+  noticed at the next list.
+
 - [ ] **B8: Import from the phone (own.audio).** Document picker for M4B, MP3, M4A, FLAC and
   folders; `AVURLAsset` prefill of title, author, narrator, duration and embedded chapters;
   file order by hand; cover from the file or the photo library; visibility; `POST /uploads`

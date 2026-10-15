@@ -25,10 +25,24 @@ struct RootView: View {
         } message: {
             Text(model.actionError ?? "")
         }
-        .alert("Position Moved", isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(model.notice ?? "")
+        .confirmationDialog(
+            Text(model.pendingResume.map { "Continue from \($0.otherDevice ?? String(localized: "another device"))?" } ?? ""),
+            isPresented: Binding(get: { model.pendingResume != nil }, set: { if !$0 { model.pendingResume = nil } }),
+            titleVisibility: .visible,
+            presenting: model.pendingResume
+        ) { pending in
+            Button("Continue from \(pending.otherDevice ?? String(localized: "there")) (\(ProgressText.clock(pending.otherMs)))") {
+                model.pendingResume = nil
+                Task { await model.play(pending.book, serverId: pending.serverId, startAt: pending.otherMs) }
+            }
+            .accessibilityIdentifier("resume.other")
+            Button("Keep this iPhone's position (\(ProgressText.clock(pending.localMs)))") {
+                model.pendingResume = nil
+                Task { await model.play(pending.book, serverId: pending.serverId, startAt: pending.localMs) }
+            }
+            .accessibilityIdentifier("resume.local")
+        } message: { pending in
+            Text("\(pending.otherDevice ?? String(localized: "Another device")) got to \(ProgressText.clock(pending.otherMs)); this iPhone was at \(ProgressText.clock(pending.localMs)).")
         }
         .onChange(of: model.engine.errorMessage) { _, message in
             if let message, !isShowingPlayer { model.actionError = message }

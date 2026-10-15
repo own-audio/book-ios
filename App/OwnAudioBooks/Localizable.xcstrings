@@ -51,6 +51,16 @@
         }
       }
     },
+    "%@ got to %@; this iPhone was at %@.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ se dostalo na %@; tento iPhone byl na %@."
+          }
+        }
+      }
+    },
     "%@ left": {
       "localizations": {
         "cs": {
@@ -117,26 +127,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@, %@"
-          }
-        }
-      }
-    },
-    "%@: moved to %@, where %@ left off.": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@: posunuto na %@, kde skončilo zařízení %@."
-          }
-        }
-      }
-    },
-    "%@: moved to %@, where another device left off.": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@: posunuto na %@, kde skončilo jiné zařízení."
           }
         }
       }
@@ -435,6 +425,16 @@
         }
       }
     },
+    "Another device": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jiné zařízení"
+          }
+        }
+      }
+    },
     "Apple didn't return a sign-in. Try again.": {
       "localizations": {
         "cs": {
@@ -632,6 +632,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokračovat v poslechu"
+          }
+        }
+      }
+    },
+    "Continue from %@ (%@)": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat z %@ (%@)"
+          }
+        }
+      }
+    },
+    "Continue from %@?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat z %@?"
           }
         }
       }
@@ -1044,6 +1064,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ponechat nejvýše"
+          }
+        }
+      }
+    },
+    "Keep this iPhone's position (%@)": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zůstat na pozici tohoto iPhonu (%@)"
           }
         }
       }
@@ -1544,16 +1574,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hraje"
-          }
-        }
-      }
-    },
-    "Position Moved": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pozice posunuta"
           }
         }
       }
@@ -2570,6 +2590,16 @@
         }
       }
     },
+    "another device": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "jiné zařízení"
+          }
+        }
+      }
+    },
     "own.audio": {
       "localizations": {
         "cs": {
@@ -2607,6 +2637,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "own.audio: e-mail a heslo vašeho účtu. Audiobookshelf: vaše uživatelské jméno a heslo."
+          }
+        }
+      }
+    },
+    "there": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tamtud"
           }
         }
       }

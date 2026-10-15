@@ -81,3 +81,44 @@ final class PendingProgress: @unchecked Sendable {
         try? data.write(to: file, options: .atomic)
     }
 }
+
+/// The last position this phone saved for each book, with when: what the resume rule compares
+/// the server's answer with, so a position another device reached since can be offered.
+final class KnownPositions: @unchecked Sendable {
+    struct Entry: Codable, Sendable, Equatable {
+        var positionMs: Int64
+        var finished: Bool
+        var at: Date
+    }
+
+    private let file: URL
+    private let lock = NSLock()
+    private var entries: [String: Entry]
+
+    init(directory: URL? = nil) {
+        let base = directory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        try? FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
+        file = base.appendingPathComponent("known-positions.json")
+        entries = (try? Data(contentsOf: file)).flatMap { try? JSONDecoder().decode([String: Entry].self, from: $0) } ?? [:]
+    }
+
+    subscript(compositeId: String) -> Entry? {
+        lock.lock()
+        defer { lock.unlock() }
+        return entries[compositeId]
+    }
+
+    func set(_ compositeId: String, _ entry: Entry?) {
+        lock.lock()
+        defer { lock.unlock() }
+        entries[compositeId] = entry
+        if let data = try? JSONEncoder().encode(entries) { try? data.write(to: file, options: .atomic) }
+    }
+
+    func removeAll() {
+        lock.lock()
+        defer { lock.unlock() }
+        entries = [:]
+        try? FileManager.default.removeItem(at: file)
+    }
+}

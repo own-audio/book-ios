@@ -220,8 +220,6 @@ cs = {
 
  # Downloads and offline (B6).
  "%@ on this iPhone.": "%@ v tomto iPhonu.",
- "%@: moved to %@, where %@ left off.": "%@: posunuto na %@, kde skončilo zařízení %@.",
- "%@: moved to %@, where another device left off.": "%@: posunuto na %@, kde skončilo jiné zařízení.",
  "Download": "Stáhnout",
  "Download a book from its page to listen with no network.": "Stáhněte knihu z její stránky a poslouchejte bez sítě.",
  "Download failed, try again": "Stažení selhalo, zkusit znovu",
@@ -239,13 +237,21 @@ cs = {
  "Offline Mode · downloaded books only": "Režim offline · jen stažené knihy",
  "Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.": "Režim offline zobrazí a přehraje jen to, co je v tomto iPhonu, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.",
  "On This iPhone": "V tomto iPhonu",
- "Position Moved": "Pozice posunuta",
  "Remove All Downloads": "Odstranit všechna stažení",
  "Remove All Downloads?": "Odstranit všechna stažení?",
  "Remove Download": "Odstranit stažení",
  "Remove Download?": "Odstranit stažení?",
  "The server did not send the file.": "Server soubor neposlal.",
  "This book is not on this iPhone. Download it, or turn Offline Mode off.": "Tato kniha není v tomto iPhonu. Stáhněte ji, nebo vypněte režim offline.",
+
+ # Continuing from another device (B7).
+ "%@ got to %@; this iPhone was at %@.": "%@ se dostalo na %@; tento iPhone byl na %@.",
+ "another device": "jiné zařízení",
+ "Another device": "Jiné zařízení",
+ "Continue from %@ (%@)": "Pokračovat z %@ (%@)",
+ "Continue from %@?": "Pokračovat z %@?",
+ "Keep this iPhone's position (%@)": "Zůstat na pozici tohoto iPhonu (%@)",
+ "there": "tamtud",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {

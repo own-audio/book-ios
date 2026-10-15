@@ -159,4 +159,32 @@ struct OwnAudioSourceLiveTests {
             _ = try await ServerSetup.ownAudioSignIn(host: host, email: env["OWNAUDIO_EMAIL"]!, password: "wrong", device: device, urlSession: session())
         }
     }
+
+    @Test("a position saved by another device shows up with that device's name, and the resume rule asks")
+    func otherDevice() async throws {
+        let env = ProcessInfo.processInfo.environment
+        let host = try #require(URL(string: env["OWNAUDIO_HOST"]!))
+        let urlSession = session()
+        func signIn(_ name: String) async throws -> any BookSource {
+            let identity = DeviceIdentity(id: name, name: name, model: "iPhone", appVersion: "0.1.0", systemVersion: "18.0")
+            let result = try await ServerSetup.ownAudioSignIn(host: host, email: env["OWNAUDIO_EMAIL"]!, password: env["OWNAUDIO_ACCOUNT_PASSWORD"]!, device: identity, urlSession: urlSession)
+            guard case .signedIn(let record) = result else { throw SourceError.signInRejected }
+            return record.makeSource(SourceEnvironment(urlSession: urlSession, cache: nil, offline: nil, device: identity))
+        }
+        let phone = try await signIn("Live test phone")
+        let car = try await signIn("Live test car")
+        let book = try #require(try await phone.books(BookQuery(sort: .duration), cursor: nil, limit: 1).books.first)
+        let t0 = Date()
+        _ = try await phone.saveProgress(bookId: book.id, positionMs: 100_000, durationMs: book.durationMs, finished: false, at: t0)
+        try await Task.sleep(for: .seconds(1))
+        _ = try await car.saveProgress(bookId: book.id, positionMs: 400_000, durationMs: book.durationMs, finished: false, at: Date())
+        let seen = try #require(try await phone.progress(bookId: book.id))
+        #expect(seen.positionMs == 400_000)
+        #expect(seen.devices.contains { !$0.isThisDevice && $0.name == "Live test car" && $0.positionMs == 400_000 })
+        let local = ListeningProgress(positionMs: 100_000, finished: false, updatedAt: t0)
+        #expect(ResumeChoice.decide(local: local, server: seen) == .ask(localMs: 100_000, otherMs: 400_000, otherDevice: "Live test car"))
+        try await phone.clearProgress(bookId: book.id)
+        await car.signOut()
+        await phone.signOut()
+    }
 }
