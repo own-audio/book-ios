@@ -71,6 +71,16 @@
         }
       }
     },
+    "%@ on this iPhone.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ v tomto iPhonu."
+          }
+        }
+      }
+    },
     "%@ · %@": {
       "localizations": {
         "cs": {
@@ -107,6 +117,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@, %@"
+          }
+        }
+      }
+    },
+    "%@: moved to %@, where %@ left off.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: posunuto na %@, kde skončilo zařízení %@."
+          }
+        }
+      }
+    },
+    "%@: moved to %@, where another device left off.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: posunuto na %@, kde skončilo jiné zařízení."
           }
         }
       }
@@ -686,12 +716,102 @@
         }
       }
     },
+    "Download": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhnout"
+          }
+        }
+      }
+    },
+    "Download a book from its page to listen with no network.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhněte knihu z její stránky a poslouchejte bez sítě."
+          }
+        }
+      }
+    },
+    "Download failed, try again": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stažení selhalo, zkusit znovu"
+          }
+        }
+      }
+    },
+    "Download on Wi-Fi Only": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stahovat jen přes Wi-Fi"
+          }
+        }
+      }
+    },
+    "Downloaded": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staženo"
+          }
+        }
+      }
+    },
     "Downloaded Only": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "Jen stažené"
+          }
+        }
+      }
+    },
+    "Downloading": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stahuje se"
+          }
+        }
+      }
+    },
+    "Downloading %lld%%": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stahuje se %lld %%"
+          }
+        }
+      }
+    },
+    "Downloading… %lld%%": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stahuje se… %lld %%"
+          }
+        }
+      }
+    },
+    "Downloads": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stažené"
           }
         }
       }
@@ -918,6 +1038,16 @@
         }
       }
     },
+    "Keep at Most": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponechat nejvýše"
+          }
+        }
+      }
+    },
     "Label": {
       "localizations": {
         "cs": {
@@ -1088,6 +1218,16 @@
         }
       }
     },
+    "No Limit": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez omezení"
+          }
+        }
+      }
+    },
     "No Server": {
       "localizations": {
         "cs": {
@@ -1168,6 +1308,16 @@
         }
       }
     },
+    "No network · downloaded books only": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez sítě · jen stažené knihy"
+          }
+        }
+      }
+    },
     "No series yet.": {
       "localizations": {
         "cs": {
@@ -1218,6 +1368,16 @@
         }
       }
     },
+    "Nothing Downloaded": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic není staženo"
+          }
+        }
+      }
+    },
     "Nothing Playing": {
       "localizations": {
         "cs": {
@@ -1238,12 +1398,52 @@
         }
       }
     },
+    "Offline Mode": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Režim offline"
+          }
+        }
+      }
+    },
+    "Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Režim offline zobrazí a přehraje jen to, co je v tomto iPhonu, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje."
+          }
+        }
+      }
+    },
+    "Offline Mode · downloaded books only": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Režim offline · jen stažené knihy"
+          }
+        }
+      }
+    },
     "On Mobile Data": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "Na mobilních datech"
+          }
+        }
+      }
+    },
+    "On This iPhone": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V tomto iPhonu"
           }
         }
       }
@@ -1348,6 +1548,16 @@
         }
       }
     },
+    "Position Moved": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozice posunuta"
+          }
+        }
+      }
+    },
     "Privacy": {
       "localizations": {
         "cs": {
@@ -1404,6 +1614,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odebrat"
+          }
+        }
+      }
+    },
+    "Remove All Downloads": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstranit všechna stažení"
+          }
+        }
+      }
+    },
+    "Remove All Downloads?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstranit všechna stažení?"
+          }
+        }
+      }
+    },
+    "Remove Download": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstranit stažení"
+          }
+        }
+      }
+    },
+    "Remove Download?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstranit stažení?"
           }
         }
       }
@@ -2050,6 +2300,16 @@
         }
       }
     },
+    "The server did not send the file.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server soubor neposlal."
+          }
+        }
+      }
+    },
     "The server no longer has that.": {
       "localizations": {
         "cs": {
@@ -2106,6 +2366,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tento účet nemá na tomto serveru přístup k žádné knihovně knih."
+          }
+        }
+      }
+    },
+    "This book is not on this iPhone. Download it, or turn Offline Mode off.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato kniha není v tomto iPhonu. Stáhněte ji, nebo vypněte režim offline."
           }
         }
       }

@@ -25,6 +25,11 @@ struct RootView: View {
         } message: {
             Text(model.actionError ?? "")
         }
+        .alert("Position Moved", isPresented: Binding(get: { model.notice != nil }, set: { if !$0 { model.notice = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(model.notice ?? "")
+        }
         .onChange(of: model.engine.errorMessage) { _, message in
             if let message, !isShowingPlayer { model.actionError = message }
         }
@@ -52,6 +57,11 @@ struct RootView: View {
 
 private extension View {
     func miniPlayerInset(onTap: @escaping () -> Void) -> some View {
-        safeAreaInset(edge: .bottom, spacing: 0) { MiniPlayerBar(onTap: onTap) }
+        safeAreaInset(edge: .bottom, spacing: 0) {
+            VStack(spacing: 0) {
+                OfflineBanner()
+                MiniPlayerBar(onTap: onTap)
+            }
+        }
     }
 }

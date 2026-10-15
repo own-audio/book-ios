@@ -113,6 +113,14 @@ struct BookDetailView: View {
     }
 
     private var playRow: some View {
+        HStack(spacing: Theme.Spacing.md) {
+            playButton
+            DownloadButton(book: book, serverId: serverId)
+        }
+        .padding(.horizontal, Theme.Spacing.screenEdge)
+    }
+
+    private var playButton: some View {
         let fraction = BookCard.fraction(book: book, progress: progress) ?? 0
         return Button {
             play()
@@ -147,7 +155,6 @@ struct BookDetailView: View {
         .buttonStyle(.plain)
         .disabled(isStarting)
         .accessibilityIdentifier("detail.play")
-        .padding(.horizontal, Theme.Spacing.screenEdge)
     }
 
     private var metadata: some View {
@@ -271,16 +278,19 @@ struct BookDetailView: View {
     }
 
     private func load() async {
-        if book.files == nil, let source, let detail = try? await source.book(id: book.id) { book = detail }
+        if let local = model.downloadedBook(book, serverId: serverId), book.files == nil || model.isOffline {
+            book = local
+        } else if book.files == nil, !model.isOffline, let source, let detail = try? await source.book(id: book.id) {
+            book = detail
+        }
         await refresh()
     }
 
     private func refresh() async {
         progress = await model.progress(for: book, serverId: serverId)
-        if let source {
-            bookmarks = (try? await source.bookmarks(bookId: book.id)) ?? []
-            if source.capabilities.contains(.favourites) { isFavourite = (try? await source.favourites().contains(book.id)) ?? false }
-        }
+        guard let source, !model.isOffline else { return }
+        bookmarks = (try? await source.bookmarks(bookId: book.id)) ?? []
+        if source.capabilities.contains(.favourites) { isFavourite = (try? await source.favourites().contains(book.id)) ?? false }
     }
 
     private func play() {

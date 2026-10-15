@@ -37,7 +37,8 @@ final class CzechScreensTests: XCTestCase {
         book.tap()
         let play = app.buttons["detail.play"]
         XCTAssertTrue(play.waitForExistence(timeout: 20))
-        XCTAssertEqual(play.label, "Přehrát")
+        // A book the account started before says "Pokračovat v poslechu" instead.
+        XCTAssertTrue(["Přehrát", "Pokračovat v poslechu", "Poslechnout znovu"].contains(play.label), play.label)
         XCTAssertTrue(app.buttons["Kapitoly"].exists, "the detail's sections should be Czech")
         let settings = app.buttons["home.settings"]
         app.buttons["Domů"].firstMatch.tap()

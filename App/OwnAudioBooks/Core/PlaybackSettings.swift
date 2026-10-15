@@ -25,7 +25,18 @@ final class PlaybackSettings {
         smartRewind = defaults.object(forKey: "playback.smartRewind") as? Bool ?? true
         mobileData = MobileData(rawValue: defaults.string(forKey: "playback.mobileData") ?? "") ?? .original
         bookRates = (defaults.dictionary(forKey: "playback.bookRates") as? [String: Float]) ?? [:]
+        offlineMode = defaults.bool(forKey: "downloads.offlineMode")
+        wifiOnlyDownloads = defaults.object(forKey: "downloads.wifiOnly") as? Bool ?? true
+        storageCapBytes = defaults.object(forKey: "downloads.capBytes") as? Int64
     }
+
+    /// Show and play only what is on the phone, and ask nothing of the servers.
+    var offlineMode: Bool { didSet { defaults.set(offlineMode, forKey: "downloads.offlineMode") } }
+    var wifiOnlyDownloads: Bool { didSet { defaults.set(wifiOnlyDownloads, forKey: "downloads.wifiOnly") } }
+    /// nil is no limit.
+    var storageCapBytes: Int64? { didSet { defaults.set(storageCapBytes, forKey: "downloads.capBytes") } }
+
+    static let storageCapChoices: [Int64?] = [nil, 1 << 30, 2 << 30, 5 << 30, 10 << 30]
 
     var skipForwardSecs: Double { didSet { defaults.set(skipForwardSecs, forKey: "playback.skipForward") } }
     var skipBackwardSecs: Double { didSet { defaults.set(skipBackwardSecs, forKey: "playback.skipBackward") } }

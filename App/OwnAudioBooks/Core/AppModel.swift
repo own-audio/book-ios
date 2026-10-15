@@ -32,6 +32,9 @@ final class AppModel {
     let settings = PlaybackSettings()
     let covers = CoverLoader()
     let network = NetworkMonitor()
+    let downloads = DownloadManager()
+    /// Something worth telling once, not an error: "Moved to 4:12 from your iPad".
+    var notice: String?
     /// The book in the engine, with the server it came from.
     private(set) var nowPlayingBook: Book?
     private(set) var nowPlayingServerId: UUID?
@@ -90,6 +93,12 @@ final class AppModel {
             guard let self, let (serverId, bookId) = BookID.parse(compositeId) else { throw SourceError.notFound }
             return try await self.freshPartURL(serverId: serverId, bookId: bookId, partId: partId)
         }
+        downloads.urlProvider = { [weak self] compositeId, fileId in
+            guard let self, let (serverId, _) = BookID.parse(compositeId), let source = self.sources[serverId],
+                  let book = self.downloads.books[compositeId]?.book else { throw SourceError.notFound }
+            // Downloads are always the original file.
+            return try await source.partURL(for: book, fileId: fileId, startMs: nil, maxBitrateKbps: nil).url
+        }
         applyPlaybackSettings()
         network.onChange = { [weak self] _ in
             Task { await self?.chooseAddresses(); await self?.flushPendingProgress() }
@@ -109,7 +118,19 @@ final class AppModel {
     /// No network, or the listener's choice on mobile data: the screens show downloads only
     /// (B6) and nothing is asked of the servers.
     var isOffline: Bool {
-        !network.isConnected || (network.isExpensive && settings.mobileData == .downloadedOnly) || Self.isSimulatingOffline
+        !network.isConnected || settings.offlineMode || (network.isExpensive && settings.mobileData == .downloadedOnly) || Self.isSimulatingOffline
+    }
+
+    /// Offline by the listener's choice rather than the network's.
+    var isOfflineByChoice: Bool {
+        network.isConnected && !Self.isSimulatingOffline && (settings.offlineMode || (network.isExpensive && settings.mobileData == .downloadedOnly))
+    }
+
+    func setOfflineMode(_ on: Bool) {
+        settings.offlineMode = on
+        offlineSwitch.isOn = isOffline
+        followLibraryChanges()
+        if !on { Task { await chooseAddresses(); await syncCatalogues(); await flushPendingProgress() } }
     }
 
     static var isSimulatingOffline: Bool { ProcessInfo.processInfo.arguments.contains("-simulateOffline") }
@@ -137,6 +158,8 @@ final class AppModel {
             responseCache.removeAll()
             catalogueStore.removeAll()
             pendingProgress.removeAll()
+            downloads.removeAll()
+            settings.offlineMode = false
         }
         servers = await store.loadAll()
         await addServerFromLaunchArguments()
@@ -148,6 +171,7 @@ final class AppModel {
         let saved = UserDefaults.standard.string(forKey: Self.activeServerKey).flatMap(UUID.init)
         activeServerId = servers.contains { $0.id == saved } ? saved : servers.first?.id
         hasLoaded = true
+        downloads.resume()
         Task {
             await chooseAddresses()
             await syncCatalogues()
@@ -634,20 +658,36 @@ final class AppModel {
         guard let source = sources[serverId] else { return }
         let composite = BookID.make(serverId: serverId, bookId: book.id)
         do {
-            let detail = book.files == nil ? try await source.book(id: book.id) : book
-            let plan = try await source.playPlan(for: detail, maxBitrateKbps: maxBitrateKbps)
-            let serverProgress = try? await source.progress(bookId: book.id)
+            let detail: Book
+            let parts: [SpokenPart]
+            var plan: PlayPlan?
+            if let local = downloads.downloaded(composite) {
+                // From the phone: the files as downloaded, the record as it was.
+                detail = local.book
+                parts = (detail.files ?? []).compactMap { file in
+                    downloads.fileURL(compositeId: composite, fileId: file.id).map { SpokenPart(id: file.id, url: $0, durationMs: file.durationMs) }
+                }
+                downloads.notePlayed(composite)
+            } else if isOffline {
+                actionError = String(localized: "This book is not on this iPhone. Download it, or turn Offline Mode off.")
+                return
+            } else {
+                detail = book.files == nil ? try await source.book(id: book.id) : book
+                let made = try await source.playPlan(for: detail, maxBitrateKbps: maxBitrateKbps)
+                plan = made
+                parts = made.parts.map { SpokenPart(id: $0.fileId, url: $0.url, durationMs: $0.durationMs, isHLS: $0.isHLS) }
+            }
+            let serverProgress = isOffline ? progress[composite] : try? await source.progress(bookId: book.id)
             if let serverProgress { progress[composite] = serverProgress }
-            let parts = plan.parts.map { SpokenPart(id: $0.fileId, url: $0.url, durationMs: $0.durationMs, isHLS: $0.isHLS) }
             let chapters = await chapters(for: detail, parts: parts)
-            let spoken = SpokenBook(id: composite, title: detail.title, author: detail.authorLine.isEmpty ? nil : detail.authorLine, parts: parts, chapters: chapters, linksExpireAt: plan.expiresAt)
+            let spoken = SpokenBook(id: composite, title: detail.title, author: detail.authorLine.isEmpty ? nil : detail.authorLine, parts: parts, chapters: chapters, linksExpireAt: plan?.expiresAt)
             let start: Int64
             if let serverProgress, !serverProgress.finished {
                 start = serverProgress.positionMs
             } else if let local = resumeStore.loadResume(containerId: composite), serverProgress?.finished != true {
                 start = Int64(local.positionSecs * 1000)
             } else {
-                start = plan.startPositionMs ?? 0
+                start = plan?.startPositionMs ?? 0
             }
             nowPlayingBook = detail
             nowPlayingServerId = serverId
@@ -678,6 +718,8 @@ final class AppModel {
     }
 
     func applyPlaybackSettings() {
+        downloads.wifiOnly = settings.wifiOnlyDownloads
+        downloads.enforce(capBytes: settings.storageCapBytes, protected: engine.book?.id)
         engine.skipForwardSecs = settings.skipForwardSecs
         engine.skipBackwardSecs = settings.skipBackwardSecs
         engine.smartRewind = SmartRewind(isEnabled: settings.smartRewind)
@@ -731,7 +773,16 @@ final class AppModel {
                 ))
                 pendingProgress.remove(id: entry.id)
                 let composite = BookID.make(serverId: entry.serverId, bookId: entry.bookId)
-                if let answer, engine.book?.id != composite { progress[composite] = answer }
+                if let answer, engine.book?.id != composite {
+                    progress[composite] = answer
+                    // Another device went further meanwhile: say so, once.
+                    if abs(answer.positionMs - entry.positionMs) > 30_000, answer.updatedAt > entry.at,
+                       let title = downloads.books[composite]?.book.title ?? nowPlayingBook.flatMap({ $0.id == entry.bookId ? $0.title : nil }) {
+                        let from = answer.devices.first { !$0.isThisDevice && $0.positionMs == answer.positionMs }?.name
+                        notice = from.map { String(localized: "\(title): moved to \(ProgressText.clock(answer.positionMs)), where \($0) left off.") }
+                            ?? String(localized: "\(title): moved to \(ProgressText.clock(answer.positionMs)), where another device left off.")
+                    }
+                }
             } catch SourceError.network, SourceError.offline {
                 return
             } catch SourceError.notFound {
@@ -800,6 +851,37 @@ final class AppModel {
         } catch {
             actionError = (error as? SourceError)?.userMessage ?? error.localizedDescription
         }
+    }
+
+    // MARK: - Downloads and the offline library
+
+    /// Downloads the book's files; the detail is fetched first when the record has none.
+    func download(_ book: Book, serverId: UUID) async {
+        guard let source = sources[serverId] else { return }
+        do {
+            let detail = book.files == nil ? try await source.book(id: book.id) : book
+            downloads.download(detail, serverId: serverId)
+        } catch {
+            actionError = (error as? SourceError)?.userMessage ?? error.localizedDescription
+        }
+    }
+
+    func downloadState(_ book: Book, serverId: UUID) -> DownloadManager.State? {
+        downloads.state(of: BookID.make(serverId: serverId, bookId: book.id))
+    }
+
+    func removeDownload(_ book: Book, serverId: UUID) {
+        downloads.remove(BookID.make(serverId: serverId, bookId: book.id))
+    }
+
+    /// The books on this iPhone from a server, newest download first.
+    func offlineBooks(serverId: UUID) -> [Book] {
+        downloads.downloadedBooks(serverId: serverId).map(\.book)
+    }
+
+    /// A downloaded book's record, for a screen that can't ask the server.
+    func downloadedBook(_ book: Book, serverId: UUID) -> Book? {
+        downloads.downloaded(BookID.make(serverId: serverId, bookId: book.id))?.book
     }
 
     // MARK: - Covers

@@ -5,7 +5,7 @@ import Foundation
 // offset at the edge. Ids are the server's own, opaque; the app prefixes them with the server's
 // id where several servers meet.
 
-public struct Person: Sendable, Equatable, Hashable, Identifiable {
+public struct Person: Codable, Sendable, Equatable, Hashable, Identifiable {
     /// The server's id, or the name where a server has none (Audiobookshelf's narrators).
     public let id: String
     public let name: String
@@ -22,7 +22,7 @@ public struct Person: Sendable, Equatable, Hashable, Identifiable {
 
 /// A book's place in a series. `sequence` is as the server has it ("1", "1.5", "1-3");
 /// `position` is the number in it, for sorting.
-public struct SeriesRef: Sendable, Equatable, Hashable {
+public struct SeriesRef: Codable, Sendable, Equatable, Hashable {
     public let id: String
     public let name: String
     public let sequence: String?
@@ -41,7 +41,7 @@ public struct SeriesRef: Sendable, Equatable, Hashable {
 }
 
 /// One file of a book, in playing order; `startMs` is where it begins in book time.
-public struct BookFile: Sendable, Equatable, Identifiable {
+public struct BookFile: Codable, Sendable, Equatable, Identifiable {
     public let id: String
     public let title: String?
     public let durationMs: Int64
@@ -70,7 +70,7 @@ public struct BookFile: Sendable, Equatable, Identifiable {
     }
 }
 
-public struct Chapter: Sendable, Equatable, Identifiable {
+public struct Chapter: Codable, Sendable, Equatable, Identifiable {
     public let title: String
     public let startMs: Int64
     public let endMs: Int64
@@ -89,7 +89,7 @@ public enum Visibility: String, Sendable, Codable {
     case `private`, family
 }
 
-public struct Book: Sendable, Equatable, Identifiable {
+public struct Book: Codable, Sendable, Equatable, Identifiable {
     public let id: String
     public var title: String
     public var subtitle: String?
@@ -156,7 +156,7 @@ public struct Book: Sendable, Equatable, Identifiable {
 }
 
 /// Where one listener is in one book.
-public struct ListeningProgress: Sendable, Equatable {
+public struct ListeningProgress: Codable, Sendable, Equatable {
     public var positionMs: Int64
     public var finished: Bool
     public var updatedAt: Date
@@ -171,7 +171,7 @@ public struct ListeningProgress: Sendable, Equatable {
     }
 }
 
-public struct DevicePosition: Sendable, Equatable, Identifiable {
+public struct DevicePosition: Codable, Sendable, Equatable, Identifiable {
     public let id: String
     public let name: String?
     public let kind: String
@@ -191,7 +191,7 @@ public struct DevicePosition: Sendable, Equatable, Identifiable {
     }
 }
 
-public struct Bookmark: Sendable, Equatable, Identifiable {
+public struct Bookmark: Codable, Sendable, Equatable, Identifiable {
     /// own.audio's id; Audiobookshelf keys bookmarks by time, so the time in seconds.
     public let id: String
     public let bookId: String
@@ -208,7 +208,7 @@ public struct Bookmark: Sendable, Equatable, Identifiable {
     }
 }
 
-public struct SeriesSummary: Sendable, Equatable, Identifiable {
+public struct SeriesSummary: Codable, Sendable, Equatable, Identifiable {
     public let id: String
     public let name: String
     public var bookCount: Int
@@ -223,7 +223,7 @@ public struct SeriesSummary: Sendable, Equatable, Identifiable {
     }
 }
 
-public struct Collection: Sendable, Equatable, Identifiable {
+public struct Collection: Codable, Sendable, Equatable, Identifiable {
     public let id: String
     public let name: String
     public let description: String?

@@ -57,9 +57,13 @@ struct SearchView: View {
         .navigationTitle("Search")
         .task(id: text) {
             let needle = text.trimmingCharacters(in: .whitespaces)
-            guard needle.count >= 2, let source = model.activeSource else { result = nil; return }
+            guard needle.count >= 2, let source = model.activeSource, let serverId = model.activeServerId else { result = nil; return }
             try? await Task.sleep(for: .milliseconds(300))
             guard !Task.isCancelled else { return }
+            if model.isOffline {
+                result = SearchResult(books: BooksListView.filtered(model.offlineBooks(serverId: serverId), BookQuery(text: needle), progress: { _ in nil }))
+                return
+            }
             isSearching = true
             errorMessage = nil
             do {

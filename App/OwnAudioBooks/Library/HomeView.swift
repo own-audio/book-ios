@@ -35,7 +35,7 @@ struct HomeView: View {
         }
         .sheet(isPresented: $isShowingSettings) { NavigationStack { SettingsView() } }
         .refreshable { await reload() }
-        .task(id: model.activeServerId) { await reload() }
+        .task(id: "\(model.activeServerId?.uuidString ?? "")|\(model.isOffline)") { await reload() }
         .onChange(of: model.engine.isPlaying) { was, now in
             // A pause moves a book up the Continue Listening shelf.
             if was && !now { Task { await reload(quietly: true) } }
@@ -74,7 +74,16 @@ struct HomeView: View {
     }
 
     private func reload(quietly: Bool = false) async {
-        guard let source = model.activeSource else { return }
+        guard let source = model.activeSource, let serverId = model.activeServerId else { return }
+        if model.isOffline {
+            let books = model.offlineBooks(serverId: serverId)
+            let started = books.filter { model.knownProgress($0, serverId: serverId).map { $0.positionMs > 0 && !$0.finished } ?? false }
+            state = .loaded([
+                Shelf(id: "continue-listening", title: String(localized: "Continue Listening"), kind: .books(started)),
+                Shelf(id: "downloaded", title: String(localized: "On This iPhone"), kind: .books(books)),
+            ].filter { !$0.isEmpty })
+            return
+        }
         if !quietly, case .loaded = state {} else if !quietly { state = .loading }
         do {
             state = .loaded(try await source.shelves())

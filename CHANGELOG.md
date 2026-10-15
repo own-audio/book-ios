@@ -47,6 +47,11 @@ All notable changes to this project are documented here. The format follows
 - The Library's series, authors, narrators and collections links show before the books have
   loaded.
 
+- Downloads: a book on the phone through a background session that survives the app being
+  killed, Wi-Fi only, a storage limit with finished books going first; Offline Mode and the
+  no-network state show and play what is on the iPhone; positions reported when the network is
+  back, and a newer position from another device told once (B6).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.

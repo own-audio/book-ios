@@ -29,6 +29,29 @@ struct SettingsView: View {
                 }
             }
 
+            Section {
+                NavigationLink {
+                    DownloadsView()
+                } label: {
+                    LabeledContent("Downloads", value: ByteCountFormatter.string(fromByteCount: model.downloads.totalBytes, countStyle: .file))
+                }
+                .accessibilityIdentifier("settings.downloads")
+                Toggle("Offline Mode", isOn: Binding(get: { model.settings.offlineMode }, set: { model.setOfflineMode($0) }))
+                    .accessibilityIdentifier("settings.offlineMode")
+                Toggle("Download on Wi-Fi Only", isOn: $settings.wifiOnlyDownloads)
+                    .accessibilityIdentifier("settings.wifiOnly")
+                Picker("Keep at Most", selection: $settings.storageCapBytes) {
+                    ForEach(PlaybackSettings.storageCapChoices, id: \.self) { cap in
+                        Text(cap.map { ByteCountFormatter.string(fromByteCount: $0, countStyle: .file) } ?? String(localized: "No Limit")).tag(cap)
+                    }
+                }
+                .accessibilityIdentifier("settings.storageCap")
+            } footer: {
+                Text("Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.")
+            }
+            .onChange(of: settings.wifiOnlyDownloads) { model.applyPlaybackSettings() }
+            .onChange(of: settings.storageCapBytes) { model.applyPlaybackSettings() }
+
             Section("Playback") {
                 Picker("Skip Forward", selection: $settings.skipForwardSecs) {
                     ForEach(PlaybackSettings.skipChoices, id: \.self) { Text("\(Int($0)) s").tag($0) }

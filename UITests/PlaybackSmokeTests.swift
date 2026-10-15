@@ -76,6 +76,13 @@ final class PlaybackSmokeTests: XCTestCase {
         app.buttons["player.bookmarks"].tap()
         let add = app.buttons["bookmarks.add"]
         XCTAssertTrue(add.waitForExistence(timeout: 10))
+        // A run that died halfway may have left a bookmark on the account: clear them first.
+        let existing = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'bookmarks.' AND NOT identifier == 'bookmarks.add'"))
+        for _ in 0..<10 where existing.firstMatch.exists {
+            existing.firstMatch.swipeLeft()
+            app.buttons["Delete"].firstMatch.tap()
+            RunLoop.current.run(until: Date().addingTimeInterval(1))
+        }
         add.tap()
         // An alert's fields and buttons are the alert's, not the screen's.
         let label = app.alerts.textFields.firstMatch
@@ -232,5 +239,57 @@ final class PlaybackSmokeTests: XCTestCase {
         if let dir = env["SCREENSHOT_DIR"] {
             try? shot.pngRepresentation.write(to: URL(fileURLWithPath: dir).appendingPathComponent("\(name).png"))
         }
+    }
+}
+
+/// A book downloaded, then the app relaunched with no network at all: the book is still there
+/// and plays from the phone; what was listened to is reported once the network is back.
+final class OfflineTests: XCTestCase {
+    private var env: [String: String] { ProcessInfo.processInfo.environment }
+
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        guard env["SERVER_HOST"] != nil else { throw XCTSkip("SERVER_HOST is not set") }
+    }
+
+    func testDownloadedBookPlaysOffline() throws {
+        let smoke = PlaybackSmokeTests()
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
+        app.launch()
+        smoke.addServer(app)
+        smoke.tapTab(app, "Library")
+        app.buttons["library.sortFilter"].tap()
+        app.buttons["Length"].firstMatch.tap()
+        let book = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'")).firstMatch
+        XCTAssertTrue(book.waitForExistence(timeout: 30))
+        book.tap()
+        let download = app.buttons["detail.download"]
+        XCTAssertTrue(download.waitForExistence(timeout: 20))
+        let title = app.staticTexts["detail.title"].label
+        download.tap()
+        XCTAssertTrue(smoke.waitUntil(timeout: 180) { download.label == "Downloaded" }, "the shortest book should download: \(download.label)")
+        smoke.screenshot(app, "12-downloaded")
+
+        // No network: relaunched with every request failing, the server kept.
+        app.terminate()
+        app.launchArguments = ["-simulateOffline"] + PlaybackSmokeTests.english
+        app.launch()
+        XCTAssertTrue(app.otherElements["offline.banner"].waitForExistence(timeout: 15) || app.staticTexts["offline.banner"].waitForExistence(timeout: 1), "the offline banner")
+        let shelf = app.staticTexts["home.shelf.downloaded"]
+        XCTAssertTrue(shelf.waitForExistence(timeout: 15), "the downloaded shelf")
+        smoke.screenshot(app, "13-offline-home")
+        let card = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'home.book.'")).firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 10))
+        card.tap()
+        let play = app.buttons["detail.play"]
+        XCTAssertTrue(play.waitForExistence(timeout: 10))
+        XCTAssertEqual(app.staticTexts["detail.title"].label, title)
+        play.tap()
+        let pause = app.buttons["miniPlayer.playPause"]
+        XCTAssertTrue(smoke.waitUntil(timeout: 30) { pause.exists && pause.label == "Pause" }, "the downloaded book should play with no network")
+        smoke.screenshot(app, "14-offline-playing")
+        pause.tap()
+        XCTAssertTrue(smoke.waitUntil(timeout: 5) { pause.label == "Play" })
     }
 }

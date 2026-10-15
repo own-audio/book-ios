@@ -86,6 +86,9 @@ struct BookCard: View {
                 .overlay(alignment: .topLeading) {
                     if isFavourite { FavouriteBadge().padding(6) }
                 }
+                .overlay(alignment: .bottomTrailing) {
+                    DownloadBadge(state: model.downloadState(book, serverId: serverId)).padding(6)
+                }
                 .overlay {
                     if showsPlayOverlay {
                         Image(systemName: "play.fill")

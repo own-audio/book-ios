@@ -63,7 +63,7 @@ struct BooksListView: View {
                 .accessibilityIdentifier("library.sortFilter")
             }
         }
-        .task(id: "\(serverId)|\(query.sort.rawValue)|\(query.descending)|\(query.filter.rawValue)") { await reload() }
+        .task(id: "\(serverId)|\(query.sort.rawValue)|\(query.descending)|\(query.filter.rawValue)|\(model.isOffline)") { await reload() }
         .refreshable { await reload() }
     }
 
@@ -166,6 +166,13 @@ struct BooksListView: View {
 
     private func reload() async {
         guard let source else { return }
+        if model.isOffline {
+            books = Self.filtered(model.offlineBooks(serverId: serverId), query, progress: { model.knownProgress($0, serverId: serverId) })
+            next = nil
+            total = books.count
+            state = .loaded(())
+            return
+        }
         if books.isEmpty { state = .loading }
         do {
             let page = try await source.books(query, cursor: nil, limit: 60)
@@ -178,6 +185,32 @@ struct BooksListView: View {
         } catch {
             state = .failed(error.localizedDescription)
         }
+    }
+
+    /// The downloaded books as the query asks, done here because there is no server to ask.
+    static func filtered(_ all: [Book], _ query: BookQuery, progress: (Book) -> ListeningProgress?) -> [Book] {
+        var books = all
+        if let id = query.authorId { books = books.filter { $0.authors.contains { $0.id == id } } }
+        if let id = query.narratorId { books = books.filter { $0.narrators.contains { $0.id == id } } }
+        if let id = query.seriesId { books = books.filter { $0.series.contains { $0.id == id } } }
+        if let text = query.text, !text.isEmpty { books = books.filter { $0.title.localizedCaseInsensitiveContains(text) || $0.authorLine.localizedCaseInsensitiveContains(text) } }
+        switch query.filter {
+        case .all: break
+        case .notStarted: books = books.filter { progress($0) == nil }
+        case .inProgress: books = books.filter { progress($0).map { !$0.finished } ?? false }
+        case .finished: books = books.filter { progress($0)?.finished ?? false }
+        }
+        books.sort { a, b in
+            let less: Bool
+            switch query.sort {
+            case .title: less = a.title.localizedStandardCompare(b.title) == .orderedAscending
+            case .author: less = a.authorLine.localizedStandardCompare(b.authorLine) == .orderedAscending
+            case .added: less = a.addedAt < b.addedAt
+            case .duration: less = a.durationMs < b.durationMs
+            }
+            return query.descending ? !less : less
+        }
+        return books
     }
 
     private func loadMore() async {

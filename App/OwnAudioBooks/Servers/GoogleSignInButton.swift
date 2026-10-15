@@ -71,7 +71,7 @@ final class GoogleSignIn: NSObject, ASWebAuthenticationPresentationContextProvid
     /// own.audio Books' iOS OAuth client (Google Cloud), once one exists for this bundle id.
     /// Public by design: it identifies the app, it grants nothing. A server accepts sign-ins
     /// from it only if it lists it in `AUTH__GOOGLE__CLIENT_IDS`. Empty: no Google button.
-    static let clientID = ""
+    static let clientID = "456111077348-07keelj97nq3ku2optktldr0u5hmdoaq.apps.googleusercontent.com"
 
     static var isConfigured: Bool { !clientID.isEmpty }
 

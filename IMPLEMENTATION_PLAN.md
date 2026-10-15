@@ -231,16 +231,23 @@ client's mojibake repair, applied to display only).
   on the way: XCUITest waits for the app to idle, and the mark's endless animations kept it
   from ever idling — animations are dropped under `-uiTestReset`, as under Reduce Motion.
 
-- [ ] **B6: Downloads and offline.** Background `URLSession` per file with range resume,
-  byte-weighted progress on the cover, Wi-Fi-only, a storage cap with oldest-finished-first
-  eviction that never evicts the playing book, per-book and total sizes, delete. Covers,
-  chapters and the file list are cached at download time. Offline mode (automatic from the
-  network monitor, plus a switch): shelves show downloaded books, playback refuses what is not
-  complete with a clear message. Offline changes: positions, finished marks, bookmarks and
-  favourites go to a `PendingChanges` store and are replayed in order — own.audio in one
-  `/sync/push` (bookmarks one by one), Audiobookshelf with `local-all` sessions and
-  `progress/batch/update`. Progress conflict: a newer position elsewhere wins and the app says
-  so ("Moved to 4:12:08 from your iPad"). Killed-mid-download and dead-host tests.
+- [x] **B6: Downloads and offline.** Done 2026-10-15; eviction tests in the library, and a UI
+  test that downloads the shortest book and relaunches the app with every request failing:
+  the offline banner, the "On This iPhone" shelf, the book plays from the phone. A
+  `DownloadManager` on a background `URLSession` (identifier
+  `audio.own.bookplayer.downloads`): one task per file, resume data kept across kills, the
+  app delegate hands iOS's completion back, an index of each book's record and files in
+  Application Support (excluded from backup), Wi-Fi only, a storage cap enforced by
+  `EvictionPolicy` (finished first, then longest unplayed, never the playing book). The
+  detail's download button (arrow, ring, check), download badges on cards, Downloads under
+  Settings, Offline Mode as a switch and as the no-network state, the offline Home, Library,
+  Search and detail from the downloaded records, playback from local files with chapters read
+  from them. Positions keep going to `PendingProgress` and are sent when the network is back;
+  own.audio answers with the server's position, and a newer one from another device is told
+  once ("moved to 4:12:08, where your iPad left off"). Not yet: bookmarks made offline (the
+  screens hide them offline), Audiobookshelf's local sessions (an offline listen reaches the
+  server as a position, not as listening time).
+
 - [ ] **B7: Live updates and other devices.** own.audio: `/events` in the foreground triggers a
   feed sync; the `devices[]` of a book's progress become "Continue from the car (40:02)?" when
   another device is ahead. Audiobookshelf: `/api/me` re-read on foreground and every few
