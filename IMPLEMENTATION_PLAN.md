@@ -274,14 +274,23 @@ client's mojibake repair, applied to display only).
   resumed; failures shown on the Library with Try Again. Audiobookshelf's upload stays for
   later, as planned.
 
-- [ ] **B9: own.audio extras.** Household: members and pictures, invites, join by code,
-  what is shared with the family (visibility on the book, owner only), storage and credit
-  summary — copied from the music app's M10. Favourites. Listening stats where a server has
-  them (Audiobookshelf `/api/me/listening-stats`; own.audio when it reaches v2). Narration
-  (hosted servers that advertise the module in discovery) when its routes are in v2 shape —
-  server work first; the app never sells credit.
+- [x] **B9: own.audio extras** (2026-10-16). Household: members and pictures, invites, join
+  by code (the library on the phone starts again from a fresh snapshot), what is shared with
+  the family (Share with the Family / Keep to Myself in the book's menu, owner only), storage
+  and credit summary — copied from the music app's M10. Favourites were in B3. Quick switch
+  between servers: a menu on Home, as the music app has. Still to do, in B9b: listening stats
+  where a server has them (Audiobookshelf `/api/me/listening-stats`; own.audio when it reaches
+  v2); narration (hosted servers that advertise the module in discovery) when its routes are
+  in v2 shape — server work first; the app never sells credit.
+- [ ] **B9b: Downloads as the music app has them** (asked 2026-10-16). One button downloads
+  a whole series, an author's books or a collection, with a count of what is done; the
+  Downloads screen grouped by server, with Retry Failed; Whole Library When Offline (the
+  own.audio catalogue lists everything offline, books not on the phone greyed out, as the music
+  app does with albums); Settings → Servers → ⓘ shows the catalogue's size, when it was
+  updated, and Update Now. Plus the stats and narration left over from B9.
 - [ ] **B10: Platform.** CarPlay (Continue Listening, Library, Now Playing with skip and
-  chapter buttons; the entitlement is requested from Apple separately), a Continue Listening
+  chapter buttons; Apple granted the CarPlay audio entitlement to this App ID on 2026-10-16 —
+  add `com.apple.developer.carplay-audio` to the entitlements with the scene), a Continue Listening
   widget and a Live Activity for the player, Siri App Intents ("Play *title* in own.book",
   matched against the local catalogue), iPad split view. Each one hidden until it works on a
   device.

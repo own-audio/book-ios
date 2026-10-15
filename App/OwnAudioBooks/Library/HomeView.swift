@@ -27,6 +27,9 @@ struct HomeView: View {
         }
         .background(Theme.Colors.background)
         .toolbar {
+            if model.servers.count > 1 {
+                ToolbarItem(placement: .topBarLeading) { serverMenu }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button { isShowingSettings = true } label: { Image(systemName: "gearshape") }
                     .accessibilityLabel("Settings")
@@ -40,6 +43,25 @@ struct HomeView: View {
             // A pause moves a book up the Continue Listening shelf.
             if was && !now { Task { await reload(quietly: true) } }
         }
+    }
+
+    /// With more than one server, which one the shelves and the library show is a tap away.
+    private var serverMenu: some View {
+        Menu {
+            Picker("Server", selection: Binding(
+                get: { model.activeServerId },
+                set: { if let id = $0 { model.selectServer(id: id) } }
+            )) {
+                ForEach(model.serversInOrder) { server in
+                    Label(server.displayName, systemImage: server.kind == .ownAudio ? "person.3" : "server.rack")
+                        .tag(Optional(server.id))
+                }
+            }
+        } label: {
+            Label(model.activeServer?.displayName ?? "", systemImage: "server.rack")
+                .labelStyle(.titleAndIcon)
+        }
+        .accessibilityIdentifier("home.serverMenu")
     }
 
     private var greeting: some View {

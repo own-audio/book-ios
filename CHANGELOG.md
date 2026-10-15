@@ -59,6 +59,11 @@ All notable changes to this project are documented here. The format follows
   the form filled from the tags, uploads in the background that survive the app being killed,
   one book at the end, never two (B8).
 
+- The family on an own.audio server (Settings → Family): members, storage, credit where the
+  server charges, invitations for admins, joining another family with a code. A book of your
+  own is shared with the family or kept to yourself from its menu. With more than one server,
+  a menu on Home switches between them (B9).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.

@@ -602,6 +602,14 @@ final class AppModel {
         }
     }
 
+    /// After joining another household: the saved feed is dropped and the library fetched
+    /// from a fresh snapshot.
+    func resyncCatalogue(_ id: UUID) async {
+        catalogueStore.remove(serverId: id)
+        sessions.catalogue(for: id).reset()
+        await syncCatalogue(id)
+    }
+
     private func syncCatalogue(_ id: UUID) async {
         guard let feed = sources[id] as? any ChangeFeedCatalogue, !catalogueSyncing.contains(id) else { return }
         catalogueSyncing.insert(id)

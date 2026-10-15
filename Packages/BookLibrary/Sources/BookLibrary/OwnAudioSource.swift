@@ -580,4 +580,18 @@ public final class OwnAudioCatalogue: @unchecked Sendable {
         if on { _library?.favourites.insert(bookId) } else { _library?.favourites.remove(bookId) }
         lock.unlock()
     }
+
+    func remember(visibility: Visibility, bookId: String) {
+        lock.lock()
+        if let index = _library?.books.firstIndex(where: { $0.id == bookId }) { _library?.books[index].visibility = visibility }
+        lock.unlock()
+    }
+
+    /// Another household's library: the next sync starts from a fresh snapshot.
+    public func reset() {
+        lock.lock()
+        _state = nil
+        _library = nil
+        lock.unlock()
+    }
 }

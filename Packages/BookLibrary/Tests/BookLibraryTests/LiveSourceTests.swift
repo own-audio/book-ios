@@ -202,6 +202,34 @@ struct OwnAudioSourceLiveTests {
         await uploader.signOut()
     }
 
+    @Test("the household lists the account among its members, and the account's own book can be shared")
+    func household() async throws {
+        let env = ProcessInfo.processInfo.environment
+        let host = try #require(URL(string: env["OWNAUDIO_HOST"]!))
+        let urlSession = session()
+        let result = try await ServerSetup.ownAudioSignIn(host: host, email: env["OWNAUDIO_EMAIL"]!, password: env["OWNAUDIO_ACCOUNT_PASSWORD"]!, device: device, urlSession: urlSession)
+        guard case .signedIn(let record) = result else { Issue.record("two-factor on the test account"); return }
+        let source = try #require(record.makeSource(SourceEnvironment(urlSession: urlSession, cache: nil, offline: nil, device: device)) as? any HouseholdSource)
+        let info = try await source.household()
+        #expect(!info.name.isEmpty)
+        #expect(info.members.filter(\.isMe).count == 1, "the account should be one member")
+        #expect(info.members.first?.isMe == true, "the account comes first")
+        let storage = try await source.storage()
+        #expect(storage.total >= storage.audiobooks)
+        _ = try await source.credit()
+        if info.isAdmin { #expect(try await source.invites().allSatisfy { $0.usesLeft > 0 }) }
+        // Sharing is for the account's own books; the demo account owns what the import test made.
+        let mine = try await source.books(BookQuery(), limit: 200).books.first { $0.ownerId == record.userId }
+        if let mine {
+            let before = mine.visibility ?? .private
+            try await source.setShared(bookId: mine.id, before != .family)
+            #expect(try await source.book(id: mine.id).visibility == (before == .family ? .private : .family))
+            try await source.setShared(bookId: mine.id, before == .family)
+            #expect(try await source.book(id: mine.id).visibility == before)
+        }
+        await source.signOut()
+    }
+
     @Test("a position saved by another device shows up with that device's name, and the resume rule asks")
     func otherDevice() async throws {
         let env = ProcessInfo.processInfo.environment

@@ -156,6 +156,27 @@ final class PlaybackSmokeTests: XCTestCase {
         XCTAssertTrue(thisDevice.exists, "the list should mark this device")
     }
 
+    /// own.audio only: the family screen lists the members, with the listener among them.
+    func testHousehold() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"] + Self.english
+        app.launch()
+        addServer(app)
+        app.buttons["home.settings"].tap()
+        if !app.navigationBars["Settings"].waitForExistence(timeout: 3) {
+            dismissSavePasswordPrompt(app)
+            app.buttons["home.settings"].tap()
+        }
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
+        let household = app.buttons["settings.household"]
+        guard household.waitForExistence(timeout: 3) else { throw XCTSkip("this server has no family") }
+        household.tap()
+        XCTAssertTrue(app.staticTexts["Members"].waitForExistence(timeout: 20), "the members should be listed")
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label ENDSWITH '(you)'")).firstMatch.exists, "the listener should be among them")
+        XCTAssertTrue(app.staticTexts["Storage"].waitForExistence(timeout: 20), "the family's storage should show")
+        screenshot(app, "16-family")
+    }
+
     func testWrongPasswordIsRefused() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + Self.english

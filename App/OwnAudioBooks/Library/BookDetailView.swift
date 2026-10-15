@@ -60,6 +60,14 @@ struct BookDetailView: View {
                             Label(isFavourite ? "Remove Favourite" : "Add to Favourites", systemImage: isFavourite ? "heart.slash" : "heart")
                         }
                     }
+                    if model.canShare(book, serverId: serverId) {
+                        Button {
+                            setShared(book.visibility != .family)
+                        } label: {
+                            Label(book.visibility == .family ? "Keep to Myself" : "Share with the Family", systemImage: book.visibility == .family ? "person.2.slash" : "person.2")
+                        }
+                        .accessibilityIdentifier("detail.share")
+                    }
                     if progress?.finished == true {
                         Button { Task { await model.markFinished(book, serverId: serverId, false); await refresh() } } label: { Label("Mark as Not Finished", systemImage: "arrow.uturn.backward") }
                     } else {
@@ -317,6 +325,16 @@ struct BookDetailView: View {
             await model.play(book, serverId: serverId)
             model.engine.seek(to: positionMs)
             isStarting = false
+        }
+    }
+
+    /// The listener's own book, shared with the family or kept to themselves; put back if the
+    /// server refuses.
+    private func setShared(_ shared: Bool) {
+        let before = book.visibility
+        book.visibility = shared ? .family : .private
+        model.perform {
+            do { try await model.setShared(book, serverId: serverId, shared) } catch { book.visibility = before; throw error }
         }
     }
 

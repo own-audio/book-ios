@@ -26,6 +26,14 @@ struct SettingsView: View {
                         Label("Devices", systemImage: "iphone.and.laptop")
                     }
                     .accessibilityIdentifier("settings.devices")
+                    if model.household != nil {
+                        NavigationLink {
+                            HouseholdView()
+                        } label: {
+                            Label("Family", systemImage: "person.3")
+                        }
+                        .accessibilityIdentifier("settings.household")
+                    }
                 }
             }
 
