@@ -224,6 +224,11 @@ struct AudiobookshelfClientTests {
         #expect(book.media.metadata.series?.first?.sequence == "1.5")
         #expect(book.media.metadata.narrators == ["Stefan Rudnicki"])
         #expect(book.userMediaProgress?.currentTime == 50.25)
+
+        // Filtered by a series, a row carries that series as one object.
+        let bySeries = #"{"id":"li2","libraryId":"lib1","addedAt":1,"updatedAt":1,"isMissing":false,"isInvalid":false,"mediaType":"book","media":{"metadata":{"title":"Speaker","series":{"id":"s1","name":"Ender's Game Series","sequence":"2"},"genres":[],"explicit":false,"abridged":false},"coverPath":null,"tags":[],"duration":1},"sequence":"2"}"#
+        let second = try JSONDecoder.audiobookshelf.decode(LibraryItem.self, from: Data(bySeries.utf8))
+        #expect(second.media.metadata.series?.map(\.sequence) == ["2"] && second.sequence == "2")
     }
 
     @Test("shelves decode each by their type; search answers its sections")

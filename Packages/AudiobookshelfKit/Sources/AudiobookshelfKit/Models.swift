@@ -330,7 +330,12 @@ public struct BookMetadata: Decodable, Sendable, Equatable {
         seriesName = try c.decodeIfPresent(String.self, forKey: .seriesName)
         authors = try c.decodeIfPresent([Author].self, forKey: .authors)
         narrators = try c.decodeIfPresent([String].self, forKey: .narrators)
-        series = try c.decodeIfPresent([SeriesEntry].self, forKey: .series)
+        // A list filtered by a series carries that one series as an object, not an array.
+        if let one = try? c.decodeIfPresent(SeriesEntry.self, forKey: .series) {
+            series = [one]
+        } else {
+            series = try c.decodeIfPresent([SeriesEntry].self, forKey: .series)
+        }
         genres = try c.decodeIfPresent([String].self, forKey: .genres) ?? []
         publishedYear = try c.decodeIfPresent(FlexibleID.self, forKey: .publishedYear)?.value
         publisher = try c.decodeIfPresent(String.self, forKey: .publisher)
@@ -368,6 +373,8 @@ public struct SeriesEntry: Decodable, Sendable, Equatable, Identifiable {
 }
 
 /// From `GET /api/libraries/{id}/series`: the series with its books, each carrying `sequence`.
+/// `GET /api/series/{id}` answers without `books`; those come from the items list filtered by
+/// the series.
 public struct Series: Decodable, Sendable, Equatable, Identifiable {
     public let id: String
     public let name: String
@@ -375,6 +382,18 @@ public struct Series: Decodable, Sendable, Equatable, Identifiable {
     public let description: String?
     public let addedAt: Int64?
     public let books: [LibraryItem]
+
+    enum CodingKeys: String, CodingKey { case id, name, nameIgnorePrefix, description, addedAt, books }
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        name = try c.decode(String.self, forKey: .name)
+        nameIgnorePrefix = try c.decodeIfPresent(String.self, forKey: .nameIgnorePrefix)
+        description = try c.decodeIfPresent(String.self, forKey: .description)
+        addedAt = try c.decodeIfPresent(Int64.self, forKey: .addedAt)
+        books = try c.decodeIfPresent([LibraryItem].self, forKey: .books) ?? []
+    }
 }
 
 /// Narrators have no ids on the server; `id` is a base64 form of the name, good for one call.

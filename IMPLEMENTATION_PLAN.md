@@ -144,21 +144,26 @@ client's mojibake repair, applied to display only).
   in the query; `Mojibake.repair` for UTF-8 read as Latin-1. Library reads are cached and
   answer offline; search, `me` and sessions are not.
 
-- [ ] **B2: BookLibrary.** Models: `Book` (id, title, subtitle, authors, narrators, series with
-  position, description, duration, cover, files, chapters, added, visibility), `Contributor`,
-  `Series`, `Collection`, `Progress` (book time, finished, updated, device list), `Bookmark`,
-  `Shelf`. `protocol BookSource` with `Capabilities` (`series`, `collections`, `serverSearch`,
-  `favourites`, `perDevicePositions`, `bookmarkLabels`, `familySharing`, `upload`,
-  `liveUpdates`, `changeFeed`, `listeningStats`) and methods for: connection check, shelves for
-  Home, books (sort, filter, paging), book detail, series/authors/narrators/collections, search,
-  progress read/write, bookmarks, favourites, play (a `PlayPlan` per file: URL, kind, expiry,
-  HLS or progressive), cover URL, sign out. `AudiobookshelfSource` on B1. `OwnAudioSource` on
-  `OwnAudioKit`: the catalogue on the phone from the snapshot and change feed (kinds `book`,
-  `contributor`, `progress`, `bookmark`, `favourite`), series and author lists built
-  client-side, search over the local catalogue, `playback-info` per file with `kind:
-  book_file`. `ServerStore` (Keychain, one item per server), `ServerRecord` with kinds
-  `audiobookshelf` and `ownAudio`, address racing for own.audio from discovery, a second
-  address by hand for Audiobookshelf. Live tests for both adapters.
+- [x] **B2: BookLibrary.** Done 2026-10-15; 17 unit tests on the mappings, and one live test per
+  server kind that drives the whole `BookSource` (sign-in, shelves, books, detail, people,
+  series, search, progress, bookmarks, favourites, a plan whose first part answers a range
+  request, reports, a smaller stream, clearing) against a 2.37.1 Audiobookshelf and a beta.20
+  own.audio. Models in book time (`Book` with `files` as a timeline and `chapters` with ends,
+  `Progress` with device positions, `Bookmark`, `Shelf`, `SeriesSummary`, `PlayPlan`,
+  `PlaybackReport`), `protocol BookSource` with `Capabilities`, `ChangeFeedCatalogue` and
+  `LiveLibraryUpdates`. `AudiobookshelfSource`: lists from the server (a text query goes to its
+  search), `personalized` shelves, a series' books through the filtered items list (its own
+  record has none, and a row filtered by a series carries that series as one object), bookmarks
+  keyed by time, a play session per plan (HLS when a smaller stream is asked for), mojibake
+  repaired at the edge. `OwnAudioSource`: the catalogue on the phone from the snapshot and
+  change feed (`contributor`, `book`, `favourite.book`, `progress.book`, `bookmark`), browsing,
+  series and search over that copy, a signed link per file asked for at once, per-device
+  positions from the server with the copy as the fallback offline. `ServerStore` (Keychain, one
+  item), `ServerRecord` with kinds `audiobookshelf` and `ownAudio`, `TokenSessions` keeping one
+  token session and one catalogue per server across rebuilt sources, address scopes and racing,
+  `ServerSetup` for both sign-ins (password, Apple/Google id token, two-factor, demo account).
+  `OwnAudioKit` gained the book, progress, bookmark and `playback-info(kind:)` calls.
+
 - [ ] **B3: SpokenEngine.** `AVPlayer` over a `BookTimeline` (files, durations, offsets):
   `play(book:at:)`, `seek(to bookTime:)`, `skip(±seconds)`, `rate` 0.5–3.0 in 0.05 steps with
   `timeDomain` pitch, chapter next/previous/jump, bookmark at the current time, smart rewind on

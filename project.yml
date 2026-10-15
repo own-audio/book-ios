@@ -6,12 +6,8 @@ options:
     iOS: "18.0"
   createIntermediateGroups: true
 packages:
-  AudiobookshelfKit:
-    path: Packages/AudiobookshelfKit
-  OwnAudioKit:
-    path: Packages/OwnAudioKit
-  ServerSupport:
-    path: Packages/ServerSupport
+  BookLibrary:
+    path: Packages/BookLibrary
   PlayerEngine:
     path: Packages/PlayerEngine
 targets:
@@ -60,9 +56,7 @@ targets:
         # Sign in with Apple for own.audio servers (AUTH__APPLE__CLIENT_IDS must list this app).
         com.apple.developer.applesignin: [Default]
     dependencies:
-      - package: AudiobookshelfKit
-      - package: OwnAudioKit
-      - package: ServerSupport
+      - package: BookLibrary
       - package: PlayerEngine
         product: PlayerCore
   OwnAudioBooksUITests:

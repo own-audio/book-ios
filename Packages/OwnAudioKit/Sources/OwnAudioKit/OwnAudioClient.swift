@@ -247,8 +247,8 @@ public struct OwnAudioClient: Sendable {
         let path = path.hasPrefix("/") ? String(path.dropFirst()) : path
         let first = path.split(separator: "/").first.map(String.init) ?? path
         switch first {
-        case "artists", "contributors", "albums", "tracks", "genres", "playlists", "smart-playlists":
-            return !path.hasSuffix("/random") && !path.hasSuffix("/resolve")
+        case "artists", "contributors", "albums", "tracks", "genres", "books", "authors", "narrators":
+            return !path.hasSuffix("/random")
         case "family":
             return path == "family" || path == "family/members" || path == "family/storage" || path == "family/billing"
         case "me":
@@ -353,4 +353,4 @@ public struct Empty: Codable, Sendable {
 
 /// Requests that fail, and why: the errors thrown say only "network" or "decoding". The path
 /// alone is logged, never the query, which can carry a sign-in.
-let networkLog = Logger(subsystem: "audio.own.musicplayer", category: "network")
+let networkLog = Logger(subsystem: "audio.own.bookplayer", category: "network.ownaudio")

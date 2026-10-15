@@ -333,6 +333,8 @@ public struct OfflineChange: Encodable, Sendable, Equatable {
     public var endedAt: Date?
     public var listenedMs: Int64?
     public var deviceKind: String?
+    public var positionMs: Int64?
+    public var finished: Bool?
 
     init(clientId: String, op: String, kind: ItemKind, id: String, at: Date?) {
         self.clientId = clientId

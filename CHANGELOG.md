@@ -17,3 +17,7 @@ All notable changes to this project are documented here. The format follows
   or the older single token, libraries, items, series, authors, narrators, collections, the
   home shelves, search, progress, bookmarks, play sessions and local sessions, media and cover
   URLs, and a repair for mis-encoded titles (B1).
+- `BookLibrary`: one set of models in book time, the `BookSource` interface with capabilities,
+  an adapter for Audiobookshelf and one for own.audio (the library on the phone from the change
+  feed), the Keychain server store, address scopes and racing, and the sign-in flows for both
+  kinds of server; `OwnAudioKit` learned books, progress, bookmarks and per-file playback (B2).
