@@ -153,6 +153,12 @@ struct SignInAgainView: View {
                     .disabled(password.isEmpty || isWorking)
                     .accessibilityIdentifier("signInAgain.submit")
                 }
+                if server.kind == .ownAudio {
+                    Section {
+                        ProviderButtons(address: server.host.absoluteString, name: server.displayName, isWorking: $isWorking, replacing: server.id) { dismiss() }
+                            .listRowBackground(Color.clear)
+                    }
+                }
             }
             .navigationTitle("Sign In Again")
             .navigationBarTitleDisplayMode(.inline)

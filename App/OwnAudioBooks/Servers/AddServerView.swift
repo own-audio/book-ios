@@ -40,6 +40,7 @@ struct AddServerView: View {
                 .controlSize(.large)
                 .disabled(!canConnect)
                 .accessibilityIdentifier("addServer.connect")
+                ProviderButtons(address: address, name: name, isWorking: $isConnecting) { dismiss() }
                 Text("Works with own.audio and Audiobookshelf; the app finds out which. Your sign-in stays in this phone's Keychain.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)

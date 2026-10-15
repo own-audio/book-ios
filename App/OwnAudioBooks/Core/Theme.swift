@@ -59,7 +59,8 @@ private extension UIColor {
 
 extension View {
     /// An animation that is dropped when Reduce Motion is on, so the state still changes but
-    /// nothing moves.
+    /// nothing moves. Dropped under the UI tests too: XCUITest waits for the app to go idle
+    /// before every query, and a mark that never stops moving never lets it.
     func accessibleAnimation<V: Equatable>(_ animation: Animation?, value: V) -> some View {
         modifier(AccessibleAnimation(animation: animation, value: value))
     }
@@ -71,8 +72,12 @@ private struct AccessibleAnimation<V: Equatable>: ViewModifier {
     let value: V
 
     func body(content: Content) -> some View {
-        content.animation(reduceMotion ? nil : animation, value: value)
+        content.animation(reduceMotion || UITestFlags.isUITesting ? nil : animation, value: value)
     }
+}
+
+enum UITestFlags {
+    static let isUITesting = ProcessInfo.processInfo.arguments.contains("-uiTestReset")
 }
 
 enum Haptics {

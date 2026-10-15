@@ -69,9 +69,12 @@ struct BooksListView: View {
 
     private var grid: some View {
         ScrollView {
-            LoadStateView(state: state, retry: { Task { await reload() } }) { _ in
+            VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
+                // The ways in are there before the books are, so a slow first sync still shows
+                // a screen with something on it.
+                if isRoot { sections }
+                LoadStateView(state: state, retry: { Task { await reload() } }) { _ in
                 VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
-                    if isRoot { sections }
                     if books.isEmpty {
                         ContentUnavailableView("No Books", systemImage: "books.vertical", description: Text(emptyText))
                     }
@@ -88,8 +91,9 @@ struct BooksListView: View {
                     .padding(.horizontal, Theme.Spacing.screenEdge)
                     if isLoadingMore { ProgressView().frame(maxWidth: .infinity) }
                 }
-                .padding(.vertical, Theme.Spacing.md)
+                }
             }
+            .padding(.vertical, Theme.Spacing.md)
         }
     }
 

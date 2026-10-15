@@ -266,6 +266,98 @@ final class AppModel {
         try await update(record)
     }
 
+    // MARK: Sign in with Apple and Google
+
+    enum OwnAudioSignIn {
+        /// Sign in with Apple: the identity token, and the name Apple gives only the first time.
+        case apple(identityToken: String, fullName: String?)
+        /// Google: the ID token for this app's iOS client.
+        case google(idToken: String)
+
+        var provider: String {
+            switch self {
+            case .apple: "apple"
+            case .google: "google"
+            }
+        }
+    }
+
+    /// An own.audio server added with Apple or Google: the server exchanges the provider's
+    /// token for its own.
+    func addOwnAudioServer(address: String, signIn: OwnAudioSignIn, name: String) async throws {
+        guard let host = Self.candidateHosts(address).first else { throw AddServerError.unreachable }
+        let record = try await ownAudioSignIn(host: host, signIn: signIn, name: name)
+        try await save(record)
+    }
+
+    private func ownAudioSignIn(host: URL, signIn: OwnAudioSignIn, name: String) async throws -> ServerRecord {
+        let (idToken, fullName): (String, String?) = switch signIn {
+        case .apple(let token, let fullName): (token, fullName)
+        case .google(let token): (token, nil)
+        }
+        let result: ServerSetup.OwnAudioSignInResult
+        do {
+            result = try await ServerSetup.ownAudioSignIn(host: host, provider: signIn.provider, idToken: idToken, fullName: fullName, device: Self.device, urlSession: Self.session)
+        } catch SourceError.signInRejected {
+            throw AddServerError.rejected
+        } catch SourceError.network {
+            throw AddServerError.unreachable
+        } catch SourceError.server(let message) {
+            throw AddServerError.server(message)
+        }
+        switch result {
+        case .signedIn(var record):
+            record.displayName = Self.displayName(name, fallback: record.displayName)
+            return record
+        case .twoFactor(let mfaToken, let methods):
+            pendingTwoFactor = PendingTwoFactor(host: host, mfaToken: mfaToken, methods: methods, name: name)
+            throw AddServerError.twoFactorNeeded
+        }
+    }
+
+    /// The same account signed in again with Apple or Google.
+    func signInAgain(serverId: UUID, with signIn: OwnAudioSignIn) async throws {
+        guard let existing = server(serverId) else { return }
+        do {
+            var record = try await ownAudioSignIn(host: existing.host, signIn: signIn, name: existing.displayName)
+            record.displayName = existing.displayName
+            try await replaceSignIn(of: serverId, with: record)
+        } catch AddServerError.twoFactorNeeded {
+            pendingTwoFactor?.replacing = serverId
+            throw AddServerError.twoFactorNeeded
+        }
+    }
+
+    /// Which providers the own.audio server at `address` offers, so only their buttons show;
+    /// none for any other address.
+    func ownAudioProviders(address: String) async -> Set<String> {
+        for host in Self.candidateHosts(address) {
+            if let info = try? await ServerSetup.ownAudioInfo(at: host, urlSession: Self.raceSession) {
+                return Set(info.providers)
+            }
+        }
+        return []
+    }
+
+    // MARK: Devices (own.audio sessions)
+
+    func sessions(serverId: UUID) async throws -> [DeviceSession] {
+        guard let source = sources[serverId] as? OwnAudioSource else { throw SourceError.unsupported }
+        return try await source.sessions()
+    }
+
+    func revokeSession(serverId: UUID, id: String) async throws {
+        guard let source = sources[serverId] as? OwnAudioSource else { throw SourceError.unsupported }
+        try await source.revokeSession(id: id)
+    }
+
+    /// Every device out, this one included: the server then needs a fresh sign-in.
+    func signOutEverywhere(serverId: UUID) async throws {
+        guard let source = sources[serverId] as? OwnAudioSource else { throw SourceError.unsupported }
+        try await source.signOutEverywhere()
+        signInRefused.insert(serverId)
+    }
+
     // MARK: Two-factor and signing in again
 
     struct PendingTwoFactor: Identifiable {

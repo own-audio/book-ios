@@ -19,6 +19,14 @@ struct SettingsView: View {
                     LabeledContent("Servers", value: model.activeServer?.displayName ?? "")
                 }
                 .accessibilityIdentifier("settings.servers")
+                if let server = model.activeServer, server.kind == .ownAudio {
+                    NavigationLink {
+                        DevicesView(serverId: server.id)
+                    } label: {
+                        Label("Devices", systemImage: "iphone.and.laptop")
+                    }
+                    .accessibilityIdentifier("settings.devices")
+                }
             }
 
             Section("Playback") {

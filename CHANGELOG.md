@@ -41,6 +41,12 @@ All notable changes to this project are documented here. The format follows
 - Czech, complete, beside English: the String Catalog with plural forms, the Info.plist
   strings, and a UI test of the Czech screens (B4c).
 
+- Sign in with Apple and Google for own.audio servers that offer them, on the welcome
+  screen, in Add Server and in Sign In Again; Devices under Settings — every device signed in
+  to the own.audio account, this one first, sign one out or everywhere (B5).
+- The Library's series, authors, narrators and collections links show before the books have
+  loaded.
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.

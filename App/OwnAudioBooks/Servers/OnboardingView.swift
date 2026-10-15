@@ -44,6 +44,7 @@ struct OnboardingView: View {
                     .controlSize(.large)
                     .disabled(!canConnect)
                     .accessibilityIdentifier("addServer.connect")
+                    ProviderButtons(address: address, name: name, isWorking: $isConnecting)
                     demo
                     notes
                     Link(destination: URL(string: "https://github.com/own-audio/book-ios")!) {

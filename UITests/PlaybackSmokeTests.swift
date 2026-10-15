@@ -127,6 +127,28 @@ final class PlaybackSmokeTests: XCTestCase {
         screenshot(app, "10-reset")
     }
 
+    /// own.audio servers list the devices signed in; this one is marked. Audiobookshelf has no
+    /// such list, so the screen is absent there and the test ends early.
+    func testDevicesScreen() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"] + Self.english
+        app.launch()
+        addServer(app)
+        app.buttons["home.settings"].tap()
+        if !app.navigationBars["Settings"].waitForExistence(timeout: 3) {
+            dismissSavePasswordPrompt(app)
+            app.buttons["home.settings"].tap()
+        }
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
+        let devices = app.buttons["settings.devices"]
+        guard devices.waitForExistence(timeout: 3) else { return }
+        devices.tap()
+        let thisDevice = app.staticTexts["This device"]
+        _ = thisDevice.waitForExistence(timeout: 20)
+        screenshot(app, "11-devices")
+        XCTAssertTrue(thisDevice.exists, "the list should mark this device")
+    }
+
     func testWrongPasswordIsRefused() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + Self.english

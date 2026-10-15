@@ -197,6 +197,26 @@ cs = {
  "5 minutes": "5 minut", "15 minutes": "15 minut", "30 minutes": "30 minut", "45 minutes": "45 minut", "60 minutes": "60 minut",
  "Chapter %lld": "Kapitola %lld", "Part %lld": "Část %lld",
  "Shared with family": "Sdíleno s rodinou",
+
+ # Sign-in providers and devices (B5).
+ "%@ · %@": "%@ · %@",
+ "%@ · %@ left": "%@ · zbývá %@",
+ "%@ of %@": "%@ z %@",
+ "%@, %@": "%@, %@",
+ "%lld h %lld min": "%lld h %lld min",
+ "Apple didn't return a sign-in. Try again.": "Apple nevrátil přihlášení. Zkuste to znovu.",
+ "Continue with Google": "Pokračovat přes Google",
+ "Devices": "Zařízení",
+ "Google didn't return a sign-in. Try again.": "Google nevrátil přihlášení. Zkuste to znovu.",
+ "Last used %@ ago": "Naposledy použito před %@",
+ "Sign in with Apple": "Přihlásit se přes Apple",
+ "Sign Out": "Odhlásit",
+ "Sign Out Everywhere": "Odhlásit všude",
+ "Sign Out Everywhere?": "Odhlásit všude?",
+ "Signed in %@": "Přihlášeno %@",
+ "Swipe a device to sign it out. Signing out everywhere ends every session, this iPhone's too, and asks for a fresh sign-in.": "Přejetím zařízení odhlásíte. Odhlášení všude ukončí všechny relace včetně tohoto iPhonu a vyžádá si nové přihlášení.",
+ "This device": "Toto zařízení",
+ "With your own.audio account.": "S vaším účtem own.audio.",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {

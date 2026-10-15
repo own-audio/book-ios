@@ -217,18 +217,20 @@ client's mojibake repair, applied to display only).
   časovač spánku, knihovna, série, vypravěč…). Plurals as CLDR categories. No string left in
   code outside `String(localized:)` or a SwiftUI literal; brand names as `verbatim`. Checked
   by running the UI suite in Czech.
-- [ ] **B5: Sign-in with Apple and Google, two-factor, sessions (own.audio).** Copied from the
-  music app: `AppleSignInButton` (AuthenticationServices, `identityToken` as the jwt-bearer
-  assertion, full name on first sign-in), `GoogleSignInButton` (`ASWebAuthenticationSession`
-  with PKCE, no SDK, the code exchanged for an `id_token` on the phone; needs a Google iOS
-  OAuth client for this bundle id, which is public by design), `TwoFactorView` for
-  `mfa_required`, sign-in again on `signedOut`, Devices (sessions) with sign out everywhere.
-  Buttons appear only when discovery lists the provider. Server operators enable this by
-  adding the bundle id and client id to their allow-lists; the README says how.
-  Audiobookshelf OIDC: `ASWebAuthenticationSession` to `/auth/openid` with the
-  `audiobookshelf://oauth` redirect and PKCE, shown only when `/status.authMethods` contains
-  `openid`; verified only once a test server with an identity provider exists — until then it
-  stays off.
+- [x] **B5: Sign-in with Apple and Google, two-factor, sessions (own.audio).** Done
+  2026-10-15; kit tests for the sessions calls, the live own.audio tests see this device among
+  the sessions, the UI suite's Devices test opens the list with this device first. The Apple
+  and Google buttons from the music app (AuthenticationServices; Google through
+  `ASWebAuthenticationSession` with PKCE, no SDK), shown by `ProviderButtons` only once the
+  typed address answers as an own.audio server that lists the provider — never for
+  Audiobookshelf; on the welcome screen, Add Server and Sign In Again. Two-factor as before.
+  Devices under Settings for own.audio: sign one out, or everywhere. **Not yet usable end to
+  end:** the Google iOS OAuth client for this bundle id does not exist yet (the button stays
+  hidden until its id is in `GoogleSignInButton.clientID`), and no test server lists a
+  provider, so the buttons are unexercised; Audiobookshelf OIDC stays off, as planned. Found
+  on the way: XCUITest waits for the app to idle, and the mark's endless animations kept it
+  from ever idling — animations are dropped under `-uiTestReset`, as under Reduce Motion.
+
 - [ ] **B6: Downloads and offline.** Background `URLSession` per file with range resume,
   byte-weighted progress on the cover, Wi-Fi-only, a storage cap with oldest-finished-first
   eviction that never evicts the playing book, per-book and total sizes, delete. Covers,

@@ -61,12 +61,52 @@
         }
       }
     },
+    "%@ of %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ z %@"
+          }
+        }
+      }
+    },
+    "%@ · %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@"
+          }
+        }
+      }
+    },
+    "%@ · %@ left": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · zbývá %@"
+          }
+        }
+      }
+    },
     "%@ · ready for your next chapter?": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "%@ · připraveni na další kapitolu?"
+          }
+        }
+      }
+    },
+    "%@, %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, %@"
           }
         }
       }
@@ -139,6 +179,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "%lld h"
+          }
+        }
+      }
+    },
+    "%lld h %lld min": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld h %lld min"
           }
         }
       }
@@ -355,6 +405,16 @@
         }
       }
     },
+    "Apple didn't return a sign-in. Try again.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple nevrátil přihlášení. Zkuste to znovu."
+          }
+        }
+      }
+    },
     "Audiobookshelf": {
       "localizations": {
         "cs": {
@@ -546,6 +606,16 @@
         }
       }
     },
+    "Continue with Google": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat přes Google"
+          }
+        }
+      }
+    },
     "Couldn't Load": {
       "localizations": {
         "cs": {
@@ -592,6 +662,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Podrobnosti"
+          }
+        }
+      }
+    },
+    "Devices": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zařízení"
           }
         }
       }
@@ -798,6 +878,16 @@
         }
       }
     },
+    "Google didn't return a sign-in. Try again.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google nevrátil přihlášení. Zkuste to znovu."
+          }
+        }
+      }
+    },
     "Grid": {
       "localizations": {
         "cs": {
@@ -844,6 +934,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Popisek (nepovinný)"
+          }
+        }
+      }
+    },
+    "Last used %@ ago": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naposledy použito před %@"
           }
         }
       }
@@ -1578,6 +1678,46 @@
         }
       }
     },
+    "Sign Out": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit"
+          }
+        }
+      }
+    },
+    "Sign Out Everywhere": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit všude"
+          }
+        }
+      }
+    },
+    "Sign Out Everywhere?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odhlásit všude?"
+          }
+        }
+      }
+    },
+    "Sign in with Apple": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se přes Apple"
+          }
+        }
+      }
+    },
     "Sign-in refused": {
       "localizations": {
         "cs": {
@@ -1594,6 +1734,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlášení odmítnuto · Přihlaste se znovu"
+          }
+        }
+      }
+    },
+    "Signed in %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášeno %@"
           }
         }
       }
@@ -1800,6 +1950,16 @@
         }
       }
     },
+    "Swipe a device to sign it out. Signing out everywhere ends every session, this iPhone's too, and asks for a fresh sign-in.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přejetím zařízení odhlásíte. Odhlášení všude ukončí všechny relace včetně tohoto iPhonu a vyžádá si nové přihlášení."
+          }
+        }
+      }
+    },
     "That Didn't Work": {
       "localizations": {
         "cs": {
@@ -1950,6 +2110,16 @@
         }
       }
     },
+    "This device": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toto zařízení"
+          }
+        }
+      }
+    },
     "This library has no books yet.": {
       "localizations": {
         "cs": {
@@ -2076,6 +2246,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verze"
+          }
+        }
+      }
+    },
+    "With your own.audio account.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "S vaším účtem own.audio."
           }
         }
       }

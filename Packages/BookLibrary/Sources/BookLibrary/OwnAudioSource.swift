@@ -472,6 +472,34 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
     }
 }
 
+/// A device signed in to an own.audio account.
+public struct DeviceSession: Sendable, Equatable, Identifiable {
+    public let id: String
+    public let kind: String
+    public let name: String?
+    public let signedInAt: Date
+    public let lastUsedAt: Date?
+    public let isThisDevice: Bool
+}
+
+extension OwnAudioSource {
+    /// The devices signed in to this account, this one marked.
+    public func sessions() async throws -> [DeviceSession] {
+        try await translating {
+            try await client.sessions().map { DeviceSession(id: $0.id, kind: $0.deviceKind, name: $0.deviceName, signedInAt: $0.signedInAt, lastUsedAt: $0.lastUsedAt, isThisDevice: $0.current) }
+        }
+    }
+
+    public func revokeSession(id: String) async throws {
+        try await translating { try await client.revokeSession(id: id) }
+    }
+
+    /// Every device out, this one included; the server then needs a fresh sign-in.
+    public func signOutEverywhere() async throws {
+        try await translating { try await client.revokeAllSessions() }
+    }
+}
+
 /// One own.audio server's library as the change feed brought it, shared by the sources the
 /// app rebuilds, so a new address does not mean a new snapshot. The app saves `state` between
 /// launches and hands it back through `syncCatalogue`.

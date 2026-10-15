@@ -145,6 +145,9 @@ struct OwnAudioSourceLiveTests {
         #expect(!first.books.isEmpty && !first.authors.isEmpty)
         let second = try await feed.syncCatalogue(first.state)
         #expect(second.books.count == first.books.count)
+        let own = try #require(source as? OwnAudioSource)
+        let sessions = try await own.sessions()
+        #expect(sessions.contains { $0.isThisDevice }, "this device should be among the sessions")
         try await exercise(source)
     }
 

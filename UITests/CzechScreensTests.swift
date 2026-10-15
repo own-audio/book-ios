@@ -29,10 +29,8 @@ final class CzechScreensTests: XCTestCase {
         XCTAssertTrue(greeting.waitForExistence(timeout: 10))
         XCTAssertTrue(["Dobré ráno", "Dobré odpoledne", "Dobrý večer"].contains(greeting.label), greeting.label)
 
-        let library = app.tabBars.buttons["Knihovna"].exists ? app.tabBars.buttons["Knihovna"] : app.buttons["Knihovna"]
-        XCTAssertTrue(library.waitForExistence(timeout: 10), "the Library tab should be Knihovna")
-        library.tap()
-        XCTAssertTrue(app.buttons["library.authors"].waitForExistence(timeout: 20))
+        smoke.tapTab(app, "Knihovna")
+        XCTAssertTrue(app.buttons["library.authors"].waitForExistence(timeout: 40))
         XCTAssertEqual(app.buttons["library.authors"].label, "Autoři")
         let book = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'")).firstMatch
         XCTAssertTrue(book.waitForExistence(timeout: 30))
