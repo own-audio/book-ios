@@ -59,6 +59,8 @@ targets:
       - package: BookLibrary
       - package: PlayerEngine
         product: PlayerCore
+      - package: PlayerEngine
+        product: SpokenEngine
   OwnAudioBooksUITests:
     type: bundle.ui-testing
     platform: iOS

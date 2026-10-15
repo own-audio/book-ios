@@ -75,7 +75,7 @@ public final class SleepTimer {
     /// Whether this finish is the one the timer was waiting for, disarming it if so. Called by
     /// `PlaybackEngine` when everything loaded has played out; a `true` answer is the engine's
     /// signal to stop there rather than start whatever is queued next.
-    func consumeEndOfItem() -> Bool {
+    public func consumeEndOfItem() -> Bool {
         guard stopsAtEndOfItem else { return false }
         stopsAtEndOfItem = false
         return true

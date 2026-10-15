@@ -23,6 +23,10 @@ public final class NowPlayingController {
     public var onSeek: ((TimeInterval) -> Void)?
     public var onNextTrack: (() -> Void)?
     public var onPreviousTrack: (() -> Void)?
+    /// Spoken-word players: the lock screen shows skip buttons with these intervals in place of
+    /// next/previous (`configureSkips`).
+    public var onSkipForward: ((TimeInterval) -> Void)?
+    public var onSkipBackward: ((TimeInterval) -> Void)?
 
     private let commandCenter = MPRemoteCommandCenter.shared()
 
@@ -45,6 +49,24 @@ public final class NowPlayingController {
         #if os(iOS)
         try? AVAudioSession.sharedInstance().setActive(true)
         #endif
+    }
+
+    /// For books and podcasts: `.spokenAudio` lets the system treat the audio as speech (its
+    /// ducking rules, the Siri and navigation mix), `.longFormAudio` routes it like a book on
+    /// AirPlay 2 and the HomePod. Called by the spoken engine before its first play.
+    public func useSpokenAudioSession() {
+        #if os(iOS)
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio, policy: .longFormAudio)
+        #endif
+    }
+
+    /// Shows skip buttons with these intervals on the lock screen and in CarPlay's Now Playing
+    /// (next/previous stay for chapters where the engine says there are any).
+    public func configureSkips(forwardSecs: Double, backwardSecs: Double) {
+        commandCenter.skipForwardCommand.isEnabled = true
+        commandCenter.skipForwardCommand.preferredIntervals = [NSNumber(value: forwardSecs)]
+        commandCenter.skipBackwardCommand.isEnabled = true
+        commandCenter.skipBackwardCommand.preferredIntervals = [NSNumber(value: backwardSecs)]
     }
 
     /// Asks for the track's own rate above 48 kHz. The route decides: a USB DAC can run that
@@ -92,6 +114,16 @@ public final class NowPlayingController {
         }
         commandCenter.previousTrackCommand.addTarget { [weak self] _ in
             self?.onPreviousTrack?()
+            return .success
+        }
+        commandCenter.skipForwardCommand.addTarget { [weak self] event in
+            guard let self, let onSkipForward else { return .commandFailed }
+            onSkipForward((event as? MPSkipIntervalCommandEvent)?.interval ?? 30)
+            return .success
+        }
+        commandCenter.skipBackwardCommand.addTarget { [weak self] event in
+            guard let self, let onSkipBackward else { return .commandFailed }
+            onSkipBackward((event as? MPSkipIntervalCommandEvent)?.interval ?? 15)
             return .success
         }
     }

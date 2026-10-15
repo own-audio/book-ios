@@ -164,21 +164,21 @@ client's mojibake repair, applied to display only).
   `ServerSetup` for both sign-ins (password, Apple/Google id token, two-factor, demo account).
   `OwnAudioKit` gained the book, progress, bookmark and `playback-info(kind:)` calls.
 
-- [ ] **B3: SpokenEngine.** `AVPlayer` over a `BookTimeline` (files, durations, offsets):
-  `play(book:at:)`, `seek(to bookTime:)`, `skip(±seconds)`, `rate` 0.5–3.0 in 0.05 steps with
-  `timeDomain` pitch, chapter next/previous/jump, bookmark at the current time, smart rewind on
-  resume (0 s after 10 s pause, growing to 30 s after an hour; configurable off), audio session
-  `.playback` with mode `.spokenAudio`, interruptions and route changes (pause on unplug),
-  background playback, `.spokenAudio` policy for the time-pitch node. Chapters: server chapters,
-  else `AVAsset.loadChapterMetadataGroups` on the file (download or stream), else one chapter
-  per file. Progress reporting: `onPositionTick` every 10 s of listening, on pause, seek, chapter
-  change, sleep-timer stop and teardown; a `ResumeStore` on disk so the app reopens at the
-  position even if the last send failed. Now Playing with skip-interval commands and chapter
-  skipping (CarPlay-friendly), artwork, rate; `SleepTimer` with presets, end of chapter and end
-  of book. Transcodes: HLS items (Audiobookshelf) play natively; own.audio transcode links are
-  progressive with a fixed `start_ms`, so a seek inside one asks for a new link. Expired-token
-  recovery (decision 4). Unit tests on the timeline maths and the rewind rule; an engine test
-  that plays generated fixtures through a real `AVPlayer`.
+- [x] **B3: SpokenEngine.** Done 2026-10-15; 44 package tests, among them an engine suite that
+  plays an 8-second two-file book through a real `AVPlayer`: periodic and pause reports with
+  listened time, a seek across files, chapter buttons, speed at 3×, the end of the book, the
+  end-of-chapter stop, smart rewind off, a failed link replaced through `partRefresher`, and a
+  failure shown when there is none. `BookTimeline` (parts end to end, locate and position,
+  chapters with grace on "previous", skips clamped), `SmartRewind` (0 s under 10 s of pause,
+  3 s, 10 s, 20 s, 30 s after an hour), `SpokenBook`, `EmbeddedChapters` (an M4B's chapter
+  track read on the device, in the file's own locale, moved to book time), and `SpokenEngine`
+  itself: one `AVPlayerItem` at a time with `timeDomain` pitch, rate 0.5–3.0 in 0.05 steps,
+  `.spokenAudio` + `.longFormAudio` session, interruptions and unplugged headphones pause, Now
+  Playing with skip intervals and chapter next/previous (`PlayerCore` gained `configureSkips`
+  and `useSpokenAudioSession`), positions reported every 10 s of listening and on pause, seek,
+  chapter, stop, finish and teardown, remembered locally through `ResumeStore`, links refreshed
+  before a part whose link is about to run out. Transcoded HLS parts play as any other URL.
+
 - [ ] **B4: The app.** Onboarding and Add Server: Audiobookshelf (address, user, password;
   shows the library choice when the account has several) and own.audio (address, email and
   password, a demo button). Home: Continue Listening, Recently Added, Continue Series
