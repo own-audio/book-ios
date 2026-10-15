@@ -193,6 +193,110 @@
         }
       }
     },
+    "%lld files · %@": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file · %@"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld files · %@"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld soubor · %@"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld soubory · %@"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld souboru · %@"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld souborů · %@"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld files · %@ · %@. Drag to reorder.": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld file · %@ · %@."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld files · %@ · %@. Drag to reorder."
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld soubor · %@ · %@."
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld soubory · %@ · %@. Pořadí změníte tažením."
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld souboru · %@ · %@. Pořadí změníte tažením."
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld souborů · %@ · %@. Pořadí změníte tažením."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld h": {
       "localizations": {
         "cs": {
@@ -395,6 +499,16 @@
         }
       }
     },
+    "Add More Files": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat další soubory"
+          }
+        }
+      }
+    },
     "Add Server": {
       "localizations": {
         "cs": {
@@ -411,6 +525,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přidat do oblíbených"
+          }
+        }
+      }
+    },
+    "Add to Library": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat do knihovny"
           }
         }
       }
@@ -472,6 +596,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Autoři"
+          }
+        }
+      }
+    },
+    "Book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kniha"
           }
         }
       }
@@ -576,6 +710,16 @@
         }
       }
     },
+    "Choose Audio Files": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat zvukové soubory"
+          }
+        }
+      }
+    },
     "Close": {
       "localizations": {
         "cs": {
@@ -672,6 +816,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nepodařilo se načíst"
+          }
+        }
+      }
+    },
+    "Cover": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Obálka"
           }
         }
       }
@@ -948,6 +1102,16 @@
         }
       }
     },
+    "Files, in playing order": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soubory v pořadí přehrávání"
+          }
+        }
+      }
+    },
     "Filter": {
       "localizations": {
         "cs": {
@@ -974,6 +1138,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zdarma a open source · MPL-2.0"
+          }
+        }
+      }
+    },
+    "From the file, or choose": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ze souboru, nebo vyberte"
           }
         }
       }
@@ -1044,6 +1218,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Domů"
+          }
+        }
+      }
+    },
+    "Import a Book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importovat knihu"
+          }
+        }
+      }
+    },
+    "Importing": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importuje se"
           }
         }
       }
@@ -1474,6 +1668,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "V tomto iPhonu"
+          }
+        }
+      }
+    },
+    "Only me": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen já"
           }
         }
       }
@@ -2260,6 +2464,26 @@
         }
       }
     },
+    "The family": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rodina"
+          }
+        }
+      }
+    },
+    "The files are copied and uploaded in the background; you can leave this screen. The book appears in the library once the upload is done.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soubory se zkopírují a nahrají na pozadí; tuto obrazovku můžete opustit. Kniha se v knihovně objeví, jakmile je nahrávání hotové."
+          }
+        }
+      }
+    },
     "The library shows the selected server. A book keeps playing when you switch.": {
       "localizations": {
         "cs": {
@@ -2376,6 +2600,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Šestimístný kód z vaší ověřovací aplikace, nebo jeden z vašich záložních kódů."
+          }
+        }
+      }
+    },
+    "The storage refused the file (%lld).": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úložiště soubor odmítlo (%lld)."
           }
         }
       }
@@ -2520,6 +2754,26 @@
         }
       }
     },
+    "Upload %@ over mobile data?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nahrát %@ přes mobilní data?"
+          }
+        }
+      }
+    },
+    "Upload Now": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nahrát teď"
+          }
+        }
+      }
+    },
     "User name or email": {
       "localizations": {
         "cs": {
@@ -2536,6 +2790,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verze"
+          }
+        }
+      }
+    },
+    "Who sees it": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kdo ji uvidí"
           }
         }
       }

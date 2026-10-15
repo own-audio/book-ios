@@ -160,6 +160,48 @@ struct OwnAudioSourceLiveTests {
         }
     }
 
+    @Test("a one-second file from the phone becomes a book with one file")
+    func importsABook() async throws {
+        let env = ProcessInfo.processInfo.environment
+        let host = try #require(URL(string: env["OWNAUDIO_HOST"]!))
+        let urlSession = session()
+        let result = try await ServerSetup.ownAudioSignIn(host: host, email: env["OWNAUDIO_EMAIL"]!, password: env["OWNAUDIO_ACCOUNT_PASSWORD"]!, device: device, urlSession: urlSession)
+        guard case .signedIn(let record) = result else { Issue.record("two-factor on the test account"); return }
+        let uploader = try #require(record.makeSource(SourceEnvironment(urlSession: urlSession, cache: nil, offline: nil, device: device)) as? any BookUploader)
+        // A second of silence as a WAV: 8 kHz, 8-bit, mono.
+        var wav = Data("RIFF".utf8)
+        let samples = 8000
+        func le32(_ v: UInt32) -> Data { withUnsafeBytes(of: v.littleEndian) { Data($0) } }
+        func le16(_ v: UInt16) -> Data { withUnsafeBytes(of: v.littleEndian) { Data($0) } }
+        wav.append(le32(UInt32(36 + samples)))
+        wav.append(Data("WAVEfmt ".utf8))
+        wav.append(le32(16))
+        wav.append(le16(1))
+        wav.append(le16(1))
+        wav.append(le32(8000))
+        wav.append(le32(8000))
+        wav.append(le16(1))
+        wav.append(le16(8))
+        wav.append(Data("data".utf8))
+        wav.append(le32(UInt32(samples)))
+        wav.append(Data(repeating: 128, count: samples))
+        let target = try await uploader.uploadTarget(kind: "audio", fileName: "silence.wav", contentType: "audio/wav", sizeBytes: Int64(wav.count))
+        var put = URLRequest(url: target.url)
+        put.httpMethod = target.method
+        for (key, value) in target.headers { put.setValue(value, forHTTPHeaderField: key) }
+        let (_, response) = try await urlSession.upload(for: put, from: wav)
+        #expect((200..<300).contains((response as? HTTPURLResponse)?.statusCode ?? 0), "the storage should take the file")
+        let importId = "live-" + UUID().uuidString
+        let book = try await uploader.createBook(title: "own.audio Books live test", authors: ["Test Author"], narrators: ["Test Narrator"], description: nil, visibility: .private, coverUploadId: nil, files: [ImportedFile(uploadId: target.uploadId, fileName: "silence.wav", title: "Silence")], importId: importId)
+        #expect(book.title == "own.audio Books live test")
+        #expect(book.authors.map(\.name) == ["Test Author"] && book.narrators.map(\.name) == ["Test Narrator"])
+        #expect(book.files?.count == 1)
+        // The same import again answers the same book.
+        let again = try await uploader.createBook(title: "own.audio Books live test", authors: ["Test Author"], narrators: ["Test Narrator"], description: nil, visibility: .private, coverUploadId: nil, files: [ImportedFile(uploadId: target.uploadId, fileName: "silence.wav", title: "Silence")], importId: importId)
+        #expect(again.id == book.id)
+        await uploader.signOut()
+    }
+
     @Test("a position saved by another device shows up with that device's name, and the resume rule asks")
     func otherDevice() async throws {
         let env = ProcessInfo.processInfo.environment

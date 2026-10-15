@@ -88,9 +88,9 @@ struct LiveServerTests {
     @Test("a favourite round trip, and the change feed sees it")
     func favouriteAndChanges() async throws {
         let client = try await signedIn()
-        guard let track = try await client.tracks(limit: 1).items.first else { return }
+        guard let book = try await client.books(limit: 1).items.first else { return }
         let start = try await client.changes(since: nil)
-        try await client.setFavourite(.track, id: track.id, true)
+        try await client.setFavourite(.book, id: book.id, true)
         var seen: [Change] = []
         var cursor: String? = start.cursor
         for _ in 0..<5 {
@@ -99,8 +99,8 @@ struct LiveServerTests {
             cursor = page.cursor
             if !page.hasMore { break }
         }
-        #expect(seen.contains { $0.kind == "favourite.track" && $0.id == track.id && $0.op == "upsert" })
-        try await client.setFavourite(.track, id: track.id, false)
+        #expect(seen.contains { $0.kind == "favourite.book" && $0.id == book.id && $0.op == "upsert" })
+        try await client.setFavourite(.book, id: book.id, false)
         await client.signOut()
     }
 

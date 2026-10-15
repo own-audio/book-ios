@@ -127,3 +127,42 @@ public struct FeedResult: Sendable {
     public let bookmarks: [Bookmark]
     public let favourites: Set<String>
 }
+
+/// Where a file goes and under which name, from a source that takes uploads.
+public struct UploadTarget: Sendable, Equatable {
+    public let uploadId: String
+    public let url: URL
+    public let method: String
+    public let headers: [String: String]
+    public let expiresAt: Date
+
+    public init(uploadId: String, url: URL, method: String, headers: [String: String], expiresAt: Date) {
+        self.uploadId = uploadId
+        self.url = url
+        self.method = method
+        self.headers = headers
+        self.expiresAt = expiresAt
+    }
+}
+
+/// One file of a book being imported, once uploaded.
+public struct ImportedFile: Sendable, Equatable {
+    public let uploadId: String
+    public let fileName: String
+    public let title: String?
+
+    public init(uploadId: String, fileName: String, title: String?) {
+        self.uploadId = uploadId
+        self.fileName = fileName
+        self.title = title
+    }
+}
+
+/// A source that takes books from the phone: a link per file, the bytes put there by the app,
+/// then one call that makes the book.
+public protocol BookUploader: BookSource {
+    /// `kind` is `audio` or `cover`; `sizeBytes` exact.
+    func uploadTarget(kind: String, fileName: String, contentType: String, sizeBytes: Int64) async throws -> UploadTarget
+    /// `importId` makes a retry return the same book.
+    func createBook(title: String?, authors: [String], narrators: [String], description: String?, visibility: Visibility, coverUploadId: String?, files: [ImportedFile], importId: String) async throws -> Book
+}

@@ -55,6 +55,10 @@ All notable changes to this project are documented here. The format follows
 - Positions from other devices: a question before playing when another device went on with
   the book ("Continue from Car?"), and positions refreshed at foreground and while playing (B7).
 
+- Import a book from the phone to an own.audio server: files or a folder from the Files app,
+  the form filled from the tags, uploads in the background that survive the app being killed,
+  one book at the end, never two (B8).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.

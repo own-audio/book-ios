@@ -261,13 +261,19 @@ client's mojibake repair, applied to display only).
   Audiobookshelf's deletions — the polling is enough for positions, and a removed book is
   noticed at the next list.
 
-- [ ] **B8: Import from the phone (own.audio).** Document picker for M4B, MP3, M4A, FLAC and
-  folders; `AVURLAsset` prefill of title, author, narrator, duration and embedded chapters;
-  file order by hand; cover from the file or the photo library; visibility; `POST /uploads`
-  with the exact size, the bytes put to storage by a background session that survives the app
-  going away, `POST /books` with an `Idempotency-Key` so a retry cannot make two books; a
-  failed part is retried, not lost. Mobile-data warning for large files. Audiobookshelf's
-  multipart upload later, if asked for.
+- [x] **B8: Import from the phone (own.audio).** Done 2026-10-16; the kit's upload calls have
+  unit tests, the library's live test makes a book on the demo server from a generated
+  one-second file (and the same import repeated answers the same book), the metadata reader is
+  tested on the chaptered fixture, and the UI suite opens the import screen. The Files picker
+  for audio files and folders; `ImportMetadata` fills title, author, cover and durations from
+  the tags; files reordered by hand; a cover from the file or the photo library; who sees it;
+  a warning over 100 MB on mobile data. `ImportManager`: each file copied into the app's folder
+  (the picker's access ends with the screen), a signed link per file with the exact size, the
+  bytes put to storage by a background `URLSession` that outlives the app, then `POST /books`
+  with the import's id as the `Idempotency-Key`; an index keeps every import so a kill is
+  resumed; failures shown on the Library with Try Again. Audiobookshelf's upload stays for
+  later, as planned.
+
 - [ ] **B9: own.audio extras.** Household: members and pictures, invites, join by code,
   what is shared with the family (visibility on the book, owner only), storage and credit
   summary — copied from the music app's M10. Favourites. Listening stats where a server has

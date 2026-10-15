@@ -5,7 +5,7 @@ import OwnAudioKit
 /// snapshot and change feed (books with their files, chapters and series, the contributors,
 /// the listener's progress, bookmarks and favourites), browsing and search over that copy,
 /// per-device positions, and — signed per file — streams and covers.
-public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdates {
+public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdates, BookUploader {
     public let client: OwnAudioClient
     public let userId: String?
     let device: DeviceIdentity
@@ -468,6 +468,32 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
         case .decoding: .unreadable
         case .network: .network
         case .offline: .offline
+        }
+    }
+}
+
+extension OwnAudioSource {
+    public func uploadTarget(kind: String, fileName: String, contentType: String, sizeBytes: Int64) async throws -> UploadTarget {
+        try await translating {
+            let link = try await client.createUpload(kind: kind == "cover" ? "book_cover" : "book_file", filename: fileName, contentType: contentType, sizeBytes: sizeBytes)
+            return UploadTarget(uploadId: link.uploadId, url: link.url, method: link.method, headers: link.headers, expiresAt: link.expiresAt)
+        }
+    }
+
+    public func createBook(title: String?, authors: [String], narrators: [String], description: String?, visibility: Visibility, coverUploadId: String?, files: [ImportedFile], importId: String) async throws -> Book {
+        try await translating {
+            let made = try await client.createBook(NewBook(
+                title: title, author: authors.isEmpty ? nil : authors.joined(separator: "; "), narrator: narrators.isEmpty ? nil : narrators.joined(separator: "; "),
+                description: description, visibility: visibility.rawValue, coverUploadId: coverUploadId,
+                files: files.enumerated().map { index, file in
+                    NewBook.File(uploadId: file.uploadId, relativePath: String(format: "%03d - %@", index + 1, file.fileName), title: file.title)
+                }
+            ), idempotencyKey: importId)
+            let detail = (try? await client.book(id: made.id)) ?? WithIncluded(record: made, included: nil)
+            let contributors = Dictionary(uniqueKeysWithValues: (detail.included?.contributors ?? []).map { ($0.id, $0) })
+            // The new book joins the copy on the phone at the next feed sync; until then the
+            // record is returned as the server made it.
+            return Self.book(detail.record, contributors: contributors)
         }
     }
 }

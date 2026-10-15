@@ -293,3 +293,33 @@ final class OfflineTests: XCTestCase {
         XCTAssertTrue(smoke.waitUntil(timeout: 5) { pause.label == "Play" })
     }
 }
+
+/// The import screen, on servers that take books from the phone (own.audio): it opens with
+/// its form, and nothing is sent until files are chosen. The Files picker itself is the
+/// system's; the server path is covered by the library's live test.
+final class ImportTests: XCTestCase {
+    private var env: [String: String] { ProcessInfo.processInfo.environment }
+
+    override func setUpWithError() throws {
+        continueAfterFailure = false
+        guard env["SERVER_HOST"] != nil else { throw XCTSkip("SERVER_HOST is not set") }
+    }
+
+    func testImportScreenOpens() throws {
+        let smoke = PlaybackSmokeTests()
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
+        app.launch()
+        smoke.addServer(app)
+        smoke.tapTab(app, "Library")
+        let plus = app.buttons["library.import"]
+        guard plus.waitForExistence(timeout: 10) else { throw XCTSkip("this server takes no uploads") }
+        plus.tap()
+        XCTAssertTrue(app.navigationBars["Import a Book"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["import.pick"].exists)
+        XCTAssertFalse(app.buttons["import.start"].isEnabled, "nothing to send before files are chosen")
+        smoke.screenshot(app, "16-import")
+        app.buttons["Cancel"].tap()
+        XCTAssertTrue(plus.waitForExistence(timeout: 5))
+    }
+}

@@ -4,10 +4,17 @@ import SwiftUI
 /// handler to call once the session has delivered its events.
 final class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
-        guard identifier == DownloadManager.sessionIdentifier else { return completionHandler() }
         Task { @MainActor in
-            AppModel.shared.downloads.backgroundCompletion = completionHandler
-            AppModel.shared.downloads.resume()
+            switch identifier {
+            case DownloadManager.sessionIdentifier:
+                AppModel.shared.downloads.backgroundCompletion = completionHandler
+                AppModel.shared.downloads.resume()
+            case ImportManager.sessionIdentifier:
+                AppModel.shared.imports.backgroundCompletion = completionHandler
+                AppModel.shared.imports.resume()
+            default:
+                completionHandler()
+            }
         }
     }
 }

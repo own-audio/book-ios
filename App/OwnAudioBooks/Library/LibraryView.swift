@@ -29,6 +29,7 @@ struct BooksListView: View {
     @State private var total: Int?
     @State private var state: LoadState<Void> = .loading
     @State private var isLoadingMore = false
+    @State private var isImporting = false
 
     private var source: (any BookSource)? { model.source(for: serverId) }
 
@@ -37,8 +38,18 @@ struct BooksListView: View {
             if isGrid { grid } else { list }
         }
         .navigationTitle(title)
+        .sheet(isPresented: $isImporting) { ImportBookView(serverId: serverId) }
+        .onChange(of: model.imports.active.count) { was, now in
+            // An import finished: the new book is on the server now.
+            if now < was { Task { await model.syncCatalogues(); await reload() } }
+        }
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
+                if isRoot, model.canImport(serverId: serverId) {
+                    Button { isImporting = true } label: { Image(systemName: "plus") }
+                        .accessibilityLabel("Import a Book")
+                        .accessibilityIdentifier("library.import")
+                }
                 Menu {
                     Picker("Sort", selection: $query.sort) {
                         Text("Title").tag(BookSort.title)

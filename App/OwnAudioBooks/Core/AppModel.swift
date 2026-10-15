@@ -33,6 +33,7 @@ final class AppModel {
     let covers = CoverLoader()
     let network = NetworkMonitor()
     let downloads = DownloadManager()
+    let imports = ImportManager()
     /// The book in the engine, with the server it came from.
     private(set) var nowPlayingBook: Book?
     private(set) var nowPlayingServerId: UUID?
@@ -98,6 +99,7 @@ final class AppModel {
             // Downloads are always the original file.
             return try await source.partURL(for: book, fileId: fileId, startMs: nil, maxBitrateKbps: nil).url
         }
+        imports.uploaderProvider = { [weak self] serverId in self?.sources[serverId] as? any BookUploader }
         applyPlaybackSettings()
         network.onChange = { [weak self] _ in
             Task { await self?.chooseAddresses(); await self?.flushPendingProgress() }
@@ -159,6 +161,7 @@ final class AppModel {
             pendingProgress.removeAll()
             knownPositions.removeAll()
             downloads.removeAll()
+            for item in imports.imports.values { imports.cancel(item.id) }
             settings.offlineMode = false
         }
         servers = await store.loadAll()
@@ -172,6 +175,7 @@ final class AppModel {
         activeServerId = servers.contains { $0.id == saved } ? saved : servers.first?.id
         hasLoaded = true
         downloads.resume()
+        imports.resume()
         keepProgressFresh()
         Task {
             await chooseAddresses()
@@ -786,6 +790,10 @@ final class AppModel {
     }
 
     var isNowPlaying: Bool { engine.book != nil }
+
+    func canImport(serverId: UUID) -> Bool {
+        sources[serverId] is any BookUploader && !isOffline
+    }
 
     func isNowPlaying(_ book: Book, serverId: UUID) -> Bool {
         engine.book?.id == BookID.make(serverId: serverId, bookId: book.id)

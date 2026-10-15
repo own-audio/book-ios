@@ -228,3 +228,16 @@ struct SpokenEngineTests {
         engine.stop()
     }
 }
+
+@Suite("ImportMetadata")
+struct ImportMetadataTests {
+    @Test("an M4B's tags fill the form: title, artist, duration, the type from the extension")
+    func reads() async {
+        let url = Bundle.module.url(forResource: "test-book.m4b", withExtension: nil, subdirectory: "Fixtures")!
+        let meta = await ImportMetadata.read(url)
+        #expect(meta.title == "Test Book" && meta.artist == "Test Author")
+        #expect(abs(meta.durationMs - 6000) < 100)
+        #expect(meta.contentType == "audio/mp4")
+        #expect(ImportMetadata.contentType(for: URL(fileURLWithPath: "/x/a.MP3")) == "audio/mpeg")
+    }
+}

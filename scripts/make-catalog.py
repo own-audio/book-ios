@@ -252,9 +252,29 @@ cs = {
  "Continue from %@?": "Pokračovat z %@?",
  "Keep this iPhone's position (%@)": "Zůstat na pozici tohoto iPhonu (%@)",
  "there": "tamtud",
+
+ # Import from the phone (B8).
+ "Add More Files": "Přidat další soubory",
+ "Add to Library": "Přidat do knihovny",
+ "Book": "Kniha",
+ "Choose Audio Files": "Vybrat zvukové soubory",
+ "Cover": "Obálka",
+ "Files, in playing order": "Soubory v pořadí přehrávání",
+ "From the file, or choose": "Ze souboru, nebo vyberte",
+ "Import a Book": "Importovat knihu",
+ "Importing": "Importuje se",
+ "Only me": "Jen já",
+ "The family": "Rodina",
+ "The files are copied and uploaded in the background; you can leave this screen. The book appears in the library once the upload is done.": "Soubory se zkopírují a nahrají na pozadí; tuto obrazovku můžete opustit. Kniha se v knihovně objeví, jakmile je nahrávání hotové.",
+ "The storage refused the file (%lld).": "Úložiště soubor odmítlo (%lld).",
+ "Upload %@ over mobile data?": "Nahrát %@ přes mobilní data?",
+ "Upload Now": "Nahrát teď",
+ "Who sees it": "Kdo ji uvidí",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {
+ "%lld files · %@": {"en": {"one": "%lld file · %@", "other": "%lld files · %@"}, "cs": {"one": "%lld soubor · %@", "few": "%lld soubory · %@", "many": "%lld souboru · %@", "other": "%lld souborů · %@"}},
+ "%lld files · %@ · %@. Drag to reorder.": {"en": {"one": "%lld file · %@ · %@.", "other": "%lld files · %@ · %@. Drag to reorder."}, "cs": {"one": "%lld soubor · %@ · %@.", "few": "%lld soubory · %@ · %@. Pořadí změníte tažením.", "many": "%lld souboru · %@ · %@. Pořadí změníte tažením.", "other": "%lld souborů · %@ · %@. Pořadí změníte tažením."}},
  "%lld books": {"en": {"one": "%lld book", "other": "%lld books"}, "cs": {"one": "%lld kniha", "few": "%lld knihy", "many": "%lld knihy", "other": "%lld knih"}},
  "%lld min": {"en": {"one": "%lld min", "other": "%lld min"}, "cs": {"one": "%lld min", "few": "%lld min", "many": "%lld min", "other": "%lld min"}},
  "File %lld": {"en": {"one": "File %lld", "other": "File %lld"}, "cs": {"one": "Soubor %lld", "few": "Soubor %lld", "many": "Soubor %lld", "other": "Soubor %lld"}},

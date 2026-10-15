@@ -19,8 +19,8 @@ final class OtherDeviceTests: XCTestCase {
         app.launch()
         smoke.addServer(app)
         smoke.tapTab(app, "Library")
-        app.buttons["library.sortFilter"].tap()
-        app.buttons["Length"].firstMatch.tap()
+        // The first book by title, not the shortest: the import test leaves a two-second book
+        // on the account, which ends before the car's 6:40.
         let book = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'")).firstMatch
         XCTAssertTrue(book.waitForExistence(timeout: 30))
         let bookId = String(book.identifier.dropFirst("library.book.".count))

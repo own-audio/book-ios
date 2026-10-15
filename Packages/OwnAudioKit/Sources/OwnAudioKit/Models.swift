@@ -175,6 +175,11 @@ public struct WithIncluded<Record: Decodable & Sendable>: Decodable, Sendable {
     public let record: Record
     public let included: Included?
 
+    public init(record: Record, included: Included?) {
+        self.record = record
+        self.included = included
+    }
+
     public init(from decoder: Decoder) throws {
         record = try Record(from: decoder)
         let container = try decoder.container(keyedBy: Key.self)
