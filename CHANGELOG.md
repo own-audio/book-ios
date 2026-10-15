@@ -35,3 +35,9 @@ All notable changes to this project are documented here. The format follows
   badges and progress, a greeting on Home, the detail's capsule Play button filled with the
   progress, the player's book bar and chapter slider with labelled tools, the mini player on
   material, and the welcome screen over the own.audio hero with the mark and wordmark (B4b).
+- The App Store listing in English and Czech (`AppStore/`), the review notes, `PRIVACY.md`,
+  and the first TestFlight build (8).
+
+### Fixed
+
+- The app icon set's manifest named no files, so no icon was compiled into the archive.

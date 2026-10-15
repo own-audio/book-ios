@@ -1,0 +1,5 @@
+No account is needed to try the app: on the welcome screen, "Try the Demo Library" signs in to the public own.audio demo server (demopi.own.audio) by itself. It holds public-domain audiobooks; play one, and the chapters, speed, sleep timer and bookmarks are all there.
+
+The app also connects to Audiobookshelf servers, which a reviewer would need to run themselves; everything in the app works the same way on both.
+
+The app is free and open source (MPL-2.0): https://github.com/own-audio/book-ios

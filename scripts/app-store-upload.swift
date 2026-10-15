@@ -131,6 +131,25 @@ if CommandLine.arguments.contains("--status") {
     exit(0)
 }
 
+// Notes for App Review, on the version being prepared: how to try the app with no server.
+let reviewNotes = text(".", "review_notes.txt") ?? ""
+if let versionId, !reviewNotes.isEmpty {
+    // A to-one relationship: `data` is one object, or null before the first save.
+    let existing = (try? await call("GET", "v1/appStoreVersions/\(versionId)/appStoreReviewDetail"))?["data"] as? [String: Any]
+    if let existing, !id(existing).isEmpty {
+        print("  review notes: update")
+        if !dryRun { try await call("PATCH", "v1/appStoreReviewDetails/\(id(existing))", ["data": ["type": "appStoreReviewDetails", "id": id(existing), "attributes": ["notes": reviewNotes]]]) }
+    } else {
+        print("  review notes: add")
+        if !dryRun {
+            try await call("POST", "v1/appStoreReviewDetails", ["data": [
+                "type": "appStoreReviewDetails", "attributes": ["notes": reviewNotes],
+                "relationships": ["appStoreVersion": ["data": ["type": "appStoreVersions", "id": versionId]]],
+            ]])
+        }
+    }
+}
+
 let privacyURL = "https://github.com/own-audio/book-ios/blob/main/PRIVACY.md"
 let supportURL = "https://github.com/own-audio/book-ios/issues"
 let marketingURL = "https://www.own.audio"

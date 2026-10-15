@@ -1,0 +1,33 @@
+A native player for the audiobooks on your own server: Audiobookshelf, and own.audio.
+
+Made for listening
+• Speed from 0.5× to 3× with the voice's pitch kept, remembered per book
+• Chapters: from the server, or read from the files themselves when the server has none
+• Skip back and forward by the seconds you choose; smart rewind after a pause
+• Sleep timer: minutes, the end of the chapter, or the end of the book
+• Bookmarks with a label, kept on your server
+• Lock screen and Control Center with skip buttons and chapter steps
+
+Your whole library
+• Continue Listening and Recently Added, as your server arranges them
+• Series, authors, narrators and collections, where your server has them
+• Sort and filter: not started, in progress, finished
+• Search by title, author, narrator and series
+
+Your place, everywhere
+• One position per book, saved on this iPhone first and then on your server, so a lost signal never loses your place
+• Positions and bookmarks follow you between devices and apps that use the same server
+
+At home and away
+• Several servers at once
+• A server's home and outside addresses: the app uses whichever answers, and only if it is the same server
+• On mobile data: the original, a smaller stream, or nothing but what is on the iPhone
+• iPhone and iPad, in English and Czech
+
+With an own.audio server
+• A library shared with the family, where you choose what is shared
+• The library on the iPhone catches up within seconds of a change on the server
+
+Private by design: the app talks only to the servers you add. No account with us, no analytics, no ads. Both kinds of server hand the app a sign-in token; the password is not kept.
+
+Free and open source under the MPL-2.0. Made by own.audio.

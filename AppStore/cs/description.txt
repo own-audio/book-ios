@@ -1,0 +1,33 @@
+Nativní přehrávač audioknih z vašeho vlastního serveru: Audiobookshelf a own.audio.
+
+Stvořený pro poslech
+• Rychlost od 0,5× do 3× se zachovanou výškou hlasu, zapamatovaná pro každou knihu
+• Kapitoly: ze serveru, nebo přečtené přímo ze souborů, když je server nemá
+• Skok vzad a vpřed o sekundy, které si zvolíte; chytré přetočení po pauze
+• Časovač spánku: minuty, konec kapitoly nebo konec knihy
+• Záložky s popiskem, uložené na vašem serveru
+• Zamčená obrazovka a Ovládací centrum s tlačítky skoku a kapitol
+
+Celá vaše knihovna
+• Pokračovat v poslechu a Nedávno přidané, jak je váš server řadí
+• Série, autoři, vypravěči a kolekce, pokud je váš server má
+• Řazení a filtry: nezačaté, rozposlouchané, dokončené
+• Hledání podle názvu, autora, vypravěče a série
+
+Vaše místo, všude
+• Jedna pozice pro každou knihu, uložená nejdřív v iPhonu a pak na serveru, takže výpadek signálu nikdy neztratí vaše místo
+• Pozice a záložky vás sledují mezi zařízeními a aplikacemi se stejným serverem
+
+Doma i na cestách
+• Několik serverů najednou
+• Domácí i venkovní adresa serveru: aplikace použije tu, která odpoví, a jen pokud jde o tentýž server
+• Na mobilních datech: originál, menší stream, nebo jen to, co je v iPhonu
+• iPhone a iPad, česky a anglicky
+
+Se serverem own.audio
+• Knihovna sdílená s rodinou, kde si volíte, co je sdílené
+• Knihovna v iPhonu se dozví o změně na serveru během několika sekund
+
+Soukromí už od návrhu: aplikace mluví jen se servery, které přidáte. Žádný účet u nás, žádná analytika, žádné reklamy. Oba druhy serverů dávají aplikaci přihlašovací token; heslo se neukládá.
+
+Zdarma a open source pod licencí MPL-2.0. Vytvořilo own.audio.
