@@ -112,16 +112,26 @@ client's mojibake repair, applied to display only).
 
 ## Phases
 
-- [ ] **B0: Repository and skeleton.** This plan, README, CLAUDE.md, licence, changelog;
-  `project.yml` (iOS 18, Swift 6, iPhone + iPad, background audio, Sign in with Apple
-  entitlement, no team id); the app target with an empty root view and the UI test target;
-  `ServerSupport`, `OwnAudioKit` and `PlayerCore` copied from the music app with their tests
-  green; `scripts/` copied and renamed; `test-servers.local.env` variables for
-  `AUDIOBOOKSHELF_*` and `OWNAUDIO_*`. Before any client code: the Audiobookshelf checks that
-  need a write, done with a throwaway user on a test server — `POST /play` answer
-  (`audioTracks[].contentUrl`, `playMethod`), `/sync` and `/close` bodies, `/local-all`, `PATCH
-  /api/me/progress`, bookmark create/edit/delete, socket.io auth with a JWT, and whether an open
-  stream survives token expiry (decision 4).
+- [x] **B0: Repository and skeleton.** Done 2026-10-15. `project.yml` (iOS 18, Swift 6,
+  iPhone + iPad, background audio, Sign in with Apple entitlement, no team id), the app target
+  with a placeholder root view, the UI test target with a launch test, `ServerSupport`,
+  `OwnAudioKit` and `PlayerCore` copied from the music app without their music-only parts
+  (playlists, smart playlists, identify, the equalizer, scrobbling) — 55 package tests green;
+  the scripts renamed for this app and its servers. The Audiobookshelf write paths checked
+  with a throwaway user on 2.37.1: `POST /api/items/{id}/play` answers one `audioTracks` entry
+  per file (`contentUrl`, `startOffset`, `duration`, `mimeType`) with `playMethod` 0, or one
+  HLS track (`/hls/{session}/output.m3u8`, `playMethod` 2) when transcoding; **a new session
+  for the same book closes the open one** (its `sync` then answers 404), so the app holds one
+  session per book; `POST /api/session/{id}/sync` and `/close` take `{currentTime,
+  timeListened, duration}` and answer the text `OK`, and both move the user's progress;
+  `POST /api/session/local-all` takes `{sessions:[…], deviceInfo}` with client ids,
+  `playMethod` 3, `startTime`/`currentTime`/`timeListening`, answers per-session
+  `{success, progressSynced}` and moves progress; `PATCH /api/me/progress/{id}` and
+  `/progress/batch/update` work as described; bookmarks create, patch and delete by `time`;
+  socket.io (engine.io 4) accepts `42["auth", <jwt>]` and answers `init`; access tokens last
+  3600 s. Still open: whether an open stream survives the token's expiry (an hour-long test,
+  in B1).
+
 - [ ] **B1: AudiobookshelfKit.** A hand-written client with the same shape as `OwnAudioKit`:
   `status`, sign-in with `x-return-tokens`, a token session with single-flight rotating refresh
   (reuse detection means two refreshes at once sign the device out), `authorize`, `logout`;
