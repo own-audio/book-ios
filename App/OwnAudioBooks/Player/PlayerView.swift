@@ -1,9 +1,9 @@
 import BookLibrary
 import SwiftUI
 
-/// The full player: cover, title and chapter, a book-level bar with the time left at the
-/// current speed, a chapter scrubber, skip buttons with their intervals, chapter buttons, and
-/// the speed, sleep timer, chapters and bookmarks sheets.
+/// The full player: the cover, title and author, the current chapter as a button, the thin
+/// book bar over the chapter slider, the transport with skip intervals, chapter steps, and the
+/// speed, sleep timer and bookmarks tools.
 struct PlayerView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
@@ -24,6 +24,7 @@ struct PlayerView: View {
                     ContentUnavailableView("Nothing Playing", systemImage: "book.closed")
                 }
             }
+            .background(Theme.Colors.background)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button { dismiss() } label: { Image(systemName: "chevron.down") }
@@ -52,65 +53,76 @@ struct PlayerView: View {
 
     private func content(book: Book, serverId: UUID) -> some View {
         let engine = model.engine
-        return VStack(spacing: Theme.Spacing.lg) {
-            Spacer(minLength: 0)
-            CoverView(book: book, serverId: serverId, pointSize: 260)
-                .shadow(color: .black.opacity(0.2), radius: 16, y: 8)
-                .overlay(alignment: .topTrailing) {
-                    if let remaining = engine.sleepTimer.remainingSecs {
-                        Label(formatDuration(remaining), systemImage: "moon.zzz.fill")
-                            .font(.caption.weight(.semibold).monospacedDigit())
-                            .padding(.horizontal, Theme.Spacing.sm)
-                            .padding(.vertical, Theme.Spacing.xs)
-                            .background(.thinMaterial, in: Capsule())
-                            .padding(Theme.Spacing.sm)
-                            .accessibilityIdentifier("player.sleepBadge")
+        return ScrollView {
+            VStack(spacing: Theme.Spacing.xl) {
+                CoverView(book: book, serverId: serverId, pointSize: 260)
+                    .overlay(alignment: .topTrailing) {
+                        if let remaining = engine.sleepTimer.remainingSecs {
+                            Label(formatDuration(remaining), systemImage: "moon.zzz.fill")
+                                .font(.caption.weight(.semibold).monospacedDigit())
+                                .padding(.horizontal, Theme.Spacing.sm)
+                                .padding(.vertical, Theme.Spacing.xs)
+                                .background(.regularMaterial, in: Capsule())
+                                .padding(Theme.Spacing.sm)
+                                .accessibilityIdentifier("player.sleepBadge")
+                        }
                     }
-                }
-            VStack(spacing: Theme.Spacing.xs) {
-                Text(book.title)
-                    .font(.title3.weight(.semibold))
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-                    .accessibilityIdentifier("player.title")
-                Text(engine.currentChapter?.title ?? book.authorLine)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .padding(.top, Theme.Spacing.lg)
+                VStack(spacing: Theme.Spacing.xs) {
+                    Text(book.title)
+                        .font(.title2.bold())
+                        .foregroundStyle(Theme.Colors.foreground)
+                        .multilineTextAlignment(.center)
+                        .lineLimit(2)
+                        .accessibilityIdentifier("player.title")
+                    if !book.authorLine.isEmpty {
+                        Text(book.authorLine).font(.headline).foregroundStyle(Theme.Colors.muted).lineLimit(1)
+                    }
+                    Button { sheet = .chapters } label: {
+                        HStack(spacing: Theme.Spacing.xs) {
+                            Text(engine.currentChapter?.title ?? String(localized: "Chapters"))
+                                .font(.subheadline.weight(.medium))
+                                .lineLimit(1)
+                            Image(systemName: "chevron.down").font(.caption2)
+                        }
+                        .foregroundStyle(Theme.Colors.accent)
+                    }
                     .accessibilityIdentifier("player.chapter")
+                    .accessibilityLabel("Chapter: \(engine.currentChapter?.title ?? "")")
+                }
+                .padding(.horizontal, Theme.Spacing.xl)
+                scrubbers
+                controls
+                steps
+                tools
             }
-            .padding(.horizontal, Theme.Spacing.xl)
-            scrubbers
-            controls
-            bottomBar
-            Spacer(minLength: 0)
+            .padding(.bottom, Theme.Spacing.xl)
         }
-        .padding(.bottom, Theme.Spacing.lg)
     }
 
-    /// The thin book bar above; the chapter (or whole book) scrubber below.
+    /// The thin book bar with the time left at the current speed; the chapter slider under it.
     private var scrubbers: some View {
         let engine = model.engine
         let chapter = engine.currentChapter
         let rangeStart = chapter?.startMs ?? 0
         let rangeEnd = chapter?.endMs ?? engine.durationMs
         let inChapter = Double(max(0, min(engine.positionMs - rangeStart, rangeEnd - rangeStart)))
-        let left = Double(max(engine.durationMs - engine.positionMs, 0)) / 1000 / Double(max(engine.rate, 0.1))
+        let fraction = engine.durationMs > 0 ? Double(engine.positionMs) / Double(engine.durationMs) : 0
         return VStack(spacing: Theme.Spacing.sm) {
-            VStack(spacing: 2) {
-                ProgressView(value: Double(engine.positionMs), total: Double(max(engine.durationMs, 1)))
-                    .tint(.secondary)
-                    .accessibilityHidden(true)
-                HStack {
-                    Text(ProgressText.clock(engine.positionMs)).accessibilityIdentifier("player.elapsed")
-                    Spacer()
-                    Text(String(localized: "\(ProgressText.clock(Int64(left * 1000))) left"))
-                        .accessibilityIdentifier("player.remaining")
-                }
-                .font(.caption2.monospacedDigit())
-                .foregroundStyle(.secondary)
+            HStack(spacing: Theme.Spacing.sm) {
+                ProgressView(value: min(max(fraction, 0), 1)).tint(Theme.Colors.muted).accessibilityHidden(true)
+                Text(fraction, format: .percent.precision(.fractionLength(0)))
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(Theme.Colors.muted)
             }
-            VStack(spacing: 2) {
+            HStack {
+                Text(ProgressText.clock(engine.positionMs)).accessibilityIdentifier("player.elapsed")
+                Spacer()
+                Text(ProgressText.leftAtSpeed(engine.durationMs - engine.positionMs, rate: engine.rate)).accessibilityIdentifier("player.remaining")
+            }
+            .font(.caption2.monospacedDigit())
+            .foregroundStyle(Theme.Colors.muted)
+            VStack(spacing: Theme.Spacing.xs) {
                 Slider(
                     value: Binding(get: { scrubbing ?? inChapter }, set: { scrubbing = $0 }),
                     in: 0...Double(max(rangeEnd - rangeStart, 1))
@@ -120,6 +132,7 @@ struct PlayerView: View {
                         self.scrubbing = nil
                     }
                 }
+                .tint(Theme.Colors.accent)
                 .accessibilityIdentifier("player.scrubber")
                 .accessibilityValue("\(ProgressText.clock(Int64(scrubbing ?? inChapter))) of \(ProgressText.clock(rangeEnd - rangeStart))")
                 HStack {
@@ -128,7 +141,7 @@ struct PlayerView: View {
                     Text("-" + ProgressText.clock(max(rangeEnd - rangeStart - Int64(scrubbing ?? inChapter), 0)))
                 }
                 .font(.caption.monospacedDigit())
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.Colors.muted)
             }
         }
         .padding(.horizontal, Theme.Spacing.xl)
@@ -136,9 +149,8 @@ struct PlayerView: View {
 
     private var controls: some View {
         let engine = model.engine
-        return HStack(spacing: Theme.Spacing.lg) {
-            control("backward.end.fill", "Previous chapter", id: "player.previousChapter", size: 22, enabled: engine.hasChapters) { engine.previousChapter() }
-            control("gobackward.\(Int(engine.skipBackwardSecs))", "Back \(Int(engine.skipBackwardSecs)) seconds", id: "player.skipBackward", size: 30) { engine.skipBackward() }
+        return HStack(spacing: Theme.Spacing.xxl) {
+            control("gobackward.\(Int(engine.skipBackwardSecs))", "Back \(Int(engine.skipBackwardSecs)) seconds", id: "player.skipBackward", font: .title) { engine.skipBackward() }
             Button {
                 Haptics.impact(.medium)
                 engine.togglePlayPause()
@@ -147,61 +159,76 @@ struct PlayerView: View {
                     if engine.isLoading {
                         ProgressView().controlSize(.large)
                     } else {
-                        Image(systemName: engine.isPlaying ? "pause.circle.fill" : "play.circle.fill").font(.system(size: 72))
+                        Image(systemName: engine.isPlaying ? "pause.circle.fill" : "play.circle.fill").font(.system(size: 64))
                     }
                 }
-                .frame(width: 80, height: 80)
+                .foregroundStyle(Theme.Colors.foreground)
+                .frame(width: 72, height: 72)
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("player.playPause")
             .accessibilityLabel(engine.isPlaying ? "Pause" : "Play")
-            control("goforward.\(Int(engine.skipForwardSecs))", "Forward \(Int(engine.skipForwardSecs)) seconds", id: "player.skipForward", size: 30) { engine.skipForward() }
-            control("forward.end.fill", "Next chapter", id: "player.nextChapter", size: 22, enabled: engine.hasChapters) { engine.nextChapter() }
+            control("goforward.\(Int(engine.skipForwardSecs))", "Forward \(Int(engine.skipForwardSecs)) seconds", id: "player.skipForward", font: .title) { engine.skipForward() }
         }
     }
 
-    private func control(_ symbol: String, _ label: String, id: String, size: CGFloat, enabled: Bool = true, action: @escaping () -> Void) -> some View {
+    /// Chapter steps, or files where a book has no chapters.
+    private var steps: some View {
+        let engine = model.engine
+        return HStack(spacing: Theme.Spacing.xxl) {
+            control("backward.end.alt", "Previous chapter", id: "player.previousChapter", font: .title3) { engine.previousChapter() }
+            control("forward.end.alt", "Next chapter", id: "player.nextChapter", font: .title3) { engine.nextChapter() }
+        }
+    }
+
+    private func control(_ symbol: String, _ label: String, id: String, font: Font, action: @escaping () -> Void) -> some View {
         Button {
             Haptics.impact(.light)
             action()
         } label: {
             Image(systemName: symbol)
-                .font(.system(size: size))
+                .font(font)
+                .foregroundStyle(Theme.Colors.foreground)
                 .frame(minWidth: Theme.minTarget, minHeight: Theme.minTarget)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(!enabled)
-        .opacity(enabled ? 1 : 0.3)
         .accessibilityIdentifier(id)
         .accessibilityLabel(label)
     }
 
-    private var bottomBar: some View {
+    private var tools: some View {
         let engine = model.engine
-        return HStack {
-            Button { sheet = .speed } label: {
+        let sleeping = engine.sleepTimer.isActive || engine.stopsAtEndOfChapter
+        return HStack(spacing: Theme.Spacing.xxl) {
+            tool(id: "player.speed", label: "Speed \(String(format: "%.2g", engine.rate))", caption: "Speed", tinted: engine.rate != 1) {
                 Text(String(format: "%.2g×", engine.rate)).font(.subheadline.weight(.semibold).monospacedDigit())
-            }
-            .accessibilityIdentifier("player.speed")
-            .accessibilityLabel("Speed \(String(format: "%.2g", engine.rate))")
-            Spacer()
-            Button { sheet = .sleep } label: {
-                Image(systemName: engine.sleepTimer.isActive || engine.stopsAtEndOfChapter ? "moon.zzz.fill" : "moon.zzz")
-            }
-            .accessibilityIdentifier("player.sleep")
-            .accessibilityLabel("Sleep timer")
-            Spacer()
-            Button { sheet = .chapters } label: { Image(systemName: "list.bullet") }
-                .accessibilityIdentifier("player.chapters")
-                .accessibilityLabel("Chapters")
-            Spacer()
-            Button { sheet = .bookmarks } label: { Image(systemName: "bookmark") }
-                .accessibilityIdentifier("player.bookmarks")
-                .accessibilityLabel("Bookmarks")
+            } action: { sheet = .speed }
+            tool(id: "player.sleep", label: "Sleep timer", caption: "Sleep", tinted: sleeping) {
+                Image(systemName: sleeping ? "moon.zzz.fill" : "moon.zzz").font(.title3)
+            } action: { sheet = .sleep }
+            tool(id: "player.bookmarks", label: "Bookmarks", caption: "Bookmarks", tinted: false) {
+                Image(systemName: "bookmark").font(.title3)
+            } action: { sheet = .bookmarks }
+            tool(id: "player.chapters", label: "Chapters", caption: "Chapters", tinted: false) {
+                Image(systemName: "list.bullet").font(.title3)
+            } action: { sheet = .chapters }
         }
-        .font(.title3)
-        .padding(.horizontal, Theme.Spacing.xxl)
-        .frame(minHeight: Theme.minTarget)
+        .padding(.top, Theme.Spacing.sm)
+    }
+
+    private func tool<Icon: View>(id: String, label: String, caption: LocalizedStringKey, tinted: Bool, @ViewBuilder icon: () -> Icon, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: Theme.Spacing.xs) {
+                icon().frame(height: 24)
+                Text(caption).font(.caption2)
+            }
+            .foregroundStyle(tinted ? Theme.Colors.accent : Theme.Colors.foreground)
+            .frame(minWidth: 56, minHeight: Theme.minTarget)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier(id)
+        .accessibilityLabel(label)
     }
 }

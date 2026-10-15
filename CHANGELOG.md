@@ -31,3 +31,7 @@ All notable changes to this project are documented here. The format follows
   speed, skips, chapters, sleep timer and bookmarks, the mini player, Settings; positions
   saved on the phone first and sent to the server; UI tests against real servers (B4).
 - The app icon: the own.audio family ring with a closed book in brown, from `Design/`.
+- The look of own.audio's audiobook app: the brown accent, its tokens and radii, cards with
+  badges and progress, a greeting on Home, the detail's capsule Play button filled with the
+  progress, the player's book bar and chapter slider with labelled tools, the mini player on
+  material, and the welcome screen over the own.audio hero with the mark and wordmark (B4b).

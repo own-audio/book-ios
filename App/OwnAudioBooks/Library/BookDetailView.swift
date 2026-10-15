@@ -25,10 +25,14 @@ struct BookDetailView: View {
                 header
                 playRow
                 if let description = book.description, !description.isEmpty {
-                    Text(description.strippingHTML)
-                        .font(.body)
-                        .lineLimit(6)
-                        .padding(.horizontal, Theme.Spacing.screenEdge)
+                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                        SectionHeader(title: "Description")
+                        Text(description.strippingHTML)
+                            .font(.body)
+                            .foregroundStyle(Theme.Colors.foreground)
+                            .lineLimit(6)
+                            .padding(.horizontal, Theme.Spacing.screenEdge)
+                    }
                 }
                 metadata
                 Picker("Section", selection: $tab) {
@@ -43,6 +47,7 @@ struct BookDetailView: View {
             }
             .padding(.vertical, Theme.Spacing.md)
         }
+        .background(Theme.Colors.background)
         .navigationTitle(book.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -81,26 +86,25 @@ struct BookDetailView: View {
 
     private var header: some View {
         HStack(alignment: .top, spacing: Theme.Spacing.lg) {
-            CoverView(book: book, serverId: serverId, pointSize: 140)
-                .shadow(color: .black.opacity(0.15), radius: 8, y: 4)
+            CoverView(book: book, serverId: serverId, pointSize: 120)
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                Text(book.title).font(.title3.weight(.semibold)).accessibilityIdentifier("detail.title")
-                if let subtitle = book.subtitle, !subtitle.isEmpty { Text(subtitle).font(.subheadline).foregroundStyle(.secondary) }
+                Text(book.title).font(.title2.bold()).foregroundStyle(Theme.Colors.foreground).accessibilityIdentifier("detail.title")
+                if let subtitle = book.subtitle, !subtitle.isEmpty { Text(subtitle).font(.subheadline).foregroundStyle(Theme.Colors.muted) }
                 if !book.authors.isEmpty {
-                    Text(book.authorLine).font(.subheadline).foregroundStyle(.secondary)
-                }
-                if !book.narrators.isEmpty {
-                    Label(book.narratorLine, systemImage: "waveform").font(.caption).foregroundStyle(.secondary)
+                    Text(book.authorLine).font(.headline).foregroundStyle(Theme.Colors.muted)
                 }
                 ForEach(book.series, id: \.id) { series in
                     NavigationLink(value: LibraryRoute.oneSeries(SeriesSummary(id: series.id, name: series.name, bookCount: 0), serverId: serverId)) {
-                        Text(series.sequence.map { "\(series.name) #\($0)" } ?? series.name).font(.caption)
+                        Text(series.sequence.map { "\(series.name) #\($0)" } ?? series.name).font(.caption).foregroundStyle(Theme.Colors.accent)
                     }
+                }
+                if book.visibility == .family {
+                    Label("Shared with the family", systemImage: "person.2.fill").font(.caption).foregroundStyle(Theme.Colors.accent)
                 }
                 Spacer(minLength: 0)
                 Text(ProgressText.summary(book: book, progress: progress))
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Colors.muted)
                     .accessibilityIdentifier("detail.progress")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -109,62 +113,68 @@ struct BookDetailView: View {
     }
 
     private var playRow: some View {
-        HStack(spacing: Theme.Spacing.md) {
-            Button {
-                play()
-            } label: {
-                Group {
-                    if isStarting {
-                        ProgressView().tint(.white)
-                    } else if isPlayingThis {
-                        Label(model.engine.isPlaying ? "Pause" : "Resume", systemImage: model.engine.isPlaying ? "pause.fill" : "play.fill")
-                    } else if let progress, progress.positionMs > 0, !progress.finished {
-                        Label("Resume", systemImage: "play.fill")
-                    } else if progress?.finished == true {
-                        Label("Play Again", systemImage: "play.fill")
-                    } else {
-                        Label("Play", systemImage: "play.fill")
+        let fraction = BookCard.fraction(book: book, progress: progress) ?? 0
+        return Button {
+            play()
+        } label: {
+            Group {
+                if isStarting {
+                    ProgressView().tint(.white)
+                } else if isPlayingThis {
+                    Label(model.engine.isPlaying ? "Pause" : "Resume", systemImage: model.engine.isPlaying ? "pause.fill" : "play.fill")
+                } else if let progress, progress.positionMs > 0, !progress.finished {
+                    Label("Continue Listening", systemImage: "play.fill")
+                } else if progress?.finished == true {
+                    Label("Listen Again", systemImage: "play.fill")
+                } else {
+                    Label("Play", systemImage: "play.fill")
+                }
+            }
+            .font(.headline)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .background {
+                // The button's own background is the progress bar.
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Theme.Colors.accent.opacity(0.55)
+                        Theme.Colors.accent.frame(width: geometry.size.width * (fraction >= 0.01 ? fraction : 0))
                     }
                 }
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Theme.Spacing.xs)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .disabled(isStarting)
-            .accessibilityIdentifier("detail.play")
-            if let progress, progress.positionMs > 0, !progress.finished, book.durationMs > 0 {
-                ProgressView(value: Double(progress.positionMs), total: Double(book.durationMs))
-                    .frame(width: 80)
-                    .accessibilityLabel("Progress")
-            }
+            .clipShape(Capsule())
         }
+        .buttonStyle(.plain)
+        .disabled(isStarting)
+        .accessibilityIdentifier("detail.play")
         .padding(.horizontal, Theme.Spacing.screenEdge)
     }
 
     private var metadata: some View {
-        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-            metadataRow("Length", ProgressText.length(book.durationMs))
-            if let year = book.publishedYear { metadataRow("Published", year) }
-            if let publisher = book.publisher { metadataRow("Publisher", publisher) }
-            if !book.genres.isEmpty { metadataRow("Genres", book.genres.joined(separator: ", ")) }
+        VStack(alignment: .leading, spacing: 0) {
+            SectionHeader(title: "Details").padding(.horizontal, -Theme.Spacing.screenEdge).padding(.bottom, Theme.Spacing.sm)
+            if !book.narrators.isEmpty { metadataRow("mic.fill", "Narrator", book.narratorLine) }
+            metadataRow("clock", "Length", ProgressText.length(book.durationMs))
+            if let year = book.publishedYear { metadataRow("calendar", "Published", year) }
+            if let publisher = book.publisher { metadataRow("building.2", "Publisher", publisher) }
+            if !book.genres.isEmpty { metadataRow("tag", "Genres", book.genres.joined(separator: ", ")) }
             if let files = book.files, !files.isEmpty {
                 let bytes = files.compactMap(\.sizeBytes).reduce(0, +)
-                metadataRow("Files", bytes > 0 ? "\(files.count) · \(ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file))" : "\(files.count)")
-            }
-            if let visibility = book.visibility {
-                metadataRow("Sharing", visibility == .family ? String(localized: "Shared with the family") : String(localized: "Only you"))
+                metadataRow("internaldrive", "Files", bytes > 0 ? "\(files.count) · \(ByteCountFormatter.string(fromByteCount: bytes, countStyle: .file))" : "\(files.count)")
             }
         }
-        .font(.footnote)
         .padding(.horizontal, Theme.Spacing.screenEdge)
     }
 
-    private func metadataRow(_ label: LocalizedStringKey, _ value: String) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(label).foregroundStyle(.secondary).frame(width: 84, alignment: .leading)
-            Text(value)
+    private func metadataRow(_ symbol: String, _ label: LocalizedStringKey, _ value: String) -> some View {
+        VStack(spacing: 0) {
+            HStack(alignment: .firstTextBaseline) {
+                Label(label, systemImage: symbol).font(.subheadline).foregroundStyle(Theme.Colors.foreground)
+                Spacer()
+                Text(value).font(.subheadline).foregroundStyle(Theme.Colors.muted).multilineTextAlignment(.trailing)
+            }
+            .padding(.vertical, Theme.Spacing.sm)
+            Divider()
         }
     }
 
@@ -178,10 +188,12 @@ struct BookDetailView: View {
                         Button {
                             jump(to: chapter.startMs)
                         } label: {
+                            let isCurrent = isPlayingThis && model.engine.currentChapter?.startMs == chapter.startMs
                             HStack {
-                                Text(chapter.title).lineLimit(2)
+                                if isCurrent { NowPlayingIndicator(isPlaying: model.engine.isPlaying) }
+                                Text(chapter.title).font(.subheadline.weight(isCurrent ? .semibold : .regular)).foregroundStyle(isCurrent ? Theme.Colors.accent : Theme.Colors.foreground).lineLimit(2)
                                 Spacer()
-                                Text(ProgressText.clock(chapter.durationMs)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                                Text(ProgressText.clock(chapter.durationMs)).font(.caption.monospacedDigit()).foregroundStyle(Theme.Colors.muted)
                             }
                             .padding(.horizontal, Theme.Spacing.screenEdge)
                             .frame(minHeight: Theme.minTarget)
@@ -195,9 +207,9 @@ struct BookDetailView: View {
                 ProgressView().frame(maxWidth: .infinity)
             } else {
                 Text("No chapter marks. The files are the chapters.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, Theme.Spacing.screenEdge)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.Colors.muted)
+                    .padding(Theme.Spacing.md)
             }
         case .files:
             if let files = book.files {
@@ -207,9 +219,9 @@ struct BookDetailView: View {
                             jump(to: file.startMs)
                         } label: {
                             HStack {
-                                Text(file.title ?? String(localized: "File \(index + 1)")).lineLimit(1)
+                                Text(file.title ?? String(localized: "File \(index + 1)")).font(.subheadline).foregroundStyle(Theme.Colors.foreground).lineLimit(1)
                                 Spacer()
-                                Text(ProgressText.clock(file.durationMs)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                                Text(ProgressText.clock(file.durationMs)).font(.caption.monospacedDigit()).foregroundStyle(Theme.Colors.muted)
                             }
                             .padding(.horizontal, Theme.Spacing.screenEdge)
                             .frame(minHeight: Theme.minTarget)
@@ -225,9 +237,9 @@ struct BookDetailView: View {
         case .bookmarks:
             if bookmarks.isEmpty {
                 Text("No bookmarks yet. Add one from the player.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, Theme.Spacing.screenEdge)
+                    .font(.subheadline)
+                    .foregroundStyle(Theme.Colors.muted)
+                    .padding(Theme.Spacing.md)
             } else {
                 VStack(spacing: 0) {
                     ForEach(bookmarks) { bookmark in
@@ -236,8 +248,8 @@ struct BookDetailView: View {
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    Text(bookmark.label ?? String(localized: "Bookmark")).lineLimit(1)
-                                    Text(ProgressText.clock(bookmark.positionMs)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                                    Text(bookmark.label ?? String(localized: "Bookmark")).font(.subheadline).foregroundStyle(Theme.Colors.foreground).lineLimit(1)
+                                    Text(ProgressText.clock(bookmark.positionMs)).font(.caption.monospacedDigit()).foregroundStyle(Theme.Colors.muted)
                                 }
                                 Spacer()
                             }

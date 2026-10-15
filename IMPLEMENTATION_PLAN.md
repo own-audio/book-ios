@@ -196,7 +196,8 @@ client's mojibake repair, applied to display only).
   rewind, mobile data). Known: titles mis-encoded on the server as Latin-1-read Windows-1250
   ("èást" for "část") are shown as the server has them; the repair covers UTF-8 misreads only.
 
-- [ ] **B4b: The look.** The design of own.audio's audiobook app, as its design system has
+- [x] **B4b: The look.** Done 2026-10-15; the smoke suite passes on the restyled screens, checked
+  by eye from its screenshots. The design of own.audio's audiobook app, as its design system has
   it: the audiobook brown as the accent (`#7A4A2B`, `#D7A97C` in the dark), Apple-like
   neutrals (`#F7F7F8` / `#0C0C0E` alternate backgrounds, `#6E6E73` / `#98989D` muted), the
   4/8/12/16/24/32 spacing scale, radius 12 for cards and covers, 16 for the mini player, 28 for
