@@ -210,7 +210,8 @@ client's mojibake repair, applied to display only).
   wordmark and the hero artwork. **One app icon** (done 2026-10-15, `Design/`): the music
   app's construction — the five family figures in their colours — with a closed book in brown
   in the centre, rendered by `scripts/render-icons.mjs`; the same artwork as `AppLogo`.
-- [ ] **B4c: English and Czech.** Every string through the String Catalog
+- [x] **B4c: English and Czech.** Done 2026-10-15; 199 keys with Czech, `CzechScreensTests`
+  passes against Audiobookshelf. Every string through the String Catalog
   (`Localizable.xcstrings`, `InfoPlist.xcstrings`): English as the source, Czech complete, one
   Czech term per concept as the other own.audio apps use them (kapitola, záložka, rychlost,
   časovač spánku, knihovna, série, vypravěč…). Plurals as CLDR categories. No string left in

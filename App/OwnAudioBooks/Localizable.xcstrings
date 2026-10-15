@@ -1,0 +1,2166 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%1$@ of %2$@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ z %2$@"
+          }
+        }
+      }
+    },
+    "%1$@ · %2$@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%1$@ · %2$@ left": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · zbývá %2$@"
+          }
+        }
+      }
+    },
+    "%1$@, %2$@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "%1$lld h %2$lld min": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "%@ left": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zbývá %@"
+          }
+        }
+      }
+    },
+    "%@ · ready for your next chapter?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · připraveni na další kapitolu?"
+          }
+        }
+      }
+    },
+    "%lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld"
+          }
+        }
+      }
+    },
+    "%lld books": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld book"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld books"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld kniha"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld knihy"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld knihy"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld knih"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld h": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld h"
+          }
+        }
+      }
+    },
+    "%lld min": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld s": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld s"
+          }
+        }
+      }
+    },
+    "15 minutes": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "15 minut"
+          }
+        }
+      }
+    },
+    "30 minutes": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "30 minut"
+          }
+        }
+      }
+    },
+    "45 minutes": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "45 minut"
+          }
+        }
+      }
+    },
+    "5 minutes": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 minut"
+          }
+        }
+      }
+    },
+    "60 minutes": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "60 minut"
+          }
+        }
+      }
+    },
+    "A code from your authenticator is needed.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je potřeba kód z vaší ověřovací aplikace."
+          }
+        }
+      }
+    },
+    "A shared own.audio server with public-domain books. Remove it in Settings when you add your own.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílený server own.audio s volně dostupnými knihami. Až přidáte vlastní server, odeberte ho v Nastavení."
+          }
+        }
+      }
+    },
+    "About": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O aplikaci"
+          }
+        }
+      }
+    },
+    "Account": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Účet"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat"
+          }
+        }
+      }
+    },
+    "Add 10 Minutes": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat 10 minut"
+          }
+        }
+      }
+    },
+    "Add Bookmark at %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat záložku v %@"
+          }
+        }
+      }
+    },
+    "Add Server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat server"
+          }
+        }
+      }
+    },
+    "Add to Favourites": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat do oblíbených"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vše"
+          }
+        }
+      }
+    },
+    "Audiobookshelf": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audiobookshelf"
+          }
+        }
+      },
+      "shouldTranslate": false
+    },
+    "Author": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autor"
+          }
+        }
+      }
+    },
+    "Authors": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autoři"
+          }
+        }
+      }
+    },
+    "Bookmark": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záložka"
+          }
+        }
+      }
+    },
+    "Bookmarks": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záložky"
+          }
+        }
+      }
+    },
+    "Books": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihy"
+          }
+        }
+      }
+    },
+    "Books, authors, narrators": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihy, autoři, vypravěči"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zrušit"
+          }
+        }
+      }
+    },
+    "Chapter %lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapitola %lld"
+          }
+        }
+      }
+    },
+    "Chapter: %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapitola: %@"
+          }
+        }
+      }
+    },
+    "Chapters": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapitoly"
+          }
+        }
+      }
+    },
+    "Check Connection": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkontrolovat spojení"
+          }
+        }
+      }
+    },
+    "Checking…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kontroluje se…"
+          }
+        }
+      }
+    },
+    "Close": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zavřít"
+          }
+        }
+      }
+    },
+    "Code": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kód"
+          }
+        }
+      }
+    },
+    "Collections": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kolekce"
+          }
+        }
+      }
+    },
+    "Connect": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojit"
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojeno"
+          }
+        }
+      }
+    },
+    "Continue Listening": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat v poslechu"
+          }
+        }
+      }
+    },
+    "Couldn't Load": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se načíst"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smazat"
+          }
+        }
+      }
+    },
+    "Descending": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sestupně"
+          }
+        }
+      }
+    },
+    "Description": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popis"
+          }
+        }
+      }
+    },
+    "Details": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Podrobnosti"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotovo"
+          }
+        }
+      }
+    },
+    "Downloaded Only": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen stažené"
+          }
+        }
+      }
+    },
+    "End of Book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konec knihy"
+          }
+        }
+      }
+    },
+    "End of Chapter": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konec kapitoly"
+          }
+        }
+      }
+    },
+    "Every book has been started.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Každá kniha už je rozposlouchaná."
+          }
+        }
+      }
+    },
+    "Faster": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychleji"
+          }
+        }
+      }
+    },
+    "Favourite": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oblíbené"
+          }
+        }
+      }
+    },
+    "File %lld": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "File %lld"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "File %lld"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Soubor %lld"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Soubor %lld"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Soubor %lld"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Soubor %lld"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Files": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soubory"
+          }
+        }
+      }
+    },
+    "Filter": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filtr"
+          }
+        }
+      }
+    },
+    "Finished": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dokončeno"
+          }
+        }
+      }
+    },
+    "Free and open source · MPL-2.0": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdarma a open source · MPL-2.0"
+          }
+        }
+      }
+    },
+    "Genres": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žánry"
+          }
+        }
+      }
+    },
+    "Good afternoon": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dobré odpoledne"
+          }
+        }
+      }
+    },
+    "Good evening": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dobrý večer"
+          }
+        }
+      }
+    },
+    "Good morning": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dobré ráno"
+          }
+        }
+      }
+    },
+    "Grid": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mřížka"
+          }
+        }
+      }
+    },
+    "Home": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Domů"
+          }
+        }
+      }
+    },
+    "In Progress": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rozposlouchané"
+          }
+        }
+      }
+    },
+    "Label": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popisek"
+          }
+        }
+      }
+    },
+    "Label (optional)": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popisek (nepovinný)"
+          }
+        }
+      }
+    },
+    "Length": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Délka"
+          }
+        }
+      }
+    },
+    "Library": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna"
+          }
+        }
+      }
+    },
+    "Library…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna…"
+          }
+        }
+      }
+    },
+    "Listen Again": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poslechnout znovu"
+          }
+        }
+      }
+    },
+    "Mark as Finished": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Označit jako dokončené"
+          }
+        }
+      }
+    },
+    "Mark as Not Finished": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Označit jako nedokončené"
+          }
+        }
+      }
+    },
+    "More": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Více"
+          }
+        }
+      }
+    },
+    "Name": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název"
+          }
+        }
+      }
+    },
+    "Name (optional)": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název (nepovinný)"
+          }
+        }
+      }
+    },
+    "Narrator": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vypravěč"
+          }
+        }
+      }
+    },
+    "Narrators": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vypravěči"
+          }
+        }
+      }
+    },
+    "New Bookmark": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nová záložka"
+          }
+        }
+      }
+    },
+    "No Books": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádné knihy"
+          }
+        }
+      }
+    },
+    "No Books Yet": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné knihy"
+          }
+        }
+      }
+    },
+    "No Server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádný server"
+          }
+        }
+      }
+    },
+    "No book is finished yet.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádná kniha ještě není dokončená."
+          }
+        }
+      }
+    },
+    "No book is in progress.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádná kniha není rozposlouchaná."
+          }
+        }
+      }
+    },
+    "No book library could be listed.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nepodařilo se vypsat žádnou knihovnu knih."
+          }
+        }
+      }
+    },
+    "No bookmarks in this book yet.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V této knize zatím nejsou žádné záložky."
+          }
+        }
+      }
+    },
+    "No bookmarks yet. Add one from the player.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné záložky. Přidejte ji z přehrávače."
+          }
+        }
+      }
+    },
+    "No chapter marks. The files are the chapters.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez značek kapitol. Kapitolami jsou soubory."
+          }
+        }
+      }
+    },
+    "No collections yet.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné kolekce."
+          }
+        }
+      }
+    },
+    "No series yet.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné série."
+          }
+        }
+      }
+    },
+    "No server yet?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ještě nemáte server?"
+          }
+        }
+      }
+    },
+    "Nobody here yet.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím tu nikdo není."
+          }
+        }
+      }
+    },
+    "Not Started": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nezačaté"
+          }
+        }
+      }
+    },
+    "Not available offline.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline není k dispozici."
+          }
+        }
+      }
+    },
+    "Nothing Playing": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nehraje"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "On Mobile Data": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na mobilních datech"
+          }
+        }
+      }
+    },
+    "Opens the player": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otevře přehrávač"
+          }
+        }
+      }
+    },
+    "Original": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Originál"
+          }
+        }
+      }
+    },
+    "Part %lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Část %lld"
+          }
+        }
+      }
+    },
+    "Password": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heslo"
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozastavit"
+          }
+        }
+      }
+    },
+    "Paused": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozastaveno"
+          }
+        }
+      }
+    },
+    "Pitch stays the same at any speed. The speed is remembered for this book.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Výška hlasu zůstává při každé rychlosti stejná. Rychlost se pamatuje pro tuto knihu."
+          }
+        }
+      }
+    },
+    "Play": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát"
+          }
+        }
+      }
+    },
+    "Playback": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrávání"
+          }
+        }
+      }
+    },
+    "Playing": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hraje"
+          }
+        }
+      }
+    },
+    "Privacy": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soukromí"
+          }
+        }
+      }
+    },
+    "Published": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vydáno"
+          }
+        }
+      }
+    },
+    "Publisher": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vydavatel"
+          }
+        }
+      }
+    },
+    "Ready for your next chapter?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připraveni na další kapitolu?"
+          }
+        }
+      }
+    },
+    "Recently Added": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedávno přidané"
+          }
+        }
+      }
+    },
+    "Remove": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat"
+          }
+        }
+      }
+    },
+    "Remove Favourite": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat z oblíbených"
+          }
+        }
+      }
+    },
+    "Rename": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přejmenovat"
+          }
+        }
+      }
+    },
+    "Rename Bookmark": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přejmenovat záložku"
+          }
+        }
+      }
+    },
+    "Rename Server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přejmenovat server"
+          }
+        }
+      }
+    },
+    "Rename…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přejmenovat…"
+          }
+        }
+      }
+    },
+    "Reset Progress": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vynulovat průběh"
+          }
+        }
+      }
+    },
+    "Reset Progress?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vynulovat průběh?"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat"
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uložit"
+          }
+        }
+      }
+    },
+    "Saver": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úsporný"
+          }
+        }
+      }
+    },
+    "Saver asks the server for a smaller stream where it makes one (%lld kbps is plenty for speech). Downloaded Only plays nothing that is not on this iPhone.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Úsporný režim požádá server o menší stream, pokud ho umí vytvořit (%lld kb/s na mluvené slovo bohatě stačí). Jen stažené nepřehraje nic, co není v tomto iPhonu."
+          }
+        }
+      }
+    },
+    "Search": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledat"
+          }
+        }
+      }
+    },
+    "Search the Library": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hledat v knihovně"
+          }
+        }
+      }
+    },
+    "Section": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oddíl"
+          }
+        }
+      }
+    },
+    "Selected": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybráno"
+          }
+        }
+      }
+    },
+    "Series": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Série"
+          }
+        }
+      }
+    },
+    "Server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server"
+          }
+        }
+      }
+    },
+    "Server address": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresa serveru"
+          }
+        }
+      }
+    },
+    "Servers": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Servery"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nastavení"
+          }
+        }
+      }
+    },
+    "Shared with family": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdíleno s rodinou"
+          }
+        }
+      }
+    },
+    "Shared with the family": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdíleno s rodinou"
+          }
+        }
+      }
+    },
+    "Show": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit"
+          }
+        }
+      }
+    },
+    "Show Book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zobrazit knihu"
+          }
+        }
+      }
+    },
+    "Sign In": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se"
+          }
+        }
+      }
+    },
+    "Sign In Again": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se znovu"
+          }
+        }
+      }
+    },
+    "Sign In Again…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se znovu…"
+          }
+        }
+      }
+    },
+    "Sign-in refused": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení odmítnuto"
+          }
+        }
+      }
+    },
+    "Sign-in refused · Sign in again": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení odmítnuto · Přihlaste se znovu"
+          }
+        }
+      }
+    },
+    "Skip Back": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skok vzad"
+          }
+        }
+      }
+    },
+    "Skip Forward": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skok vpřed"
+          }
+        }
+      }
+    },
+    "Skip forward %lld seconds": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Skip forward %lld second"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Skip forward %lld seconds"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Skok vpřed o %lld sekundu"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Skok vpřed o %lld sekundy"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Skok vpřed o %lld sekundy"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Skok vpřed o %lld sekund"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "Sleep": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spánek"
+          }
+        }
+      }
+    },
+    "Sleep Timer": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Časovač spánku"
+          }
+        }
+      }
+    },
+    "Slower": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pomaleji"
+          }
+        }
+      }
+    },
+    "Smart Rewind": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chytré přetočení"
+          }
+        }
+      }
+    },
+    "Sort": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řazení"
+          }
+        }
+      }
+    },
+    "Sort and filter": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Řazení a filtr"
+          }
+        }
+      }
+    },
+    "Source Code and Licence": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zdrojový kód a licence"
+          }
+        }
+      }
+    },
+    "Speed": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlost"
+          }
+        }
+      }
+    },
+    "Speed for New Books": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlost pro nové knihy"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zastavit"
+          }
+        }
+      }
+    },
+    "Stops at the end of the book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zastaví na konci knihy"
+          }
+        }
+      }
+    },
+    "Stops at the end of this chapter": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zastaví na konci této kapitoly"
+          }
+        }
+      }
+    },
+    "Stops in": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zastaví za"
+          }
+        }
+      }
+    },
+    "That Didn't Work": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To se nepovedlo"
+          }
+        }
+      }
+    },
+    "That address does not answer as an own.audio or Audiobookshelf server.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Na této adrese neodpovídá server own.audio ani Audiobookshelf."
+          }
+        }
+      }
+    },
+    "That code was not accepted.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento kód nebyl přijat."
+          }
+        }
+      }
+    },
+    "The library shows the selected server. A book keeps playing when you switch.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna zobrazuje vybraný server. Rozehraná kniha hraje dál, i když server přepnete."
+          }
+        }
+      }
+    },
+    "The position is forgotten on every device.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozice se zapomene na všech zařízeních."
+          }
+        }
+      }
+    },
+    "The server answered with an error (%lld).": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server odpověděl chybou (%lld)."
+          }
+        }
+      }
+    },
+    "The server could not be reached.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server není dostupný."
+          }
+        }
+      }
+    },
+    "The server could not be reached. Check the address and your connection.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server není dostupný. Zkontrolujte adresu a připojení."
+          }
+        }
+      }
+    },
+    "The server did not allow that.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server to nedovolil."
+          }
+        }
+      }
+    },
+    "The server no longer has that.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server to už nemá."
+          }
+        }
+      }
+    },
+    "The server refused that name and password.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server odmítl toto jméno a heslo."
+          }
+        }
+      }
+    },
+    "The server refused the sign-in. Sign in again in Settings › Servers.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server odmítl přihlášení. Přihlaste se znovu v Nastavení › Servery."
+          }
+        }
+      }
+    },
+    "The server's answer could not be read.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odpověď serveru se nepodařilo přečíst."
+          }
+        }
+      }
+    },
+    "The six-digit code from your authenticator app, or one of your recovery codes.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Šestimístný kód z vaší ověřovací aplikace, nebo jeden z vašich záložních kódů."
+          }
+        }
+      }
+    },
+    "This account reaches no book library on that server.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento účet nemá na tomto serveru přístup k žádné knihovně knih."
+          }
+        }
+      }
+    },
+    "This library has no books yet.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "V této knihovně zatím nejsou žádné knihy."
+          }
+        }
+      }
+    },
+    "This own.audio server is too old for the app; update it to 1.0.0-beta.20 or later.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento server own.audio je pro aplikaci příliš starý; aktualizujte ho na 1.0.0-beta.20 nebo novější."
+          }
+        }
+      }
+    },
+    "This server does not offer that.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tento server to nenabízí."
+          }
+        }
+      }
+    },
+    "This server's library is empty.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna tohoto serveru je prázdná."
+          }
+        }
+      }
+    },
+    "Title": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Název"
+          }
+        }
+      }
+    },
+    "Titles, authors, narrators and series.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Názvy, autoři, vypravěči a série."
+          }
+        }
+      }
+    },
+    "Try Again": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkusit znovu"
+          }
+        }
+      }
+    },
+    "Try the Demo Library": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vyzkoušet ukázkovou knihovnu"
+          }
+        }
+      }
+    },
+    "Turn Off": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vypnout"
+          }
+        }
+      }
+    },
+    "Two-Factor Sign-In": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dvoufázové přihlášení"
+          }
+        }
+      }
+    },
+    "Unreachable": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nedostupný"
+          }
+        }
+      }
+    },
+    "User name or email": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uživatelské jméno nebo e-mail"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verze"
+          }
+        }
+      }
+    },
+    "Without http:// or https://, the app tries https and then http, so a server at home works as typed.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez http:// nebo https:// zkusí aplikace nejdřív https a pak http, takže domácí server funguje tak, jak ho napíšete."
+          }
+        }
+      }
+    },
+    "Works with own.audio and Audiobookshelf; the app finds out which. Your sign-in stays in this phone's Keychain.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funguje s own.audio i Audiobookshelf; aplikace sama pozná, o který jde. Přihlášení zůstává v klíčence tohoto telefonu."
+          }
+        }
+      }
+    },
+    "Your audiobooks, from your own server.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše audioknihy z vašeho vlastního serveru."
+          }
+        }
+      }
+    },
+    "Your sign-in stays in this iPhone's Keychain; both kinds of server hand out tokens, and the password is not kept.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášení zůstává v klíčence tohoto iPhonu; oba druhy serverů vydávají tokeny a heslo se neukládá."
+          }
+        }
+      }
+    },
+    "own.audio": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio"
+          }
+        }
+      },
+      "shouldTranslate": false
+    },
+    "own.audio Books is free and open source (MPL-2.0). It talks only to the servers you add.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio Books je zdarma a open source (MPL-2.0). Mluví jen se servery, které přidáte."
+          }
+        }
+      }
+    },
+    "own.audio canary (testing)": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio canary (testování)"
+          }
+        }
+      }
+    },
+    "own.audio: your account's email and password. Audiobookshelf: your user name and password.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio: e-mail a heslo vašeho účtu. Audiobookshelf: vaše uživatelské jméno a heslo."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

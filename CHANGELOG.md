@@ -38,6 +38,9 @@ All notable changes to this project are documented here. The format follows
 - The App Store listing in English and Czech (`AppStore/`), the review notes, `PRIVACY.md`,
   and the first TestFlight build (8).
 
+- Czech, complete, beside English: the String Catalog with plural forms, the Info.plist
+  strings, and a UI test of the Czech screens (B4c).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.

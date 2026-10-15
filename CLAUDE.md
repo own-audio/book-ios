@@ -17,6 +17,12 @@ for strangers to read.
   anything that touches progress reporting is tested offline and with a dead server.
 - Code copied from `own-audio/music-ios` keeps its file names; a fix there is ported here by
   hand and noted in the changelog.
+- **English and Czech, always together.** Every user-facing string is a SwiftUI literal or
+  `String(localized:)` (brand names `verbatim`), and every new key gets its Czech in
+  `Localizable.xcstrings` in the same commit; counts use plural variations. The catalog is
+  generated — keys from `xcodebuild -exportLocalizations`, Czech from the table in
+  `scripts/make-catalog.py`; edit the table, not the JSON. `CzechScreensTests` runs with the
+  UI suite.
 
 ## Build
 
