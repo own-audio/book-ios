@@ -35,7 +35,7 @@ private func exercise(_ source: any BookSource) async throws {
     let byTitle = try await source.books(BookQuery(text: String(book.title.prefix(4))), cursor: nil, limit: 10)
     #expect(byTitle.books.contains { $0.id == book.id })
 
-    // Progress: written, read back, counted in progress, cleared.
+    // ListeningProgress: written, read back, counted in progress, cleared.
     let saved = try await source.saveProgress(bookId: book.id, positionMs: 42_500, durationMs: book.durationMs, finished: false, at: Date())
     #expect(saved.positionMs == 42_500)
     let read = try #require(try await source.progress(bookId: book.id))

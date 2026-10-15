@@ -7,7 +7,7 @@ public enum ServerSetup {
     // MARK: - Audiobookshelf
 
     public struct AudiobookshelfSignIn: Sendable {
-        public let record: ServerRecord
+        public var record: ServerRecord
         /// The account's book libraries; the record's `libraryId` is the default one, and the
         /// app lets the listener pick another when there are several.
         public let libraries: [(id: String, name: String)]

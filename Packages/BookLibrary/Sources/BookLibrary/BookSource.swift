@@ -47,11 +47,11 @@ public protocol BookSource: Sendable {
     func search(_ text: String) async throws -> SearchResult
 
     // The listener's state
-    func progress(bookId: String) async throws -> Progress?
+    func progress(bookId: String) async throws -> ListeningProgress?
     /// Every book the listener started, by id.
-    func allProgress() async throws -> [String: Progress]
+    func allProgress() async throws -> [String: ListeningProgress]
     /// Returns what the server holds after the save: another device's newer position wins.
-    func saveProgress(bookId: String, positionMs: Int64, durationMs: Int64, finished: Bool, at: Date) async throws -> Progress
+    func saveProgress(bookId: String, positionMs: Int64, durationMs: Int64, finished: Bool, at: Date) async throws -> ListeningProgress
     func clearProgress(bookId: String) async throws
     func bookmarks(bookId: String) async throws -> [Bookmark]
     func addBookmark(bookId: String, positionMs: Int64, label: String?) async throws -> Bookmark
@@ -64,7 +64,7 @@ public protocol BookSource: Sendable {
     /// `maxBitrateKbps` asks for a smaller stream where the server makes one.
     func playPlan(for book: Book, maxBitrateKbps: Int?) async throws -> PlayPlan
     /// A position reached while playing; what the server holds afterwards.
-    func report(_ report: PlaybackReport) async throws -> Progress?
+    func report(_ report: PlaybackReport) async throws -> ListeningProgress?
     /// The link for one file again, after the plan's links ran out.
     func partURL(for book: Book, fileId: String, startMs: Int64?, maxBitrateKbps: Int?) async throws -> PlayPlan.Part
 
@@ -123,7 +123,7 @@ public struct FeedResult: Sendable {
     public let books: [Book]
     public let authors: [Person]
     public let narrators: [Person]
-    public let progress: [String: Progress]
+    public let progress: [String: ListeningProgress]
     public let bookmarks: [Bookmark]
     public let favourites: Set<String>
 }

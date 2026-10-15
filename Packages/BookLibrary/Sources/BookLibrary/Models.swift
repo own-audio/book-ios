@@ -156,7 +156,7 @@ public struct Book: Sendable, Equatable, Identifiable {
 }
 
 /// Where one listener is in one book.
-public struct Progress: Sendable, Equatable {
+public struct ListeningProgress: Sendable, Equatable {
     public var positionMs: Int64
     public var finished: Bool
     public var updatedAt: Date

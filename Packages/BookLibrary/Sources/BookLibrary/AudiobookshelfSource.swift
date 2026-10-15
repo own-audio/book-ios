@@ -138,13 +138,13 @@ public struct AudiobookshelfSource: BookSource {
 
     // MARK: - The listener's state
 
-    public func progress(bookId: String) async throws -> Progress? {
+    public func progress(bookId: String) async throws -> ListeningProgress? {
         try await translating { try await client.progress(itemId: bookId).map(Self.progress) }
     }
 
-    public func allProgress() async throws -> [String: Progress] {
+    public func allProgress() async throws -> [String: ListeningProgress] {
         try await translating {
-            var out: [String: Progress] = [:]
+            var out: [String: ListeningProgress] = [:]
             for p in try await client.me().mediaProgress where p.episodeId == nil {
                 out[p.libraryItemId] = Self.progress(p)
             }
@@ -152,10 +152,10 @@ public struct AudiobookshelfSource: BookSource {
         }
     }
 
-    public func saveProgress(bookId: String, positionMs: Int64, durationMs: Int64, finished: Bool, at: Date) async throws -> Progress {
+    public func saveProgress(bookId: String, positionMs: Int64, durationMs: Int64, finished: Bool, at: Date) async throws -> ListeningProgress {
         try await translating {
             try await client.updateProgress(itemId: bookId, .init(currentTime: Double(positionMs) / 1000, duration: Double(durationMs) / 1000, isFinished: finished))
-            return Progress(positionMs: positionMs, finished: finished, updatedAt: at)
+            return ListeningProgress(positionMs: positionMs, finished: finished, updatedAt: at)
         }
     }
 
@@ -209,7 +209,7 @@ public struct AudiobookshelfSource: BookSource {
         }
     }
 
-    public func report(_ report: PlaybackReport) async throws -> Progress? {
+    public func report(_ report: PlaybackReport) async throws -> ListeningProgress? {
         try await translating {
             let seconds = Double(report.positionMs) / 1000
             if let sessionId = report.sessionId {
@@ -224,7 +224,7 @@ public struct AudiobookshelfSource: BookSource {
             } else {
                 try await client.updateProgress(itemId: report.bookId, .init(currentTime: seconds, duration: Double(report.durationMs) / 1000, isFinished: report.finished))
             }
-            return Progress(positionMs: report.positionMs, finished: report.finished, updatedAt: report.at)
+            return ListeningProgress(positionMs: report.positionMs, finished: report.finished, updatedAt: report.at)
         }
     }
 
@@ -274,8 +274,8 @@ public struct AudiobookshelfSource: BookSource {
         return SeriesSummary(id: series.id, name: Mojibake.repair(series.name), bookCount: books.count, books: books)
     }
 
-    static func progress(_ p: MediaProgress) -> Progress {
-        Progress(positionMs: ms(p.currentTime), finished: p.isFinished, updatedAt: p.updatedAt)
+    static func progress(_ p: MediaProgress) -> ListeningProgress {
+        ListeningProgress(positionMs: ms(p.currentTime), finished: p.isFinished, updatedAt: p.updatedAt)
     }
 
     static func bookmark(_ b: AudiobookshelfKit.Bookmark) -> Bookmark {

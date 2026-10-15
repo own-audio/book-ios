@@ -25,3 +25,9 @@ All notable changes to this project are documented here. The format follows
   correction, chapters (the server's, or read from the file), skips, smart rewind, the sleep
   timer's end-of-chapter mode, lock-screen skip buttons, positions reported with the time
   listened, and a fresh link fetched when one fails (B3).
+- The app: onboarding and Add Server for both kinds of server (with two-factor and the demo),
+  Servers, Home shelves, Library with sort, filters, series, authors, narrators and
+  collections, book detail with chapters, files and bookmarks, Search, the player with
+  speed, skips, chapters, sleep timer and bookmarks, the mini player, Settings; positions
+  saved on the phone first and sent to the server; UI tests against real servers (B4).
+- The app icon: the own.audio family ring with a closed book in brown, from `Design/`.

@@ -131,7 +131,7 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
     // MARK: - The listener's state
 
     /// From the server, with every device's position; the copy on the phone when it can't be reached.
-    public func progress(bookId: String) async throws -> Progress? {
+    public func progress(bookId: String) async throws -> ListeningProgress? {
         do {
             return try await client.progress(.book, id: bookId).map(Self.progress)
         } catch OwnAudioError.network, OwnAudioError.offline {
@@ -141,11 +141,11 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
         }
     }
 
-    public func allProgress() async throws -> [String: Progress] {
+    public func allProgress() async throws -> [String: ListeningProgress] {
         try await synced().progress
     }
 
-    public func saveProgress(bookId: String, positionMs: Int64, durationMs: Int64, finished: Bool, at: Date) async throws -> Progress {
+    public func saveProgress(bookId: String, positionMs: Int64, durationMs: Int64, finished: Bool, at: Date) async throws -> ListeningProgress {
         try await translating {
             let answer = try await client.saveProgress(.book, id: bookId, positionMs: positionMs, finished: finished, at: at)
             let progress = Self.progress(answer.progress)
@@ -223,7 +223,7 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
         }
     }
 
-    public func report(_ report: PlaybackReport) async throws -> Progress? {
+    public func report(_ report: PlaybackReport) async throws -> ListeningProgress? {
         try await saveProgress(bookId: report.bookId, positionMs: report.positionMs, durationMs: report.durationMs, finished: report.finished, at: report.at)
     }
 
@@ -352,7 +352,7 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
         }
         let contributors = decoded("contributor", OwnAudioKit.Contributor.self)
         let books = decoded("book", OwnAudioKit.Book.self).values.map { book($0, contributors: contributors) }
-        var progress: [String: Progress] = [:]
+        var progress: [String: ListeningProgress] = [:]
         for p in decoded("progress.book", OwnAudioKit.Progress.self).values where p.kind == "book" { progress[p.id] = Self.progress(p) }
         let bookmarks = decoded("bookmark", OwnAudioKit.Bookmark.self).values.filter { $0.kind == "book" }.map(bookmark).sorted { $0.positionMs < $1.positionMs }
         let favourites = Set(decoded("favourite.book", OwnAudioKit.Favourite.self).values.filter { $0.kind == "book" }.map(\.id))
@@ -417,8 +417,8 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
         }.sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 
-    static func progress(_ p: OwnAudioKit.Progress) -> Progress {
-        Progress(
+    static func progress(_ p: OwnAudioKit.Progress) -> ListeningProgress {
+        ListeningProgress(
             positionMs: p.positionMs, finished: p.finished, updatedAt: p.updatedAt,
             devices: (p.devices ?? []).map { DevicePosition(id: $0.deviceId, name: $0.deviceName, kind: $0.deviceKind, positionMs: $0.positionMs, finished: $0.finished, at: $0.at, isThisDevice: $0.current) }
         )
@@ -480,7 +480,7 @@ public final class OwnAudioCatalogue: @unchecked Sendable {
         public var books: [Book]
         public var authors: [Person]
         public var narrators: [Person]
-        public var progress: [String: Progress]
+        public var progress: [String: ListeningProgress]
         public var bookmarks: [Bookmark]
         public var favourites: Set<String>
     }
@@ -515,7 +515,7 @@ public final class OwnAudioCatalogue: @unchecked Sendable {
         load(state, library: OwnAudioSource.library(state))
     }
 
-    func remember(progress: Progress?, bookId: String) {
+    func remember(progress: ListeningProgress?, bookId: String) {
         lock.lock()
         _library?.progress[bookId] = progress
         lock.unlock()

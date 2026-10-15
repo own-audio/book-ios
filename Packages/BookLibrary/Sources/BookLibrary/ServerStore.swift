@@ -282,7 +282,7 @@ public final class TokenSessions: @unchecked Sendable {
         return made
     }
 
-    func catalogue(for serverId: UUID) -> OwnAudioCatalogue {
+    public func catalogue(for serverId: UUID) -> OwnAudioCatalogue {
         lock.lock()
         defer { lock.unlock() }
         if let existing = catalogues[serverId] { return existing }

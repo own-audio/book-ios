@@ -145,11 +145,12 @@ public final class SpokenEngine {
         isPlaying ? pause() : play()
     }
 
-    /// Ends playback of the book: the position is reported once more and the lock screen cleared.
-    public func stop() {
+    /// Ends playback of the book: the position is reported once more (unless the caller is
+    /// about to forget it) and the lock screen cleared.
+    public func stop(reporting: Bool = true) {
         guard book != nil else { return }
         if isPlaying { player.pause(); isPlaying = false }
-        flushListening(reason: .stop)
+        if reporting { flushListening(reason: .stop) }
         player.replaceCurrentItem(with: nil)
         book = nil
         currentIndex = nil

@@ -1,24 +1,57 @@
 import SwiftUI
 
-/// The first screen until B4 brings the real app: enough to launch, to be found by the UI
-/// tests, and to prove the project builds on every commit.
+/// First run: add a server. After that three tabs — Home, Library, Search — with the mini
+/// player above the tab bar and the full player as a cover.
 struct RootView: View {
+    @Environment(AppModel.self) private var model
+    @State private var isShowingPlayer = false
+    @State private var tab: AppTab = .home
+
+    private enum AppTab: Hashable { case home, library, search }
+
     var body: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "books.vertical")
-                .font(.system(size: 56))
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
-            Text("own.audio Books")
-                .font(.title2.weight(.semibold))
-            Text("In development")
-                .foregroundStyle(.secondary)
+        Group {
+            if !model.hasLoaded {
+                ProgressView()
+            } else if model.servers.isEmpty {
+                OnboardingView()
+            } else {
+                tabs
+            }
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityIdentifier("root.placeholder")
+        .fullScreenCover(isPresented: $isShowingPlayer) { PlayerView() }
+        .alert("That Didn't Work", isPresented: Binding(get: { model.actionError != nil }, set: { if !$0 { model.actionError = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(model.actionError ?? "")
+        }
+        .onChange(of: model.engine.errorMessage) { _, message in
+            if let message, !isShowingPlayer { model.actionError = message }
+        }
+    }
+
+    private var tabs: some View {
+        TabView(selection: $tab) {
+            Tab("Home", systemImage: "house", value: AppTab.home) {
+                NavigationStack { HomeView().libraryDestinations() }
+                    .miniPlayerInset { isShowingPlayer = true }
+            }
+            Tab("Library", systemImage: "books.vertical", value: AppTab.library) {
+                NavigationStack { LibraryView().libraryDestinations() }
+                    .miniPlayerInset { isShowingPlayer = true }
+            }
+            Tab("Search", systemImage: "magnifyingglass", value: AppTab.search, role: .search) {
+                NavigationStack { SearchView().libraryDestinations() }
+                    .miniPlayerInset { isShowingPlayer = true }
+            }
+        }
+        // Switching servers starts every tab over: their screens belong to the old library.
+        .id(model.activeServerId)
     }
 }
 
-#Preview {
-    RootView()
+private extension View {
+    func miniPlayerInset(onTap: @escaping () -> Void) -> some View {
+        safeAreaInset(edge: .bottom, spacing: 0) { MiniPlayerBar(onTap: onTap) }
+    }
 }

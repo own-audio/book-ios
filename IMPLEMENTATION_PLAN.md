@@ -179,23 +179,42 @@ client's mojibake repair, applied to display only).
   chapter, stop, finish and teardown, remembered locally through `ResumeStore`, links refreshed
   before a part whose link is about to run out. Transcoded HLS parts play as any other URL.
 
-- [ ] **B4: The app.** Onboarding and Add Server: Audiobookshelf (address, user, password;
-  shows the library choice when the account has several) and own.audio (address, email and
-  password, a demo button). Home: Continue Listening, Recently Added, Continue Series
-  (Audiobookshelf `personalized`; own.audio from `/me/progress?kind=book` and `sort=added`).
-  Library: grid and list, sort by title / author / added / duration / progress, filters
-  Not started / In progress / Finished / Downloaded, and where the source offers them: Series,
-  Authors, Narrators, Collections. Search: server search on Audiobookshelf (one library at a
-  time), catalogue search on own.audio. Book detail: metadata, description, progress with
-  time left, Play / Resume, Mark finished / Reset progress, Favourite where offered, tabs for
-  Chapters, Files, Bookmarks. Player: cover, title, chapter, book-level bar with time left at
-  the current speed, chapter scrubber, skip buttons showing the interval, chapter previous/next,
-  speed sheet, sleep timer sheet, chapters sheet (scrolls to the current one), bookmarks sheet
-  (add with label, jump, edit, delete); a mini player over the tabs. Settings: skip intervals,
-  default speed (per app; per book remembered), smart rewind, mobile data (Original / Saver /
-  Downloaded only, as in the music app), downloads storage, servers, about. Several servers at
-  once. The `-uiTestReset` launch flow and accessibility identifiers from the first screen, so
-  B10's tests exist from the start.
+- [x] **B4: The app.** Done 2026-10-15; the UI smoke suite (add server, library, detail, play,
+  skip, speed, bookmark, chapters, sleep timer, pause, progress shown, reset) and the
+  wrong-password test pass against a 2.37.1 Audiobookshelf and the own.audio demo, the launch
+  test on every build. `AppModel` (servers in the Keychain, address racing, own.audio
+  catalogues synced and kept between launches, positions written to disk before they are sent
+  and flushed at launch, on foreground and on every network change, a reset that stops the
+  engine without reporting and drops what was queued), onboarding and Add Server (the address
+  tried as own.audio, then Audiobookshelf; https then http; two-factor sheet; the demo),
+  Servers (select, check, rename, sign in again, Audiobookshelf library picker, remove), Home
+  (the server's shelves), Library (grid/list, sort, filters, series, authors, narrators,
+  collections where offered, paged), book detail (chapters, files, bookmarks; play/resume;
+  mark finished; reset), Search, the player (book bar with time left at the current speed,
+  chapter scrubber, skips, chapter buttons, speed, sleep timer with end of chapter and book,
+  chapters, bookmarks), the mini player, Settings (skip intervals, default speed, smart
+  rewind, mobile data). Known: titles mis-encoded on the server as Latin-1-read Windows-1250
+  ("èást" for "část") are shown as the server has them; the repair covers UTF-8 misreads only.
+
+- [ ] **B4b: The look.** The design of own.audio's audiobook app, as its design system has
+  it: the audiobook brown as the accent (`#7A4A2B`, `#D7A97C` in the dark), Apple-like
+  neutrals (`#F7F7F8` / `#0C0C0E` alternate backgrounds, `#6E6E73` / `#98989D` muted), the
+  4/8/12/16/24/32 spacing scale, radius 12 for cards and covers, 16 for the mini player, 28 for
+  sheet tops, no shadows — depth from materials. Cards with the favourite, family and download
+  badges in the corners and a progress bar below; Home with a greeting and 140-pt rails; a
+  list with 56-pt covers; the detail's 120-pt cover beside a bold title, a capsule Play button
+  whose fill is the progress, metadata rows with symbols; the player's 260-pt cover, muted book
+  bar over the accent chapter slider, 64-pt play glyph, step buttons, labelled bottom tools;
+  the mini player on material. The welcome screen with the own.audio mark, the rotating
+  wordmark and the hero artwork. **One app icon** (done 2026-10-15, `Design/`): the music
+  app's construction — the five family figures in their colours — with a closed book in brown
+  in the centre, rendered by `scripts/render-icons.mjs`; the same artwork as `AppLogo`.
+- [ ] **B4c: English and Czech.** Every string through the String Catalog
+  (`Localizable.xcstrings`, `InfoPlist.xcstrings`): English as the source, Czech complete, one
+  Czech term per concept as the other own.audio apps use them (kapitola, záložka, rychlost,
+  časovač spánku, knihovna, série, vypravěč…). Plurals as CLDR categories. No string left in
+  code outside `String(localized:)` or a SwiftUI literal; brand names as `verbatim`. Checked
+  by running the UI suite in Czech.
 - [ ] **B5: Sign-in with Apple and Google, two-factor, sessions (own.audio).** Copied from the
   music app: `AppleSignInButton` (AuthenticationServices, `identityToken` as the jwt-bearer
   assertion, full name on first sign-in), `GoogleSignInButton` (`ASWebAuthenticationSession`
@@ -242,8 +261,8 @@ client's mojibake repair, applied to display only).
   widget and a Live Activity for the player, Siri App Intents ("Play *title* in own.book",
   matched against the local catalogue), iPad split view. Each one hidden until it works on a
   device.
-- [ ] **B11: Polish, Czech, accessibility, tests.** English and Czech (`Localizable.xcstrings`,
-  App Store texts), Dynamic Type at the largest sizes, VoiceOver labels on every icon button and
+- [ ] **B11: Polish, accessibility, tests.** The Czech of B4c re-read on every screen, Dynamic
+  Type at the largest sizes, VoiceOver labels on every icon button and
   the scrubbers ("12:04 of 49:23"), 44 pt targets, Reduce Motion, both colour schemes. UI test
   suites against each server kind (`audiobookshelf`, `ownaudio`, `demo`): add server, play,
   seek, speed, chapters, sleep timer, bookmarks, download and offline, mobile data, two-factor,
