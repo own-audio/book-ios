@@ -602,6 +602,18 @@ final class AppModel {
         }
     }
 
+    /// What the copy of an own.audio library on this phone holds; nil for other servers and
+    /// before the first sync.
+    func catalogueSummary(serverId: UUID) -> (books: Int, authors: Int, syncedAt: Date?)? {
+        guard sources[serverId] is any ChangeFeedCatalogue else { return nil }
+        return sessions.catalogue(for: serverId).summary
+    }
+
+    /// Settings → Servers → ⓘ → Update Now.
+    func updateCatalogue(_ id: UUID) async {
+        await syncCatalogue(id)
+    }
+
     /// After joining another household: the saved feed is dropped and the library fetched
     /// from a fresh snapshot.
     func resyncCatalogue(_ id: UUID) async {
@@ -930,6 +942,33 @@ final class AppModel {
 
     func removeDownload(_ book: Book, serverId: UUID) {
         downloads.remove(BookID.make(serverId: serverId, bookId: book.id))
+    }
+
+    func isDownloaded(_ book: Book, serverId: UUID) -> Bool {
+        downloads.isDownloaded(BookID.make(serverId: serverId, bookId: book.id))
+    }
+
+    /// A whole set — a series, an author's books, a collection — one after the other; those
+    /// already here are left alone.
+    func downloadAll(_ books: [Book], serverId: UUID) async {
+        for book in books where downloadState(book, serverId: serverId) == nil {
+            await download(book, serverId: serverId)
+        }
+    }
+
+    func removeDownloads(_ books: [Book], serverId: UUID) {
+        for book in books { removeDownload(book, serverId: serverId) }
+    }
+
+    /// Offline, whether the server's screens list the whole catalogue (the listener's choice,
+    /// and only where a copy of it is on the phone) rather than the downloads alone.
+    func showsWholeLibraryOffline(serverId: UUID) -> Bool {
+        settings.wholeLibraryOffline && sources[serverId] is any ChangeFeedCatalogue && sessions.catalogue(for: serverId).summary != nil
+    }
+
+    /// A book that cannot play right now: offline, and not on the phone.
+    func isOutOfReach(_ book: Book, serverId: UUID) -> Bool {
+        isOffline && !isDownloaded(book, serverId: serverId)
     }
 
     /// The books on this iPhone from a server, newest download first.

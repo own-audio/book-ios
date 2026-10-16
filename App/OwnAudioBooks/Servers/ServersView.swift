@@ -42,6 +42,36 @@ struct ServersView: View {
     }
 
     private func row(_ server: ServerRecord) -> some View {
+        HStack(spacing: Theme.Spacing.sm) {
+            selectButton(server)
+            NavigationLink { ServerDetailView(server: server) } label: { Image(systemName: "info.circle").font(.title3) }
+                .buttonStyle(.borderless)
+                .accessibilityLabel("Details")
+                .accessibilityIdentifier("servers.info.\(server.displayName)")
+        }
+        .swipeActions {
+            Button(role: .destructive) {
+                model.perform { try await model.removeServer(id: server.id) }
+            } label: {
+                Label("Remove", systemImage: "trash")
+            }
+        }
+        .contextMenu {
+            Button { check(server) } label: { Label("Check Connection", systemImage: "antenna.radiowaves.left.and.right") }
+            Button { signingIn = server } label: { Label("Sign In Again…", systemImage: "key") }
+            if server.kind == .audiobookshelf {
+                Button { pickingLibrary = server } label: { Label("Library…", systemImage: "books.vertical") }
+            }
+            Button { newName = server.displayName; renaming = server } label: { Label("Rename…", systemImage: "pencil") }
+            Button(role: .destructive) {
+                model.perform { try await model.removeServer(id: server.id) }
+            } label: {
+                Label("Remove", systemImage: "trash")
+            }
+        }
+    }
+
+    private func selectButton(_ server: ServerRecord) -> some View {
         Button {
             Haptics.selection()
             model.selectServer(id: server.id)
@@ -69,28 +99,10 @@ struct ServersView: View {
                     Image(systemName: "checkmark").foregroundStyle(.tint).accessibilityLabel("Selected")
                 }
             }
+            .contentShape(Rectangle())
         }
+        .buttonStyle(.plain)
         .accessibilityIdentifier("servers.row.\(server.displayName)")
-        .swipeActions {
-            Button(role: .destructive) {
-                model.perform { try await model.removeServer(id: server.id) }
-            } label: {
-                Label("Remove", systemImage: "trash")
-            }
-        }
-        .contextMenu {
-            Button { check(server) } label: { Label("Check Connection", systemImage: "antenna.radiowaves.left.and.right") }
-            Button { signingIn = server } label: { Label("Sign In Again…", systemImage: "key") }
-            if server.kind == .audiobookshelf {
-                Button { pickingLibrary = server } label: { Label("Library…", systemImage: "books.vertical") }
-            }
-            Button { newName = server.displayName; renaming = server } label: { Label("Rename…", systemImage: "pencil") }
-            Button(role: .destructive) {
-                model.perform { try await model.removeServer(id: server.id) }
-            } label: {
-                Label("Remove", systemImage: "trash")
-            }
-        }
     }
 
     @ViewBuilder
@@ -221,6 +233,85 @@ struct LibraryPickerView: View {
                 libraries = await model.bookLibraries(serverId: server.id)
                 isLoading = false
             }
+        }
+    }
+}
+
+/// One server: its account and address, a connection check, and for own.audio the library on
+/// this iPhone with when it was last updated.
+struct ServerDetailView: View {
+    @Environment(AppModel.self) private var model
+    let server: ServerRecord
+    @State private var status: ConnectionStatus?
+    @State private var isChecking = false
+    @State private var isSigningIn = false
+
+    var body: some View {
+        List {
+            Section {
+                LabeledContent("Account", value: server.auth.username)
+                LabeledContent("Address", value: (model.activeAddresses[server.id] ?? server.host).absoluteString)
+                LabeledContent("Server", value: server.kind == .ownAudio ? "own.audio" : "Audiobookshelf")
+            }
+            Section {
+                Button { check() } label: {
+                    HStack {
+                        Label("Check Connection", systemImage: "antenna.radiowaves.left.and.right")
+                        Spacer()
+                        if isChecking {
+                            ProgressView()
+                        } else if let status {
+                            Text(status == .ok ? "Connected" : status == .rejected ? "Sign-in refused" : "Unreachable")
+                                .foregroundStyle(status == .ok ? .green : .red)
+                                .accessibilityIdentifier("serverDetail.checkResult")
+                        }
+                    }
+                }
+                .disabled(isChecking)
+                .accessibilityIdentifier("serverDetail.check")
+                Button { isSigningIn = true } label: { Label("Sign In Again…", systemImage: "key") }
+            }
+            if server.kind == .ownAudio {
+                Section {
+                    catalogueRow
+                    Button("Update Now") { Task { await model.updateCatalogue(server.id) } }
+                        .disabled(model.catalogueSyncing.contains(server.id) || model.isOffline)
+                        .accessibilityIdentifier("serverDetail.syncCatalogue")
+                } header: {
+                    Text("Library on This iPhone")
+                } footer: {
+                    Text("A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.")
+                }
+            }
+        }
+        .navigationTitle(server.displayName)
+        .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $isSigningIn) { SignInAgainView(server: server) }
+    }
+
+    @ViewBuilder
+    private var catalogueRow: some View {
+        if model.catalogueSyncing.contains(server.id) {
+            HStack { Text("Updating…"); Spacer(); ProgressView() }
+        } else if let summary = model.catalogueSummary(serverId: server.id) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Books: \(summary.books) · Authors: \(summary.authors)")
+                if let at = summary.syncedAt {
+                    Text("Updated \(at.formatted(.relative(presentation: .named)))").font(.footnote).foregroundStyle(Theme.Colors.muted)
+                }
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityIdentifier("serverDetail.catalogue")
+        } else {
+            Text("Not synced yet").foregroundStyle(Theme.Colors.muted)
+        }
+    }
+
+    private func check() {
+        isChecking = true
+        Task {
+            status = await model.checkConnection(id: server.id)
+            isChecking = false
         }
     }
 }

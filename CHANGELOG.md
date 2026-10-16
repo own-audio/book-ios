@@ -64,6 +64,13 @@ All notable changes to this project are documented here. The format follows
   own is shared with the family or kept to yourself from its menu. With more than one server,
   a menu on Home switches between them (B9).
 
+- Downloads as sets: the arrow above a series, an author's books or a collection downloads
+  them all, with a count on the way. The Downloads screen groups by server and retries failed
+  downloads together. Settings → Whole Library When Offline lists an own.audio server's whole
+  library offline from the copy on the phone, the books not downloaded greyed out. Settings →
+  Servers → ⓘ shows a server's account and address, checks the connection, and for own.audio
+  the size of the library on the phone, when it was updated, and Update Now (B9b).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.

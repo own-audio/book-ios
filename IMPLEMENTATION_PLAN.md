@@ -282,12 +282,13 @@ client's mojibake repair, applied to display only).
   where a server has them (Audiobookshelf `/api/me/listening-stats`; own.audio when it reaches
   v2); narration (hosted servers that advertise the module in discovery) when its routes are
   in v2 shape — server work first; the app never sells credit.
-- [ ] **B9b: Downloads as the music app has them** (asked 2026-10-16). One button downloads
-  a whole series, an author's books or a collection, with a count of what is done; the
-  Downloads screen grouped by server, with Retry Failed; Whole Library When Offline (the
-  own.audio catalogue lists everything offline, books not on the phone greyed out, as the music
-  app does with albums); Settings → Servers → ⓘ shows the catalogue's size, when it was
-  updated, and Update Now. Plus the stats and narration left over from B9.
+- [x] **B9b: Downloads as the music app has them** (asked and done 2026-10-16). One button
+  downloads a whole series, an author's books or a collection, with a ring and a count while
+  they come; the Downloads screen grouped by server, with Retry Failed; Whole Library When
+  Offline (the own.audio catalogue lists everything offline, books not on the phone greyed
+  out, as the music app does with albums); Settings → Servers → ⓘ shows the account, the
+  address, a connection check, and for own.audio the catalogue's size, when it was updated,
+  and Update Now. Still open from B9: listening stats and narration.
 - [ ] **B10: Platform.** CarPlay (Continue Listening, Library, Now Playing with skip and
   chapter buttons; Apple granted the CarPlay audio entitlement to this App ID on 2026-10-16 —
   add `com.apple.developer.carplay-audio` to the entitlements with the scene), a Continue Listening

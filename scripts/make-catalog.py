@@ -221,7 +221,6 @@ cs = {
  # Downloads and offline (B6).
  "%@ on this iPhone.": "%@ v tomto iPhonu.",
  "Download": "Stáhnout",
- "Download a book from its page to listen with no network.": "Stáhněte knihu z její stránky a poslouchejte bez sítě.",
  "Download failed, try again": "Stažení selhalo, zkusit znovu",
  "Download on Wi-Fi Only": "Stahovat jen přes Wi-Fi",
  "Downloaded": "Staženo",
@@ -304,6 +303,24 @@ cs = {
  "What you add to the library is yours. Share a book from its menu; everyone in the family can then listen to it, each from their own position.": "Co do knihovny přidáte, je vaše. Knihu sdílejte z její nabídky; pak si ji může poslechnout každý v rodině, každý od své vlastní pozice.",
  "With a code from that family's admin. You then leave this one.": "S kódem od správce té rodiny. Z této pak odejdete.",
  "Withdraw": "Zrušit",
+ # Downloads as the music app has them (B9b).
+ "A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.": "Seznam všeho na serveru, bez zvuku, aby šlo knihovnu procházet offline. Aktualizuje se při spuštění a při návratu aplikace do popředí.",
+ "Address": "Adresa",
+ "All downloaded": "Vše staženo",
+ "Books: %1$lld · Authors: %2$lld": "Knih: %1$lld · Autorů: %2$lld",
+ "Download All": "Stáhnout vše",
+ "Download a book from its page, or a whole series, author or collection with the arrow on its list, to listen with no network.": "Stáhněte knihu z její stránky, nebo celou sérii, autora či sbírku šipkou nad seznamem, a poslouchejte bez sítě.",
+ "Downloading %1$lld of %2$lld": "Stahuje se %1$lld z %2$lld",
+ "Library on This iPhone": "Knihovna v tomto iPhonu",
+ "No network · only downloaded books play": "Bez sítě · hrají jen stažené knihy",
+ "Not synced yet": "Zatím nesynchronizováno",
+ "Offline Mode · only downloaded books play": "Režim offline · hrají jen stažené knihy",
+ "Offline, an own.audio server's whole library is listed from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.": "Offline se celá knihovna serveru own.audio vypíše z kopie v tomto iPhonu; nestažené knihy jsou zašedlé a hrají jen ty stažené.",
+ "Remove These Downloads": "Odstranit tato stažení",
+ "Update Now": "Aktualizovat teď",
+ "Updated %@": "Aktualizováno %@",
+ "Updating…": "Aktualizuje se…",
+ "Whole Library When Offline": "Celá knihovna offline",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {
@@ -311,6 +328,7 @@ plurals = {
  "%lld files · %@ · %@. Drag to reorder.": {"en": {"one": "%lld file · %@ · %@.", "other": "%lld files · %@ · %@. Drag to reorder."}, "cs": {"one": "%lld soubor · %@ · %@.", "few": "%lld soubory · %@ · %@. Pořadí změníte tažením.", "many": "%lld souboru · %@ · %@. Pořadí změníte tažením.", "other": "%lld souborů · %@ · %@. Pořadí změníte tažením."}},
  "%lld members": {"en": {"one": "%lld member", "other": "%lld members"}, "cs": {"one": "%lld člen", "few": "%lld členové", "many": "%lld člena", "other": "%lld členů"}},
  "%lld days": {"en": {"one": "%lld day", "other": "%lld days"}, "cs": {"one": "%lld den", "few": "%lld dny", "many": "%lld dne", "other": "%lld dní"}},
+ "Retry %lld Failed": {"en": {"one": "Retry %lld Failed", "other": "Retry %lld Failed"}, "cs": {"one": "Zkusit znovu %lld neúspěšné", "few": "Zkusit znovu %lld neúspěšná", "many": "Zkusit znovu %lld neúspěšného", "other": "Zkusit znovu %lld neúspěšných"}},
  "%lld books": {"en": {"one": "%lld book", "other": "%lld books"}, "cs": {"one": "%lld kniha", "few": "%lld knihy", "many": "%lld knihy", "other": "%lld knih"}},
  "%lld min": {"en": {"one": "%lld min", "other": "%lld min"}, "cs": {"one": "%lld min", "few": "%lld min", "many": "%lld min", "other": "%lld min"}},
  "File %lld": {"en": {"one": "File %lld", "other": "File %lld"}, "cs": {"one": "Soubor %lld", "few": "Soubor %lld", "many": "Soubor %lld", "other": "Soubor %lld"}},

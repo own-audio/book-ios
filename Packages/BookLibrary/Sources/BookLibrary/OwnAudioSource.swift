@@ -266,12 +266,13 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
     public func syncCatalogue(_ state: FeedState?) async throws -> FeedResult {
         guard await client.tokens.current != nil else { throw SourceError.signInRejected }
         do {
-            let updated: FeedState
+            var updated: FeedState
             if let state, let changed = try await changes(since: state) {
                 updated = changed
             } else {
                 updated = try await snapshot()
             }
+            updated.syncedAt = Date()
             let library = Self.library(updated)
             catalogue.load(updated, library: library)
             return FeedResult(state: updated, books: library.books, authors: library.authors, narrators: library.narrators, progress: library.progress, bookmarks: library.bookmarks, favourites: library.favourites)
@@ -585,6 +586,14 @@ public final class OwnAudioCatalogue: @unchecked Sendable {
         lock.lock()
         if let index = _library?.books.firstIndex(where: { $0.id == bookId }) { _library?.books[index].visibility = visibility }
         lock.unlock()
+    }
+
+    /// What is on the phone, for a settings screen; nil before the first sync.
+    public var summary: (books: Int, authors: Int, syncedAt: Date?)? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard let library = _library else { return nil }
+        return (library.books.count, library.authors.count, _state?.syncedAt)
     }
 
     /// Another household's library: the next sync starts from a fresh snapshot.

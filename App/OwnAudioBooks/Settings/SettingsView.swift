@@ -60,6 +60,15 @@ struct SettingsView: View {
             .onChange(of: settings.wifiOnlyDownloads) { model.applyPlaybackSettings() }
             .onChange(of: settings.storageCapBytes) { model.applyPlaybackSettings() }
 
+            if model.servers.contains(where: { $0.kind == .ownAudio }) {
+                Section {
+                    Toggle("Whole Library When Offline", isOn: $settings.wholeLibraryOffline)
+                        .accessibilityIdentifier("settings.wholeLibrary")
+                } footer: {
+                    Text("Offline, an own.audio server's whole library is listed from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.")
+                }
+            }
+
             Section("Playback") {
                 Picker("Skip Forward", selection: $settings.skipForwardSecs) {
                     ForEach(PlaybackSettings.skipChoices, id: \.self) { Text("\(Int($0)) s").tag($0) }

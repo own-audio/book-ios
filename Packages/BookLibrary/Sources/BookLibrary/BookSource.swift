@@ -111,6 +111,8 @@ public struct FeedState: Codable, Sendable, Equatable {
     /// By kind (`book`, `contributor`, `progress.book`, `bookmark`, `favourite.book`), then by
     /// id, the record as it came.
     public var records: [String: [String: Data]]
+    /// When the server was last asked; nil in states saved before this was recorded.
+    public var syncedAt: Date?
 
     public init(cursor: String, records: [String: [String: Data]]) {
         self.cursor = cursor

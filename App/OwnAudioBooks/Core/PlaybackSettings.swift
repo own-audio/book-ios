@@ -26,12 +26,15 @@ final class PlaybackSettings {
         mobileData = MobileData(rawValue: defaults.string(forKey: "playback.mobileData") ?? "") ?? .original
         bookRates = (defaults.dictionary(forKey: "playback.bookRates") as? [String: Float]) ?? [:]
         offlineMode = defaults.bool(forKey: "downloads.offlineMode")
+        wholeLibraryOffline = defaults.bool(forKey: "downloads.wholeLibrary")
         wifiOnlyDownloads = defaults.object(forKey: "downloads.wifiOnly") as? Bool ?? true
         storageCapBytes = defaults.object(forKey: "downloads.capBytes") as? Int64
     }
 
     /// Show and play only what is on the phone, and ask nothing of the servers.
     var offlineMode: Bool { didSet { defaults.set(offlineMode, forKey: "downloads.offlineMode") } }
+    /// Offline, list the whole own.audio catalogue rather than the downloads alone.
+    var wholeLibraryOffline: Bool { didSet { defaults.set(wholeLibraryOffline, forKey: "downloads.wholeLibrary") } }
     var wifiOnlyDownloads: Bool { didSet { defaults.set(wifiOnlyDownloads, forKey: "downloads.wifiOnly") } }
     /// nil is no limit.
     var storageCapBytes: Int64? { didSet { defaults.set(storageCapBytes, forKey: "downloads.capBytes") } }

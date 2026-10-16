@@ -1,7 +1,8 @@
 import BookLibrary
 import SwiftUI
 
-/// What is on this iPhone: every downloaded book with its size, to open, play or remove.
+/// What is on this iPhone: every downloaded book with its size, by server when there is more
+/// than one, to open, play or remove; failed downloads can be tried again together.
 struct DownloadsView: View {
     @Environment(AppModel.self) private var model
     @State private var isConfirmingRemoveAll = false
@@ -10,25 +11,42 @@ struct DownloadsView: View {
         model.downloads.books.values.sorted { ($0.finishedAt ?? $0.startedAt) > ($1.finishedAt ?? $1.startedAt) }
     }
 
+    /// By server, in the servers' order; one unnamed group while there is only one server.
+    private var groups: [(server: ServerRecord?, books: [DownloadManager.DownloadedBook])] {
+        let byServer = Dictionary(grouping: books, by: \.serverId)
+        guard byServer.count > 1 else { return [(nil, books)] }
+        let known = model.serversInOrder.compactMap { server in byServer[server.id].map { (Optional(server), $0) } }
+        let gone = byServer.filter { id, _ in !model.servers.contains { $0.id == id } }.values.map { (ServerRecord?.none, $0) }
+        return known + gone
+    }
+
+    private var failed: [String] {
+        model.downloads.books.keys.filter { if case .failed = model.downloads.state(of: $0) { true } else { false } }
+    }
+
+    private var downloadingCount: Int {
+        model.downloads.books.keys.filter { if case .downloading = model.downloads.state(of: $0) { true } else { false } }.count
+    }
+
     var body: some View {
         List {
             if books.isEmpty {
-                ContentUnavailableView("Nothing Downloaded", systemImage: "arrow.down.circle", description: Text("Download a book from its page to listen with no network."))
+                ContentUnavailableView("Nothing Downloaded", systemImage: "arrow.down.circle", description: Text("Download a book from its page, or a whole series, author or collection with the arrow on its list, to listen with no network."))
             }
-            ForEach(books) { entry in
-                NavigationLink(value: LibraryRoute.book(entry.book, serverId: entry.serverId)) {
-                    HStack(spacing: Theme.Spacing.md) {
-                        CoverView(book: entry.book, serverId: entry.serverId, pointSize: 56)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(entry.book.title).font(.body.weight(.semibold)).foregroundStyle(Theme.Colors.foreground).lineLimit(2)
-                            Text(entry.book.authorLine).font(.subheadline).foregroundStyle(Theme.Colors.muted).lineLimit(1)
-                            Text(status(entry)).font(.caption).foregroundStyle(Theme.Colors.muted)
-                        }
+            if downloadingCount > 0 || !failed.isEmpty {
+                Section {
+                    if downloadingCount > 0 { LabeledContent("Downloading", value: "\(downloadingCount)") }
+                    if !failed.isEmpty {
+                        Button("Retry \(failed.count) Failed") { for id in failed { model.downloads.retry(id) } }
+                            .accessibilityIdentifier("downloads.retryFailed")
                     }
                 }
-                .accessibilityIdentifier("downloads.\(entry.book.id)")
-                .swipeActions {
-                    Button(role: .destructive) { model.downloads.remove(entry.id) } label: { Label("Remove", systemImage: "trash") }
+            }
+            ForEach(Array(groups.enumerated()), id: \.offset) { _, group in
+                Section {
+                    ForEach(group.books) { entry in row(entry) }
+                } header: {
+                    if let server = group.server { Text(server.displayName) }
                 }
             }
             if !books.isEmpty {
@@ -47,11 +65,74 @@ struct DownloadsView: View {
         }
     }
 
+    private func row(_ entry: DownloadManager.DownloadedBook) -> some View {
+        NavigationLink(value: LibraryRoute.book(entry.book, serverId: entry.serverId)) {
+            HStack(spacing: Theme.Spacing.md) {
+                CoverView(book: entry.book, serverId: entry.serverId, pointSize: 56)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(entry.book.title).font(.body.weight(.semibold)).foregroundStyle(Theme.Colors.foreground).lineLimit(2)
+                    Text(entry.book.authorLine).font(.subheadline).foregroundStyle(Theme.Colors.muted).lineLimit(1)
+                    Text(status(entry)).font(.caption).foregroundStyle(Theme.Colors.muted)
+                }
+            }
+        }
+        .accessibilityIdentifier("downloads.\(entry.book.id)")
+        .swipeActions {
+            Button(role: .destructive) { model.downloads.remove(entry.id) } label: { Label("Remove", systemImage: "trash") }
+        }
+    }
+
     private func status(_ entry: DownloadManager.DownloadedBook) -> String {
         switch model.downloads.state(of: entry.id) {
         case .downloading(let fraction): String(localized: "Downloading… \(Int(fraction * 100))%")
         case .failed(let message): message
         case .downloaded, nil: ByteCountFormatter.string(fromByteCount: entry.bytes, countStyle: .file)
+        }
+    }
+}
+
+/// The toolbar button for a whole set of books — a series, an author's, a collection: an
+/// arrow, a ring with the count while they come, a check with a menu once all are here.
+struct SetDownloadButton: View {
+    @Environment(AppModel.self) private var model
+    let books: [Book]
+    let serverId: UUID
+    /// What a tap starts; by default the downloads of `books`.
+    var start: (() async -> Void)?
+
+    var body: some View {
+        let done = books.filter { model.isDownloaded($0, serverId: serverId) }.count
+        let active = books.contains { if case .downloading = model.downloadState($0, serverId: serverId) { true } else { false } }
+        if books.isEmpty {
+            EmptyView()
+        } else if done == books.count {
+            Menu {
+                Button(role: .destructive) { model.removeDownloads(books, serverId: serverId) } label: { Label("Remove These Downloads", systemImage: "trash") }
+            } label: {
+                Image(systemName: "arrow.down.circle.fill")
+            }
+            .accessibilityLabel("All downloaded")
+            .accessibilityIdentifier("setDownload.done")
+        } else if active {
+            ZStack {
+                Circle().stroke(Theme.Colors.accent.opacity(0.25), lineWidth: 2.5)
+                Circle().trim(from: 0, to: max(Double(done) / Double(books.count), 0.03))
+                    .stroke(Theme.Colors.accent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round)).rotationEffect(.degrees(-90))
+                Text("\(done)").font(.system(size: 9).monospacedDigit())
+            }
+            .frame(width: 26, height: 26)
+            .accessibilityLabel("Downloading \(done) of \(books.count)")
+            .accessibilityIdentifier("setDownload.progress")
+        } else {
+            Button {
+                Haptics.impact(.light)
+                Task { if let start { await start() } else { await model.downloadAll(books, serverId: serverId) } }
+            } label: {
+                Image(systemName: "arrow.down.circle")
+            }
+            .disabled(model.isOffline)
+            .accessibilityLabel("Download All")
+            .accessibilityIdentifier("setDownload.start")
         }
     }
 }
@@ -141,11 +222,21 @@ struct DownloadBadge: View {
 struct OfflineBanner: View {
     @Environment(AppModel.self) private var model
 
+    /// With Whole Library on, the lists are full and it is playing that is limited.
+    private var bannerText: LocalizedStringKey {
+        switch (model.isOfflineByChoice, model.settings.wholeLibraryOffline) {
+        case (true, false): "Offline Mode · downloaded books only"
+        case (false, false): "No network · downloaded books only"
+        case (true, true): "Offline Mode · only downloaded books play"
+        case (false, true): "No network · only downloaded books play"
+        }
+    }
+
     var body: some View {
         if model.isOffline {
             HStack(spacing: Theme.Spacing.sm) {
                 Image(systemName: "wifi.slash")
-                Text(model.isOfflineByChoice ? "Offline Mode · downloaded books only" : "No network · downloaded books only")
+                Text(bannerText)
                 Spacer(minLength: 0)
                 if model.isOfflineByChoice {
                     Button("Turn Off") {

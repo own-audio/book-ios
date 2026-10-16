@@ -45,6 +45,12 @@ struct BooksListView: View {
         }
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
+                if !isRoot {
+                    SetDownloadButton(books: books, serverId: serverId) {
+                        // Every page of the list, not only the ones scrolled to.
+                        await model.downloadAll((try? await source?.allBooks(query)) ?? books, serverId: serverId)
+                    }
+                }
                 if isRoot, model.canImport(serverId: serverId) {
                     Button { isImporting = true } label: { Image(systemName: "plus") }
                         .accessibilityLabel("Import a Book")
@@ -74,7 +80,7 @@ struct BooksListView: View {
                 .accessibilityIdentifier("library.sortFilter")
             }
         }
-        .task(id: "\(serverId)|\(query.sort.rawValue)|\(query.descending)|\(query.filter.rawValue)|\(model.isOffline)") { await reload() }
+        .task(id: "\(serverId)|\(query.sort.rawValue)|\(query.descending)|\(query.filter.rawValue)|\(model.isOffline)|\(model.settings.wholeLibraryOffline)") { await reload() }
         .refreshable { await reload() }
     }
 
@@ -95,6 +101,7 @@ struct BooksListView: View {
                                 BookCard(book: book, serverId: serverId, width: 140)
                             }
                             .buttonStyle(.plain)
+                            .opacity(model.isOutOfReach(book, serverId: serverId) ? 0.45 : 1)
                             .accessibilityIdentifier("library.book.\(book.id)")
                             .onAppear { if book.id == books.last?.id { Task { await loadMore() } } }
                         }
@@ -119,6 +126,7 @@ struct BooksListView: View {
                     if books.isEmpty { Text(emptyText).foregroundStyle(.secondary) }
                     ForEach(books) { book in
                         NavigationLink(value: LibraryRoute.book(book, serverId: serverId)) { BookRow(book: book, serverId: serverId) }
+                            .opacity(model.isOutOfReach(book, serverId: serverId) ? 0.45 : 1)
                             .accessibilityIdentifier("library.book.\(book.id)")
                             .onAppear { if book.id == books.last?.id { Task { await loadMore() } } }
                     }
@@ -177,7 +185,7 @@ struct BooksListView: View {
 
     private func reload() async {
         guard let source else { return }
-        if model.isOffline {
+        if model.isOffline, !model.showsWholeLibraryOffline(serverId: serverId) {
             books = Self.filtered(model.offlineBooks(serverId: serverId), query, progress: { model.knownProgress($0, serverId: serverId) })
             next = nil
             total = books.count
@@ -340,6 +348,7 @@ struct SeriesDetailView: View {
         }
         .listStyle(.plain)
         .navigationTitle(series.name)
+        .toolbar { if let books { ToolbarItem(placement: .primaryAction) { SetDownloadButton(books: books, serverId: serverId) } } }
         .task {
             if let known = series.books { books = known }
             if let source = model.source(for: serverId), let loaded = try? await source.series(id: series.id).books { books = loaded }
@@ -390,5 +399,6 @@ struct CollectionDetailView: View {
         }
         .listStyle(.plain)
         .navigationTitle(collection.name)
+        .toolbar { ToolbarItem(placement: .primaryAction) { SetDownloadButton(books: collection.books, serverId: serverId) } }
     }
 }

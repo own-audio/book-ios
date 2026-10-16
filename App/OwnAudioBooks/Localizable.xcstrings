@@ -563,6 +563,16 @@
         }
       }
     },
+    "A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seznam všeho na serveru, bez zvuku, aby šlo knihovnu procházet offline. Aktualizuje se při spuštění a při návratu aplikace do popředí."
+          }
+        }
+      }
+    },
     "A shared own.audio server with public-domain books. Remove it in Settings when you add your own.": {
       "localizations": {
         "cs": {
@@ -663,6 +673,16 @@
         }
       }
     },
+    "Address": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresa"
+          }
+        }
+      }
+    },
     "Admin": {
       "localizations": {
         "cs": {
@@ -679,6 +699,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vše"
+          }
+        }
+      }
+    },
+    "All downloaded": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vše staženo"
           }
         }
       }
@@ -810,6 +840,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Knihy, autoři, vypravěči"
+          }
+        }
+      }
+    },
+    "Books: %1$lld · Authors: %2$lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knih: %1$lld · Autorů: %2$lld"
           }
         }
       }
@@ -1074,12 +1114,22 @@
         }
       }
     },
-    "Download a book from its page to listen with no network.": {
+    "Download All": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Stáhněte knihu z její stránky a poslouchejte bez sítě."
+            "value": "Stáhnout vše"
+          }
+        }
+      }
+    },
+    "Download a book from its page, or a whole series, author or collection with the arrow on its list, to listen with no network.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stáhněte knihu z její stránky, nebo celou sérii, autora či sbírku šipkou nad seznamem, a poslouchejte bez sítě."
           }
         }
       }
@@ -1130,6 +1180,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Stahuje se"
+          }
+        }
+      }
+    },
+    "Downloading %1$lld of %2$lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stahuje se %1$lld z %2$lld"
           }
         }
       }
@@ -1616,6 +1676,16 @@
         }
       }
     },
+    "Library on This iPhone": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna v tomto iPhonu"
+          }
+        }
+      }
+    },
     "Library…": {
       "localizations": {
         "cs": {
@@ -1856,6 +1926,16 @@
         }
       }
     },
+    "No network · only downloaded books play": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez sítě · hrají jen stažené knihy"
+          }
+        }
+      }
+    },
     "No series yet.": {
       "localizations": {
         "cs": {
@@ -1902,6 +1982,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Offline není k dispozici."
+          }
+        }
+      }
+    },
+    "Not synced yet": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nesynchronizováno"
           }
         }
       }
@@ -1962,6 +2052,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Režim offline · jen stažené knihy"
+          }
+        }
+      }
+    },
+    "Offline Mode · only downloaded books play": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Režim offline · hrají jen stažené knihy"
+          }
+        }
+      }
+    },
+    "Offline, an own.audio server's whole library is listed from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline se celá knihovna serveru own.audio vypíše z kopie v tomto iPhonu; nestažené knihy jsou zašedlé a hrají jen ty stažené."
           }
         }
       }
@@ -2226,6 +2336,16 @@
         }
       }
     },
+    "Remove These Downloads": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odstranit tato stažení"
+          }
+        }
+      }
+    },
     "Rename": {
       "localizations": {
         "cs": {
@@ -2292,6 +2412,58 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokračovat"
+          }
+        }
+      }
+    },
+    "Retry %lld Failed": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Retry %lld Failed"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Retry %lld Failed"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zkusit znovu %lld neúspěšné"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zkusit znovu %lld neúspěšná"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zkusit znovu %lld neúspěšného"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zkusit znovu %lld neúspěšných"
+                }
+              }
+            }
           }
         }
       }
@@ -3148,6 +3320,36 @@
         }
       }
     },
+    "Update Now": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizovat teď"
+          }
+        }
+      }
+    },
+    "Updated %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizováno %@"
+          }
+        }
+      }
+    },
+    "Updating…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktualizuje se…"
+          }
+        }
+      }
+    },
     "Upload %@ over mobile data?": {
       "localizations": {
         "cs": {
@@ -3214,6 +3416,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kdo ji uvidí"
+          }
+        }
+      }
+    },
+    "Whole Library When Offline": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Celá knihovna offline"
           }
         }
       }
