@@ -289,9 +289,11 @@ client's mojibake repair, applied to display only).
   out, as the music app does with albums); Settings → Servers → ⓘ shows the account, the
   address, a connection check, and for own.audio the catalogue's size, when it was updated,
   and Update Now. Still open from B9: listening stats and narration.
-- [ ] **B10: Platform.** CarPlay (Continue Listening, Library, Now Playing with skip and
-  chapter buttons; Apple granted the CarPlay audio entitlement to this App ID on 2026-10-16 —
-  add `com.apple.developer.carplay-audio` to the entitlements with the scene), a Continue Listening
+- [ ] **B10: Platform.** CarPlay — done 2026-10-16: Continue Listening, Downloads, Library,
+  Series, Authors; the system Now Playing with the speed on its rate button and the chapters
+  behind Up Next; the car never asks where to continue, the newer position wins; Apple granted
+  the CarPlay audio entitlement to this App ID on 2026-10-16 and `com.apple.developer.carplay-audio`
+  is in the entitlements. Still to do: a Continue Listening
   widget and a Live Activity for the player, Siri App Intents ("Play *title* in own.book",
   matched against the local catalogue), iPad split view. Each one hidden until it works on a
   device.

@@ -653,6 +653,16 @@
         }
       }
     },
+    "Add a server on your iPhone": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidejte server na svém iPhonu"
+          }
+        }
+      }
+    },
     "Add to Favourites": {
       "localizations": {
         "cs": {
@@ -1906,6 +1916,16 @@
         }
       }
     },
+    "No chapters": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádné kapitoly"
+          }
+        }
+      }
+    },
     "No collections yet.": {
       "localizations": {
         "cs": {
@@ -2012,6 +2032,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nic nehraje"
+          }
+        }
+      }
+    },
+    "Nothing downloaded": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nic nestaženo"
+          }
+        }
+      }
+    },
+    "Nothing here yet": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím tu nic není"
+          }
+        }
+      }
+    },
+    "Nothing started yet": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím jste nic nezačali"
           }
         }
       }

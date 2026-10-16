@@ -71,6 +71,10 @@ All notable changes to this project are documented here. The format follows
   Servers → ⓘ shows a server's account and address, checks the connection, and for own.audio
   the size of the library on the phone, when it was updated, and Update Now (B9b).
 
+- CarPlay: Continue Listening, Downloads, Library, Series and Authors on the car's screen, the
+  system Now Playing with the speed on its rate button and the chapters behind Up Next. The car
+  never asks where to continue; the newer position wins (B10).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.

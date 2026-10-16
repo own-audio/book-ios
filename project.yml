@@ -26,6 +26,12 @@ targets:
         UIBackgroundModes: [audio]
         # Only standard HTTPS, which is exempt; saves answering the export question per build.
         ITSAppUsesNonExemptEncryption: false
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
+          UISceneConfigurations:
+            CPTemplateApplicationSceneSessionRoleApplication:
+              - UISceneConfigurationName: CarPlay
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).CarPlaySceneDelegate
         UIApplicationSupportsIndirectInputEvents: true
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UISupportedInterfaceOrientations~ipad:
@@ -55,6 +61,8 @@ targets:
       properties:
         # Sign in with Apple for own.audio servers (AUTH__APPLE__CLIENT_IDS must list this app).
         com.apple.developer.applesignin: [Default]
+        # CarPlay audio app (granted by Apple for audio.own.bookplayer, 2026-10-16).
+        com.apple.developer.carplay-audio: true
     dependencies:
       - package: BookLibrary
       - package: PlayerEngine

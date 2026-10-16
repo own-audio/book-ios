@@ -305,7 +305,12 @@ cs = {
  "Withdraw": "Zrušit",
  # Downloads as the music app has them (B9b).
  "A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.": "Seznam všeho na serveru, bez zvuku, aby šlo knihovnu procházet offline. Aktualizuje se při spuštění a při návratu aplikace do popředí.",
+ "Add a server on your iPhone": "Přidejte server na svém iPhonu",
  "Address": "Adresa",
+ "No chapters": "Žádné kapitoly",
+ "Nothing downloaded": "Nic nestaženo",
+ "Nothing here yet": "Zatím tu nic není",
+ "Nothing started yet": "Zatím jste nic nezačali",
  "All downloaded": "Vše staženo",
  "Books: %1$lld · Authors: %2$lld": "Knih: %1$lld · Autorů: %2$lld",
  "Download All": "Stáhnout vše",
