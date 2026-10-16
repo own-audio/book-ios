@@ -198,9 +198,10 @@ struct BookmarksSheet: View {
                             }
                         }
                         .accessibilityIdentifier("bookmarks.\(bookmark.positionMs)")
+                        // Words, not icons: on a row this short iOS would draw the icons alone.
                         .swipeActions {
-                            Button(role: .destructive) { delete(bookmark) } label: { Label("Delete", systemImage: "trash") }
-                            Button { label = bookmark.label ?? ""; editing = bookmark } label: { Label("Rename", systemImage: "pencil") }
+                            Button("Delete", role: .destructive) { delete(bookmark) }
+                            Button("Rename") { label = bookmark.label ?? ""; editing = bookmark }
                         }
                     }
                 }

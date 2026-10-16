@@ -38,8 +38,12 @@ final class DownloadSetTests: XCTestCase {
         let whole = app.switches["settings.wholeLibrary"]
         XCTAssertTrue(whole.waitForExistence(timeout: 5), "an own.audio server brings the Whole Library setting")
         // The row's element covers the label too; the switch inside it is what toggles.
-        whole.switches.firstMatch.tap()
-        XCTAssertTrue(smoke.waitUntil(timeout: 3) { (whole.value as? String) == "1" }, "the setting should turn on")
+        for _ in 0..<3 where (whole.value as? String) != "1" {
+            whole.switches.firstMatch.tap()
+            if smoke.waitUntil(timeout: 3, { (whole.value as? String) == "1" }) { break }
+            smoke.dismissSavePasswordPrompt(app)
+        }
+        XCTAssertEqual(whole.value as? String, "1", "the setting should turn on")
         app.buttons["Done"].firstMatch.tap()
 
         // An author's books, downloaded as one set.

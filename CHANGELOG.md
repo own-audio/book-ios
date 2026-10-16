@@ -74,3 +74,5 @@ All notable changes to this project are documented here. The format follows
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.
+- Swiping a bookmark in the player's Bookmarks sheet showed bare icons; the buttons now say
+  Delete and Rename.
