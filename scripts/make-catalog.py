@@ -377,6 +377,10 @@ widget = {
     "%@ left": "zbývá %@",
     "Continue Listening": "Pokračovat v poslechu",
     "Nothing started yet": "Zatím jste nic nezačali",
+    "Pause": "Pozastavit",
+    "Play": "Přehrát",
+    "Skip back": "Skok zpět",
+    "Skip forward": "Skok vpřed",
     "Your last books, a tap away.": "Vaše poslední knihy na jedno klepnutí.",
 }
 json.dump({"sourceLanguage": "en", "version": "1.0", "strings": {k: {"localizations": {"cs": unit(v)}} for k, v in widget.items()}},

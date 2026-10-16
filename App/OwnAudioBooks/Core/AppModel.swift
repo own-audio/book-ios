@@ -52,6 +52,8 @@ final class AppModel {
     private let pendingProgress = PendingProgress()
     private let knownPositions = KnownPositions()
     private let resumeStore = UserDefaultsResumeStore(key: "books.resume")
+    /// The player on the lock screen; nil only until `init` has made the engine.
+    @ObservationIgnored private var liveActivity: LiveActivityController?
     private var loadTask: Task<Void, Never>?
     private var liveUpdates: Task<Void, Never>?
     private var isInForeground = true
@@ -86,6 +88,7 @@ final class AppModel {
         engine = SpokenEngine(nowPlaying: nowPlaying, resumeStore: resumeStore)
         engine.onPosition = { [weak self] position in self?.positionReported(position) }
         engine.onFinished = { [weak self] _ in self?.nowPlayingPlan = nil }
+        liveActivity = LiveActivityController(model: self)
         engine.artworkProvider = { [weak self] compositeId in
             await self?.coverImage(compositeId: compositeId, size: 600)
         }
@@ -833,6 +836,7 @@ final class AppModel {
             positionMs: position.positionMs, listenedMs: position.listenedMs, durationMs: engine.durationMs,
             finished: position.finished, at: position.at, closes: closes
         ))
+        liveActivity?.tick()
         Task { await flushPendingProgress(); await refreshWidget(force: closes) }
     }
 

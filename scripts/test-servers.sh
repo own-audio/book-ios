@@ -32,7 +32,14 @@ fi
 
 source ./test-servers.local.env
 
-SIM="${SIMULATOR_ID:-$(xcrun simctl list devices booted | grep -m1 -oE '[0-9A-F-]{36}')}"
+SIM="${SIMULATOR_ID:-$(xcrun simctl list devices booted | grep -m1 -oE '[0-9A-F-]{36}' || true)}"
+if [[ -z "$SIM" ]]; then
+  # Nothing booted (a reboot, or the last run shut it down): the first iPhone there is.
+  SIM=$(xcrun simctl list devices available | grep -m1 "iPhone" | grep -oE '[0-9A-F-]{36}')
+  echo "== no simulator booted; booting $SIM"
+  xcrun simctl boot "$SIM" >/dev/null 2>&1 || true
+  sleep 10
+fi
 only="${1:-all}"
 live_only="${2:-}"
 

@@ -300,8 +300,10 @@ client's mojibake repair, applied to display only).
   (`IPadTests` on the iPad Air simulator). Continue Listening widget — done 2026-10-16: the
   `OwnAudioBooksWidgets` extension reads a snapshot the app writes into the App Group
   `group.audio.own.bookplayer` (`Shared/WidgetSnapshot.swift`), small and medium, a tap opens
-  `ownbook://play/<id>`. Still to do: a Live Activity for the player. Each one to be seen working
-  on a device before it is called done.
+  `ownbook://play/<id>`. Live Activity — done 2026-10-16: `LiveActivityController` follows the
+  engine (started with the book, moved at most every 15 s, ended with it), the view and the
+  `PlaybackControlIntent` buttons in the widget extension (`Shared/BookActivity.swift`). CarPlay,
+  the widget and the activity are each to be seen on a device before B10 is ticked.
 - [ ] **B11: Polish, accessibility, tests.** The Czech of B4c re-read on every screen, Dynamic
   Type at the largest sizes, VoiceOver labels on every icon button and
   the scrubbers ("12:04 of 49:23"), 44 pt targets, Reduce Motion, both colour schemes. UI test

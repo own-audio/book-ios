@@ -32,6 +32,46 @@
         }
       }
     },
+    "Pause": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pozastavit"
+          }
+        }
+      }
+    },
+    "Play": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát"
+          }
+        }
+      }
+    },
+    "Skip back": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skok zpět"
+          }
+        }
+      }
+    },
+    "Skip forward": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skok vpřed"
+          }
+        }
+      }
+    },
     "Your last books, a tap away.": {
       "localizations": {
         "cs": {

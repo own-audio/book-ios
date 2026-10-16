@@ -5,6 +5,7 @@ import WidgetKit
 struct OwnAudioBooksWidgets: WidgetBundle {
     var body: some Widget {
         ContinueListeningWidget()
+        BookLiveActivity()
     }
 }
 
@@ -117,7 +118,7 @@ struct ContinueListeningView: View {
     }
 }
 
-private extension Color {
+extension Color {
     /// One colour for each appearance, as the app's theme has them.
     init(light: UInt32, dark: UInt32) {
         self.init(uiColor: UIColor { traits in

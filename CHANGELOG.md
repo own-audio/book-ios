@@ -85,6 +85,10 @@ All notable changes to this project are documented here. The format follows
   with their covers and how much is left; a tap opens the app on that book (`ownbook://play/…`).
   The app writes the snapshot into an App Group; the widget needs no network or sign-in (B10).
 
+- A Live Activity while a book plays: cover, title, chapter, how far and how much is left on the
+  lock screen and in the Dynamic Island, with play/pause and the skip buttons working without
+  opening the app (B10).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.
