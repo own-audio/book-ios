@@ -372,4 +372,13 @@ shortcuts = {
 }
 json.dump({"sourceLanguage": "en", "version": "1.0", "strings": {k: {"localizations": {"cs": unit(v)}} for k, v in shortcuts.items()}},
           open("App/OwnAudioBooks/AppShortcuts.xcstrings", "w"), ensure_ascii=False, indent=2)
+# The widget extension's own strings.
+widget = {
+    "%@ left": "zbývá %@",
+    "Continue Listening": "Pokračovat v poslechu",
+    "Nothing started yet": "Zatím jste nic nezačali",
+    "Your last books, a tap away.": "Vaše poslední knihy na jedno klepnutí.",
+}
+json.dump({"sourceLanguage": "en", "version": "1.0", "strings": {k: {"localizations": {"cs": unit(v)}} for k, v in widget.items()}},
+          open("Widgets/Localizable.xcstrings", "w"), ensure_ascii=False, indent=2)
 print(len(strings), "keys")

@@ -833,7 +833,73 @@ final class AppModel {
             positionMs: position.positionMs, listenedMs: position.listenedMs, durationMs: engine.durationMs,
             finished: position.finished, at: position.at, closes: closes
         ))
-        Task { await flushPendingProgress() }
+        Task { await flushPendingProgress(); await refreshWidget(force: closes) }
+    }
+
+    // MARK: - The widget
+
+    /// Continue Listening as the home screen last saw it, for the widget.
+    private var widgetBooks: [(book: Book, serverId: UUID)] = []
+    private var widgetRefreshedAt = Date.distantPast
+
+    func noteShelves(_ shelves: [Shelf], serverId: UUID) {
+        // No shelf means nothing under way: the widget says so rather than keeping an old list.
+        if let shelf = shelves.first(where: { $0.id == "continue-listening" }), case .books(let books) = shelf.kind {
+            widgetBooks = books.prefix(3).map { ($0, serverId) }
+        } else {
+            widgetBooks = []
+        }
+        Task { await refreshWidget(force: true) }
+    }
+
+    /// Writes the widget's snapshot: the book playing first, then the shelf; at most once a
+    /// minute while a book plays, at once when something changed.
+    func refreshWidget(force: Bool = false) async {
+        guard force || Date().timeIntervalSince(widgetRefreshedAt) > 60 else { return }
+        widgetRefreshedAt = Date()
+        var list = widgetBooks
+        if let now = nowPlayingBook, let serverId = nowPlayingServerId {
+            list.removeAll { $0.book.id == now.id && $0.serverId == serverId }
+            list.insert((now, serverId), at: 0)
+        }
+        var entries: [WidgetSnapshot.Entry] = []
+        for (book, serverId) in list.prefix(3) {
+            let progress = knownProgress(book, serverId: serverId)
+            let position = progress?.finished == true ? 0 : (progress?.positionMs ?? 0)
+            let fraction = book.durationMs > 0 ? Double(position) / Double(book.durationMs) : 0
+            let cover = await coverImage(book, serverId: serverId, size: 120)?.jpegData(compressionQuality: 0.7)
+            entries.append(.init(
+                id: BookID.make(serverId: serverId, bookId: book.id), title: book.title, author: book.authorLine,
+                fraction: min(max(fraction, 0), 1), remainingMs: max(book.durationMs - position, 0), cover: cover
+            ))
+        }
+        WidgetSnapshot(entries: entries, at: Date()).save()
+    }
+
+    /// `ownbook://play/<id>` from the widget: the book from the phone or its server, then play.
+    /// A bare server-side id (no `<server>|`) means the active server.
+    func play(compositeId: String) async {
+        // The link can be what starts the app.
+        if !hasLoaded { await load() }
+        let (serverId, bookId): (UUID, String)
+        if let parsed = BookID.parse(compositeId) {
+            (serverId, bookId) = parsed
+        } else if let active = activeServerId {
+            (serverId, bookId) = (active, compositeId)
+        } else {
+            return
+        }
+        let compositeId = BookID.make(serverId: serverId, bookId: bookId)
+        let book: Book
+        if let local = downloads.downloaded(compositeId)?.book {
+            book = local
+        } else if let source = sources[serverId], let found = try? await source.book(id: bookId) {
+            book = found
+        } else {
+            actionError = String(localized: "That book is not in the library any more.")
+            return
+        }
+        await play(book, serverId: serverId)
     }
 
     /// Sends what is on disk, oldest first; what the server refuses for good is dropped, what

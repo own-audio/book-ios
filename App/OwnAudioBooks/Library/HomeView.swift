@@ -108,7 +108,9 @@ struct HomeView: View {
         }
         if !quietly, case .loaded = state {} else if !quietly { state = .loading }
         do {
-            state = .loaded(try await source.shelves())
+            let shelves = try await source.shelves()
+            state = .loaded(shelves)
+            model.noteShelves(shelves, serverId: serverId)
         } catch let error as SourceError {
             if case .loaded = state, quietly { return }
             state = .failed(error.userMessage)

@@ -297,9 +297,11 @@ client's mojibake repair, applied to display only).
   "Continue listening in own.book", `AudioPlaybackIntent`s matched against the library (the
   downloads offline), phrases in English and Czech (`AppShortcuts.xcstrings`). iPad — done
   2026-10-16: the Library tab is a `NavigationSplitView` with the sections in a sidebar
-  (`IPadTests` on the iPad Air simulator). Still to do: a Continue Listening widget and a Live
-  Activity for the player (a widget extension target with an App Group). Each one hidden until
-  it works on a device.
+  (`IPadTests` on the iPad Air simulator). Continue Listening widget — done 2026-10-16: the
+  `OwnAudioBooksWidgets` extension reads a snapshot the app writes into the App Group
+  `group.audio.own.bookplayer` (`Shared/WidgetSnapshot.swift`), small and medium, a tap opens
+  `ownbook://play/<id>`. Still to do: a Live Activity for the player. Each one to be seen working
+  on a device before it is called done.
 - [ ] **B11: Polish, accessibility, tests.** The Czech of B4c re-read on every screen, Dynamic
   Type at the largest sizes, VoiceOver labels on every icon button and
   the scrubbers ("12:04 of 49:23"), 44 pt targets, Reduce Motion, both colour schemes. UI test

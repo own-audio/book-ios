@@ -1,0 +1,46 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "%@ left": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zbývá %@"
+          }
+        }
+      }
+    },
+    "Continue Listening": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat v poslechu"
+          }
+        }
+      }
+    },
+    "Nothing started yet": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím jste nic nezačali"
+          }
+        }
+      }
+    },
+    "Your last books, a tap away.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše poslední knihy na jedno klepnutí."
+          }
+        }
+      }
+    }
+  }
+}

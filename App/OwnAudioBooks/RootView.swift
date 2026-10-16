@@ -48,6 +48,9 @@ struct RootView: View {
         .onChange(of: model.engine.errorMessage) { _, message in
             if let message, !isShowingPlayer { model.actionError = message }
         }
+        .onOpenURL { url in
+            if let id = WidgetSnapshot.bookId(from: url) { Task { await model.play(compositeId: id) } }
+        }
     }
 
     private var tabs: some View {

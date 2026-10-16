@@ -16,6 +16,7 @@ targets:
     platform: iOS
     sources:
       - path: App/OwnAudioBooks
+      - path: Shared
     info:
       path: App/OwnAudioBooks/Info.plist
       properties:
@@ -33,6 +34,10 @@ targets:
               - UISceneConfigurationName: CarPlay
                 UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).CarPlaySceneDelegate
         UIApplicationSupportsIndirectInputEvents: true
+        # The widget's and Siri's way in: ownbook://play/<book id>.
+        CFBundleURLTypes:
+          - CFBundleURLName: audio.own.bookplayer
+            CFBundleURLSchemes: [ownbook]
         UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
         UISupportedInterfaceOrientations~ipad:
           - UIInterfaceOrientationPortrait
@@ -63,12 +68,41 @@ targets:
         com.apple.developer.applesignin: [Default]
         # CarPlay audio app (granted by Apple for audio.own.bookplayer, 2026-10-16).
         com.apple.developer.carplay-audio: true
+        # Shared with the widget: the Continue Listening snapshot.
+        com.apple.security.application-groups: [group.audio.own.bookplayer]
     dependencies:
+      - target: OwnAudioBooksWidgets
       - package: BookLibrary
       - package: PlayerEngine
         product: PlayerCore
       - package: PlayerEngine
         product: SpokenEngine
+  OwnAudioBooksWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Shared
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: own.book
+        CFBundleShortVersionString: "0.1.0"
+        CFBundleVersion: "1"
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: audio.own.bookplayer.widgets
+        SWIFT_VERSION: "6.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        SWIFT_EMIT_LOC_STRINGS: YES
+        LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+        CODE_SIGN_STYLE: Automatic
+    entitlements:
+      path: Widgets/OwnAudioBooksWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.audio.own.bookplayer]
   OwnAudioBooksUITests:
     type: bundle.ui-testing
     platform: iOS

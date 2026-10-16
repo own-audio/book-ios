@@ -81,6 +81,10 @@ All notable changes to this project are documented here. The format follows
 - Siri and Shortcuts: "Play *title* in own.book" and "Continue listening in own.book", matched
   against the library (the downloads when offline); in English and Czech (B10).
 
+- A Continue Listening widget, small and medium: the book playing and the last ones started,
+  with their covers and how much is left; a tap opens the app on that book (`ownbook://play/…`).
+  The app writes the snapshot into an App Group; the widget needs no network or sign-in (B10).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.
