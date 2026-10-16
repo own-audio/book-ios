@@ -114,7 +114,7 @@ ui_tests() { # name host user password download-book
 # A package's live tests; a failure is reported and the run goes on to the next server.
 live_tests() { # name package [env assignments…]
   local name=$1 package=$2; shift 2
-  local log="$OUT/$name/$(date +%Y%m%d-%H%M%S)-live.log"
+  local log="$OUT/$name/$(date +%Y%m%d-%H%M%S)-live-$package.log"
   mkdir -p "$OUT/$name"
   (cd "Packages/$package" && env "$@" swift test --filter Live >"$log" 2>&1) || true
   grep -E "✘|Test run" "$log" | tee -a "$OUT/summary.txt" || echo "-- $name: live tests left no result, see $log"
@@ -139,12 +139,17 @@ if [[ "$only" == all || "$only" == audiobookshelf ]]; then
   echo "== audiobookshelf: live client tests"
   live_tests audiobookshelf AudiobookshelfKit AUDIOBOOKSHELF_HOST="$AUDIOBOOKSHELF_HOST" \
     AUDIOBOOKSHELF_USERNAME="$AUDIOBOOKSHELF_USERNAME" AUDIOBOOKSHELF_PASSWORD="$AUDIOBOOKSHELF_PASSWORD"
+  live_tests audiobookshelf BookLibrary AUDIOBOOKSHELF_HOST="$AUDIOBOOKSHELF_HOST" \
+    AUDIOBOOKSHELF_USERNAME="$AUDIOBOOKSHELF_USERNAME" AUDIOBOOKSHELF_PASSWORD="$AUDIOBOOKSHELF_PASSWORD"
   [[ "$live_only" == "--live-only" ]] || ui_tests audiobookshelf "$AUDIOBOOKSHELF_HOST" "$AUDIOBOOKSHELF_USERNAME" "$AUDIOBOOKSHELF_PASSWORD" "${AUDIOBOOKSHELF_DOWNLOAD_BOOK:-}"
 fi
 
 if [[ "$only" == all || "$only" == ownaudio ]]; then
   echo "== ownaudio: live client tests"
   live_tests ownaudio OwnAudioKit OWNAUDIO_HOST="$OWNAUDIO_HOST" OWNAUDIO_EMAIL="$OWNAUDIO_EMAIL" OWNAUDIO_ACCOUNT_PASSWORD="$OWNAUDIO_ACCOUNT_PASSWORD"
+  # BookLibrary's live tests also import the tiny "Test Author" book the UI tests download as a
+  # set; the demo server forgets it every night.
+  live_tests ownaudio BookLibrary OWNAUDIO_HOST="$OWNAUDIO_HOST" OWNAUDIO_EMAIL="$OWNAUDIO_EMAIL" OWNAUDIO_ACCOUNT_PASSWORD="$OWNAUDIO_ACCOUNT_PASSWORD"
   [[ "$live_only" == "--live-only" ]] || ui_tests ownaudio "$OWNAUDIO_HOST" "$OWNAUDIO_EMAIL" "$OWNAUDIO_ACCOUNT_PASSWORD" "${OWNAUDIO_DOWNLOAD_BOOK:-}"
 fi
 
