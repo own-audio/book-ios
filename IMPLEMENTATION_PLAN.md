@@ -293,10 +293,13 @@ client's mojibake repair, applied to display only).
   Series, Authors; the system Now Playing with the speed on its rate button and the chapters
   behind Up Next; the car never asks where to continue, the newer position wins; Apple granted
   the CarPlay audio entitlement to this App ID on 2026-10-16 and `com.apple.developer.carplay-audio`
-  is in the entitlements. Still to do: a Continue Listening
-  widget and a Live Activity for the player, Siri App Intents ("Play *title* in own.book",
-  matched against the local catalogue), iPad split view. Each one hidden until it works on a
-  device.
+  is in the entitlements. Siri App Intents — done 2026-10-16: "Play *title* in own.book" and
+  "Continue listening in own.book", `AudioPlaybackIntent`s matched against the library (the
+  downloads offline), phrases in English and Czech (`AppShortcuts.xcstrings`). iPad — done
+  2026-10-16: the Library tab is a `NavigationSplitView` with the sections in a sidebar
+  (`IPadTests` on the iPad Air simulator). Still to do: a Continue Listening widget and a Live
+  Activity for the player (a widget extension target with an App Group). Each one hidden until
+  it works on a device.
 - [ ] **B11: Polish, accessibility, tests.** The Czech of B4c re-read on every screen, Dynamic
   Type at the largest sizes, VoiceOver labels on every icon button and
   the scrubbers ("12:04 of 49:23"), 44 pt targets, Reduce Motion, both colour schemes. UI test

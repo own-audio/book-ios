@@ -506,6 +506,9 @@ extension JSONEncoder {
         let e = JSONEncoder()
         e.keyEncodingStrategy = .convertToSnakeCase
         e.dateEncodingStrategy = .iso8601
+        // The server keys idempotent requests on the body's bytes; unsorted, the keys come out
+        // in a different order from one encode to the next and a retry is refused.
+        e.outputFormatting = [.sortedKeys]
         return e
     }
 }

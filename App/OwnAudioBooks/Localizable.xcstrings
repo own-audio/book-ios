@@ -653,6 +653,16 @@
         }
       }
     },
+    "Add a server in own.book first.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nejdřív v own.book přidejte server."
+          }
+        }
+      }
+    },
     "Add a server on your iPhone": {
       "localizations": {
         "cs": {
@@ -709,6 +719,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vše"
+          }
+        }
+      }
+    },
+    "All Books": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Všechny knihy"
           }
         }
       }
@@ -1426,6 +1446,16 @@
         }
       }
     },
+    "Goes on with the book you were listening to.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračuje v knize, kterou jste poslouchali."
+          }
+        }
+      }
+    },
     "Good afternoon": {
       "localizations": {
         "cs": {
@@ -1876,6 +1906,16 @@
         }
       }
     },
+    "No book is under way; start one in own.book.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Žádná kniha není rozposlouchaná; začněte nějakou v own.book."
+          }
+        }
+      }
+    },
     "No book library could be listed.": {
       "localizations": {
         "cs": {
@@ -2236,6 +2276,26 @@
         }
       }
     },
+    "Play %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát %@"
+          }
+        }
+      }
+    },
+    "Play a Book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát knihu"
+          }
+        }
+      }
+    },
     "Playback": {
       "localizations": {
         "cs": {
@@ -2252,6 +2312,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hraje"
+          }
+        }
+      }
+    },
+    "Plays an audiobook from your library, from where you left off.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehraje audioknihu z vaší knihovny od místa, kde jste skončili."
           }
         }
       }
@@ -3056,6 +3126,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Na této adrese neodpovídá server own.audio ani Audiobookshelf."
+          }
+        }
+      }
+    },
+    "That book is not in the library any more.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tahle kniha už v knihovně není."
           }
         }
       }

@@ -225,7 +225,8 @@ final class PlaybackSmokeTests: XCTestCase {
     }
 
     func tapTab(_ app: XCUIApplication, _ name: String) {
-        let tab = app.tabBars.buttons[name].exists ? app.tabBars.buttons[name] : app.buttons[name]
+        // On iPad the tabs sit in the top bar, and a section may carry the same name.
+        let tab = app.tabBars.buttons[name].exists ? app.tabBars.buttons[name] : app.buttons[name].firstMatch
         XCTAssertTrue(tab.waitForExistence(timeout: 10), "the \(name) tab")
         tab.tap()
         // The password prompt may arrive late and undo the tap.

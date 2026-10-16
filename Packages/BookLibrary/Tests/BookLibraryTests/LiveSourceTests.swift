@@ -15,7 +15,9 @@ private func exercise(_ source: any BookSource) async throws {
     #expect(shelves.allSatisfy { !$0.isEmpty })
     let page = try await source.books(BookQuery(sort: .duration), cursor: nil, limit: 3)
     #expect(!page.books.isEmpty)
-    let shortest = page.books[0]
+    // The shortest real book: the import test leaves a silent one-second book with no duration
+    // behind on every run.
+    let shortest = try #require(try await source.allBooks(BookQuery(sort: .duration)).first { $0.durationMs > 0 })
     let book = try await source.book(id: shortest.id)
     let files = try #require(book.files)
     #expect(!files.isEmpty && files.last!.endMs > 0)
@@ -192,7 +194,13 @@ struct OwnAudioSourceLiveTests {
         let (_, response) = try await urlSession.upload(for: put, from: wav)
         #expect((200..<300).contains((response as? HTTPURLResponse)?.statusCode ?? 0), "the storage should take the file")
         let importId = "live-" + UUID().uuidString
-        let book = try await uploader.createBook(title: "own.audio Books live test", authors: ["Test Author"], narrators: ["Test Narrator"], description: nil, visibility: .private, coverUploadId: nil, files: [ImportedFile(uploadId: target.uploadId, fileName: "silence.wav", title: "Silence")], importId: importId)
+        let book: Book
+        do {
+            book = try await uploader.createBook(title: "own.audio Books live test", authors: ["Test Author"], narrators: ["Test Narrator"], description: nil, visibility: .private, coverUploadId: nil, files: [ImportedFile(uploadId: target.uploadId, fileName: "silence.wav", title: "Silence")], importId: importId)
+        } catch {
+            Issue.record("the first createBook failed: \(error)")
+            throw error
+        }
         #expect(book.title == "own.audio Books live test")
         #expect(book.authors.map(\.name) == ["Test Author"] && book.narrators.map(\.name) == ["Test Narrator"])
         #expect(book.files?.count == 1)

@@ -24,6 +24,7 @@ cs = {
  "Add Server": "Přidat server",
  "Add to Favourites": "Přidat do oblíbených",
  "All": "Vše",
+ "All Books": "Všechny knihy",
  "Audiobookshelf": "Audiobookshelf",
  "Author": "Autor",
  "Authors": "Autoři",
@@ -305,7 +306,14 @@ cs = {
  "Withdraw": "Zrušit",
  # Downloads as the music app has them (B9b).
  "A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.": "Seznam všeho na serveru, bez zvuku, aby šlo knihovnu procházet offline. Aktualizuje se při spuštění a při návratu aplikace do popředí.",
+ "Add a server in own.book first.": "Nejdřív v own.book přidejte server.",
  "Add a server on your iPhone": "Přidejte server na svém iPhonu",
+ "Goes on with the book you were listening to.": "Pokračuje v knize, kterou jste poslouchali.",
+ "No book is under way; start one in own.book.": "Žádná kniha není rozposlouchaná; začněte nějakou v own.book.",
+ "Play %@": "Přehrát %@",
+ "Play a Book": "Přehrát knihu",
+ "Plays an audiobook from your library, from where you left off.": "Přehraje audioknihu z vaší knihovny od místa, kde jste skončili.",
+ "That book is not in the library any more.": "Tahle kniha už v knihovně není.",
  "Address": "Adresa",
  "No chapters": "Žádné kapitoly",
  "Nothing downloaded": "Nic nestaženo",
@@ -354,4 +362,14 @@ info = {"sourceLanguage": "en", "version": "1.0", "strings": {
     "NSLocalNetworkUsageDescription": {"localizations": {"en": unit("Connects to the audiobook server on your local network."), "cs": unit("Připojuje se k audioknižnímu serveru ve vaší místní síti.")}},
 }}
 json.dump(info, open("App/OwnAudioBooks/InfoPlist.xcstrings", "w"), ensure_ascii=False, indent=2)
+# Siri phrases (AppShortcutsProvider); ${applicationName} and ${book} are the placeholders.
+shortcuts = {
+    "Continue listening in ${applicationName}": "Pokračuj v poslechu v ${applicationName}",
+    "Continue my book in ${applicationName}": "Pokračuj v mé knize v ${applicationName}",
+    "Resume my audiobook in ${applicationName}": "Pusť dál mou audioknihu v ${applicationName}",
+    "Play ${book} in ${applicationName}": "Přehraj ${book} v ${applicationName}",
+    "Listen to ${book} in ${applicationName}": "Pusť ${book} v ${applicationName}",
+}
+json.dump({"sourceLanguage": "en", "version": "1.0", "strings": {k: {"localizations": {"cs": unit(v)}} for k, v in shortcuts.items()}},
+          open("App/OwnAudioBooks/AppShortcuts.xcstrings", "w"), ensure_ascii=False, indent=2)
 print(len(strings), "keys")

@@ -1,3 +1,4 @@
+import BookLibrary
 import SwiftUI
 
 /// First run: add a server. After that three tabs — Home, Library, Search — with the mini
@@ -56,7 +57,7 @@ struct RootView: View {
                     .miniPlayerInset { isShowingPlayer = true }
             }
             Tab("Library", systemImage: "books.vertical", value: AppTab.library) {
-                NavigationStack { LibraryView().libraryDestinations() }
+                LibraryTab()
                     .miniPlayerInset { isShowingPlayer = true }
             }
             Tab("Search", systemImage: "magnifyingglass", value: AppTab.search, role: .search) {
@@ -66,6 +67,59 @@ struct RootView: View {
         }
         // Switching servers starts every tab over: their screens belong to the old library.
         .id(model.activeServerId)
+    }
+}
+
+/// The library's sections behind chips on iPhone; on iPad, a sidebar beside the open section.
+private struct LibraryTab: View {
+    private enum SidebarItem: Hashable { case books, series, authors, narrators, collections, downloads }
+
+    @Environment(AppModel.self) private var model
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @State private var selection: SidebarItem? = .books
+
+    var body: some View {
+        if sizeClass == .regular, let serverId = model.activeServerId {
+            NavigationSplitView {
+                List(selection: $selection) {
+                    Label("All Books", systemImage: "books.vertical").tag(SidebarItem.books)
+                        .accessibilityIdentifier("sidebar.books")
+                    if model.capabilitiesFor(serverId).contains(.series) || model.server(serverId)?.kind == .ownAudio {
+                        Label("Series", systemImage: "square.stack.3d.up").tag(SidebarItem.series)
+                            .accessibilityIdentifier("sidebar.series")
+                    }
+                    Label("Authors", systemImage: "person.2").tag(SidebarItem.authors)
+                        .accessibilityIdentifier("sidebar.authors")
+                    Label("Narrators", systemImage: "waveform").tag(SidebarItem.narrators)
+                        .accessibilityIdentifier("sidebar.narrators")
+                    if model.capabilitiesFor(serverId).contains(.collections) {
+                        Label("Collections", systemImage: "rectangle.stack").tag(SidebarItem.collections)
+                            .accessibilityIdentifier("sidebar.collections")
+                    }
+                    Label("Downloads", systemImage: "arrow.down.circle").tag(SidebarItem.downloads)
+                        .accessibilityIdentifier("sidebar.downloads")
+                }
+                .navigationTitle("Library")
+                .navigationSplitViewColumnWidth(min: 220, ideal: 260, max: 320)
+            } detail: {
+                NavigationStack { detail(serverId).libraryDestinations() }
+                    .id(selection)
+            }
+        } else {
+            NavigationStack { LibraryView().libraryDestinations() }
+        }
+    }
+
+    @ViewBuilder
+    private func detail(_ serverId: UUID) -> some View {
+        switch selection {
+        case .books, nil: BooksListView(title: String(localized: "All Books"), query: BookQuery(), serverId: serverId, isRoot: true, showsSections: false)
+        case .series: SeriesListView(serverId: serverId)
+        case .authors: PeopleView(kind: .authors, serverId: serverId)
+        case .narrators: PeopleView(kind: .narrators, serverId: serverId)
+        case .collections: CollectionsView(serverId: serverId)
+        case .downloads: DownloadsView()
+        }
     }
 }
 

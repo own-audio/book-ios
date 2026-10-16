@@ -1,0 +1,56 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "Continue listening in ${applicationName}": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračuj v poslechu v ${applicationName}"
+          }
+        }
+      }
+    },
+    "Continue my book in ${applicationName}": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračuj v mé knize v ${applicationName}"
+          }
+        }
+      }
+    },
+    "Resume my audiobook in ${applicationName}": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pusť dál mou audioknihu v ${applicationName}"
+          }
+        }
+      }
+    },
+    "Play ${book} in ${applicationName}": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehraj ${book} v ${applicationName}"
+          }
+        }
+      }
+    },
+    "Listen to ${book} in ${applicationName}": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pusť ${book} v ${applicationName}"
+          }
+        }
+      }
+    }
+  }
+}

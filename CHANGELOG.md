@@ -75,8 +75,17 @@ All notable changes to this project are documented here. The format follows
   system Now Playing with the speed on its rate button and the chapters behind Up Next. The car
   never asks where to continue; the newer position wins (B10).
 
+- iPad: the Library tab is a sidebar — All Books, Series, Authors, Narrators, Collections,
+  Downloads — beside the open section (B10).
+
+- Siri and Shortcuts: "Play *title* in own.book" and "Continue listening in own.book", matched
+  against the library (the downloads when offline); in English and Czech (B10).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.
 - Swiping a bookmark in the player's Bookmarks sheet showed bare icons; the buttons now say
   Delete and Rename.
+- A retried request to an own.audio server (an import after the app was killed, say) was refused
+  as "used for a different request": the JSON keys came out in a different order each time. They
+  are sorted now.

@@ -41,3 +41,19 @@ struct UploadsTests {
         #expect(bodies.last?.contains(#""relative_path":"001 - 01.mp3""#) == true)
     }
 }
+
+@Suite("Encoding")
+struct EncodingDeterminismTests {
+    /// The server keys idempotent requests on the body bytes: the same book must encode to the
+    /// same bytes every time, or a retry is refused as "a different request".
+    @Test("the same book encodes to the same bytes every time")
+    func stableBytes() throws {
+        let book = NewBook(title: "own.audio Books live test", author: "Test Author", narrator: "Test Narrator", visibility: "private", files: [.init(uploadId: "u/1", relativePath: "001 - silence.wav", title: "Silence")])
+        let first = try JSONEncoder.ownAudio.encode(book)
+        for _ in 0..<200 {
+            let again = try JSONEncoder.ownAudio.encode(book)
+            #expect(again == first, "\(String(decoding: first, as: UTF8.self)) vs \(String(decoding: again, as: UTF8.self))")
+            if again != first { break }
+        }
+    }
+}

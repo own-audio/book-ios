@@ -22,6 +22,8 @@ struct BooksListView: View {
     @State var query: BookQuery
     let serverId: UUID
     var isRoot = false
+    /// The chips to series, authors, narrators and collections; on iPad the sidebar has them.
+    var showsSections: Bool? = nil
 
     @AppStorage("library.grid") private var isGrid = true
     @State private var books: [Book] = []
@@ -89,7 +91,7 @@ struct BooksListView: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
                 // The ways in are there before the books are, so a slow first sync still shows
                 // a screen with something on it.
-                if isRoot { sections }
+                if showsSections ?? isRoot { sections }
                 LoadStateView(state: state, retry: { Task { await reload() } }) { _ in
                 VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
                     if books.isEmpty {
@@ -117,7 +119,7 @@ struct BooksListView: View {
 
     private var list: some View {
         List {
-            if isRoot { Section { sectionLinks } }
+            if showsSections ?? isRoot { Section { sectionLinks } }
             Section {
                 switch state {
                 case .loading: ProgressView()
