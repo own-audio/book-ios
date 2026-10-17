@@ -62,8 +62,8 @@ struct DownloadsView: View {
         .navigationTitle("Downloads")
         .toolbar {
             // Offline Mode where the offline library is: one tap and the app shows and plays
-            // only this list. The same switch as in Settings.
-            ToolbarItem(placement: .primaryAction) {
+            // only this list. The same switch as in Settings, at the top left as in the music app.
+            ToolbarItem(placement: .topBarLeading) {
                 Toggle(isOn: Binding(get: { model.settings.offlineMode }, set: { model.setOfflineMode($0) })) {
                     Label("Offline Mode", systemImage: model.settings.offlineMode ? "wifi.slash" : "wifi")
                 }
