@@ -218,6 +218,26 @@ struct SpokenEngineTests {
 
     final class Refreshed: @unchecked Sendable { var ids: [String] = [] }
 
+    @Test("a part the app has on the phone plays from there when its turn comes")
+    func usesLocatedPart() async {
+        let (engine, _) = engine()
+        // The second part's link points nowhere; the locator has the real file.
+        let book = SpokenBook(id: "book1", title: "T", author: nil, parts: [
+            SpokenPart(id: "p1", url: fixture("test-part-2s.m4a"), durationMs: 2000),
+            SpokenPart(id: "p2", url: URL(string: "https://example.invalid/p2.m4b")!, durationMs: 6000),
+        ], chapters: [])
+        let asked = Refreshed()
+        engine.partLocator = { _, partId in
+            asked.ids.append(partId)
+            return partId == "p2" ? fixture("test-book.m4b") : nil
+        }
+        engine.load(book, at: 1700, autoplay: true)
+        #expect(await wait(until: { engine.positionMs > 2300 }, seconds: 15), "the second part should play from the located file")
+        #expect(asked.ids.contains("p2") && engine.errorMessage == nil && engine.isPlaying)
+        #expect(engine.book?.timeline.parts[1].url.isFileURL == true, "the book now names the local copy")
+        engine.stop()
+    }
+
     @Test("with no refresher the failure is shown")
     func fails() async {
         let (engine, _) = engine()

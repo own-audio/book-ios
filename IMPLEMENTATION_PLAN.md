@@ -319,7 +319,10 @@ client's mojibake repair, applied to display only).
   are in `Theme`; `MisuseTests` (wrong sign-ins, hammered player, stop while loading, restless
   navigation and odd searches, interruptions, killed mid-download — `SERVER_DOWNLOAD_BOOK`),
   `LargeTextTests` (every main screen at AccessibilityXXXL, screenshots for a look),
-  `testLaunchPerformance` (cold start, five launches). App size: 5.6 MB installed, the widget
+  `testLaunchPerformance` (cold start, five launches). Streaming hardened 2026-10-17 after the
+  music app's report: three minutes fetched ahead, `isBuffering` instead of gaps, a listening
+  cache (`TrackFileCache` in Caches, 1 GB LRU, Wi-Fi only, HLS left out) that the engine's
+  `partLocator` consults before each part. App size: 5.6 MB installed, the widget
   extension 200 KB. Still to do: the Czech re-read on every screen, both colour schemes by eye,
   a 500-book library, the sleep-timer / speed / two-factor / mobile-data UI tests.
 - [ ] **B12: Release.** Icon (its own, not a recolour of the music icon), App Store texts in

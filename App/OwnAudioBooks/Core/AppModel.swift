@@ -1,5 +1,6 @@
 import BookLibrary
 import Foundation
+import OSLog
 import Observation
 import PlayerCore
 import SpokenEngine
@@ -52,6 +53,13 @@ final class AppModel {
     private let pendingProgress = PendingProgress()
     private let knownPositions = KnownPositions()
     private let resumeStore = UserDefaultsResumeStore(key: "books.resume")
+    /// Files of books being streamed, kept as they are heard (Wi-Fi only, up to a gigabyte, the
+    /// oldest let go first), so the next part starts from disk and a book heard once again needs
+    /// no network. Separate from the listener's downloads, which it never counts as.
+    private(set) var listeningCache: TrackFileCache!
+    static let listeningCacheCapBytes: Int64 = 1 << 30
+    nonisolated static let cacheLog = Logger(subsystem: "audio.own.bookplayer", category: "listeningCache")
+    private var listeningCacheTask: Task<Void, Never>?
     let narrations = NarrationManager()
     /// The player on the lock screen; nil only until `init` has made the engine.
     @ObservationIgnored private var liveActivity: LiveActivityController?
@@ -96,6 +104,20 @@ final class AppModel {
         engine.partRefresher = { [weak self] compositeId, partId in
             guard let self, let (serverId, bookId) = BookID.parse(compositeId) else { throw SourceError.notFound }
             return try await self.freshPartURL(serverId: serverId, bookId: bookId, partId: partId)
+        }
+        let cachesDirectory = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("listening-cache", isDirectory: true)
+        listeningCache = TrackFileCache(remoteURL: { [weak self] key in
+            guard let self, let (compositeId, fileId) = Self.splitCacheKey(key), let (serverId, bookId) = BookID.parse(compositeId),
+                  let source = await self.sources[serverId] else { throw SourceError.notFound }
+            // Always the original file, as a download would be.
+            let book = await self.nowPlayingBook?.id == bookId ? await self.nowPlayingBook! : try await source.book(id: bookId)
+            return try await source.partURL(for: book, fileId: fileId, startMs: nil, maxBitrateKbps: nil).url
+        }, session: Self.session, cacheDirectory: cachesDirectory)
+        engine.partLocator = { [weak self] compositeId, partId in
+            guard let self else { return nil }
+            let local = await self.listeningCache.existingLocalURL(trackId: Self.cacheKey(compositeId, partId))
+            if local != nil { await self.cacheFollowingParts() }
+            return local
         }
         downloads.urlProvider = { [weak self] compositeId, fileId in
             guard let self, let (serverId, _) = BookID.parse(compositeId), let source = self.sources[serverId],
@@ -752,7 +774,16 @@ final class AppModel {
                 detail = book.files == nil ? try await source.book(id: book.id) : book
                 let made = try await source.playPlan(for: detail, maxBitrateKbps: maxBitrateKbps)
                 plan = made
-                parts = made.parts.map { SpokenPart(id: $0.fileId, url: $0.url, durationMs: $0.durationMs, isHLS: $0.isHLS) }
+                var resolved: [SpokenPart] = []
+                for part in made.parts {
+                    // A part heard before plays from the listening cache rather than the network.
+                    if !part.isHLS, let local = await listeningCache.existingLocalURL(trackId: Self.cacheKey(composite, part.fileId)) {
+                        resolved.append(SpokenPart(id: part.fileId, url: local, durationMs: part.durationMs))
+                    } else {
+                        resolved.append(SpokenPart(id: part.fileId, url: part.url, durationMs: part.durationMs, isHLS: part.isHLS))
+                    }
+                }
+                parts = resolved
             }
             let serverProgress = isOffline ? progress[composite] : try? await source.progress(bookId: book.id)
             if let serverProgress { progress[composite] = serverProgress }
@@ -781,6 +812,7 @@ final class AppModel {
             applyPlaybackSettings()
             engine.setRate(settings.rate(for: composite))
             engine.load(spoken, at: start, autoplay: true)
+            scheduleListeningCache(for: spoken)
         } catch {
             actionError = (error as? SourceError)?.userMessage ?? error.localizedDescription
         }
@@ -814,6 +846,52 @@ final class AppModel {
     func setRate(_ rate: Float) {
         engine.setRate(rate)
         if let book = engine.book { settings.remember(rate: engine.rate, for: book.id) }
+    }
+
+    // MARK: - The listening cache
+
+    nonisolated static func cacheKey(_ compositeId: String, _ fileId: String) -> String { compositeId + "#" + fileId }
+
+    nonisolated static func splitCacheKey(_ key: String) -> (compositeId: String, fileId: String)? {
+        guard let hash = key.lastIndex(of: "#") else { return nil }
+        return (String(key[..<hash]), String(key[key.index(after: hash)...]))
+    }
+
+    /// Streaming a book on Wi-Fi: the part after the one playing is fetched now, so it starts
+    /// from disk; the one playing is fetched a little later, once the player has its own
+    /// buffer, so the two never compete for a slow server at the start. HLS transcodes are made
+    /// per listen and are not kept.
+    private func scheduleListeningCache(for book: SpokenBook) {
+        listeningCacheTask?.cancel()
+        listeningCacheTask = nil
+        guard !network.isExpensive, !network.isConstrained else { return }
+        Task { await listeningCache.enforce(capBytes: Self.listeningCacheCapBytes) }
+        Task { await cacheFollowingParts() }
+        listeningCacheTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(45))
+            guard let self, !Task.isCancelled, self.engine.book?.id == book.id else { return }
+            await self.cacheCurrentPart()
+        }
+    }
+
+    /// The part after the one playing, if it streams and isn't cached yet.
+    private func cacheFollowingParts() async {
+        guard !network.isExpensive, !network.isConstrained, let book = engine.book,
+              let (index, _) = book.timeline.locate(engine.positionMs), index + 1 < book.timeline.parts.count else { return }
+        let next = book.timeline.parts[index + 1]
+        guard !next.isHLS, !next.url.isFileURL else { return }
+        if await listeningCache.existingLocalURL(trackId: Self.cacheKey(book.id, next.id)) == nil {
+            Self.cacheLog.info("fetching the next part \(next.id, privacy: .public) ahead")
+        }
+        await listeningCache.prefetch(trackId: Self.cacheKey(book.id, next.id))
+    }
+
+    private func cacheCurrentPart() async {
+        guard let book = engine.book, let (index, _) = book.timeline.locate(engine.positionMs) else { return }
+        let part = book.timeline.parts[index]
+        guard !part.isHLS, !part.url.isFileURL else { return }
+        Self.cacheLog.info("fetching the part playing \(part.id, privacy: .public) for the cache")
+        await listeningCache.prefetch(trackId: Self.cacheKey(book.id, part.id))
     }
 
     private func freshPartURL(serverId: UUID, bookId: String, partId: String) async throws -> URL {
@@ -874,7 +952,7 @@ final class AppModel {
             finished: position.finished, at: position.at, closes: closes
         ))
         liveActivity?.tick()
-        Task { await flushPendingProgress(); await refreshWidget(force: closes) }
+        Task { await flushPendingProgress(); await refreshWidget(force: closes); await cacheFollowingParts() }
     }
 
     // MARK: - The widget

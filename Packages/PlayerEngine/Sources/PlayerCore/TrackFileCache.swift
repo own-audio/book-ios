@@ -43,7 +43,10 @@ public actor TrackFileCache {
     /// between streaming and playing from disk.
     public func existingLocalURL(trackId: String) async -> URL? {
         if let downloaded = await localFile?(trackId) { return downloaded }
-        return existingCachedFile(trackId: trackId)
+        guard let cached = existingCachedFile(trackId: trackId) else { return nil }
+        // Found is used: `enforce` lets the oldest go first.
+        try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: cached.path)
+        return cached
     }
 
     /// A local file for `trackId`, downloading it into the cache first if needed.
@@ -61,6 +64,28 @@ public actor TrackFileCache {
     public func prefetch(trackId: String) {
         guard inFlight[trackId] == nil, existingCachedFile(trackId: trackId) == nil else { return }
         Task { _ = try? await localURL(trackId: trackId) }
+    }
+
+    /// What the cache holds, in bytes.
+    public func totalBytes() -> Int64 {
+        (try? FileManager.default.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: [.fileSizeKey]))?
+            .reduce(Int64(0)) { $0 + Int64((try? $1.resourceValues(forKeys: [.fileSizeKey]).fileSize) ?? 0) } ?? 0
+    }
+
+    /// Lets the least recently used files go until the cache fits `capBytes`; a file is "used"
+    /// when it is found by `existingLocalURL`, which moves its date forward.
+    public func enforce(capBytes: Int64) {
+        guard let files = try? FileManager.default.contentsOfDirectory(at: cacheDirectory, includingPropertiesForKeys: [.fileSizeKey, .contentModificationDateKey]) else { return }
+        var entries = files.compactMap { url -> (URL, Int64, Date)? in
+            guard let values = try? url.resourceValues(forKeys: [.fileSizeKey, .contentModificationDateKey]), let size = values.fileSize else { return nil }
+            return (url, Int64(size), values.contentModificationDate ?? .distantPast)
+        }
+        var total = entries.reduce(Int64(0)) { $0 + $1.1 }
+        entries.sort { $0.2 < $1.2 }
+        for (url, size, _) in entries where total > capBytes {
+            try? FileManager.default.removeItem(at: url)
+            total -= size
+        }
     }
 
     /// Empties the temporary cache, e.g. when a server is removed.

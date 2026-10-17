@@ -37,6 +37,8 @@ public final class SpokenEngine {
     public private(set) var book: SpokenBook?
     public private(set) var isPlaying = false
     public private(set) var isLoading = false
+    /// Playing, but the player is waiting for the network to catch up: shown as loading.
+    public private(set) var isBuffering = false
     public private(set) var positionMs: Int64 = 0
     public private(set) var errorMessage: String?
     /// 0.5 to 3.0, pitch-corrected.
@@ -58,6 +60,12 @@ public final class SpokenEngine {
     public var onFinished: ((String) -> Void)?
     /// A new link for a part whose one failed or is about to run out.
     public var partRefresher: (@Sendable (_ bookId: String, _ partId: String) async throws -> URL)?
+    /// A copy of a part already on the phone (the app's listening cache), asked for before each
+    /// part is loaded; nil means stream it.
+    public var partLocator: (@Sendable (_ bookId: String, _ partId: String) async -> URL?)?
+    /// How much of a streamed file the player keeps fetched ahead. Three minutes: a stall on a
+    /// slow server passes unheard, and the memory is a few megabytes of compressed speech.
+    public var forwardBufferSecs: Double = 180
     public var artworkProvider: (@Sendable (_ bookId: String) async -> NowPlayingImage?)?
     public var tickIntervalSecs: TimeInterval = 10
 
@@ -68,6 +76,7 @@ public final class SpokenEngine {
     private var timeObserver: Any?
     private var endObserver: NSObjectProtocol?
     private var statusObservation: NSKeyValueObservation?
+    private var timeControlObservation: NSKeyValueObservation?
     private var pausedAt: Date?
     private var playingSince: Date?
     private var listenedSinceTickMs: Int64 = 0
@@ -91,6 +100,14 @@ public final class SpokenEngine {
         nowPlaying.onPreviousTrack = { [weak self] in self?.previousChapter() }
         observeTime()
         observeAudioSession()
+        timeControlObservation = player.observe(\.timeControlStatus, options: [.new]) { [weak self] player, _ in
+            let waiting = player.timeControlStatus == .waitingToPlayAtSpecifiedRate && player.reasonForWaitingToPlay == .toMinimizeStalls
+            Task { @MainActor [weak self] in
+                guard let self, self.isBuffering != waiting else { return }
+                self.isBuffering = waiting
+                if waiting { self.log.info("buffering at \(self.positionMs, privacy: .public) ms") }
+            }
+        }
     }
 
     // MARK: - Loading and playing
@@ -153,6 +170,7 @@ public final class SpokenEngine {
         if reporting { flushListening(reason: .stop) }
         player.replaceCurrentItem(with: nil)
         book = nil
+        isBuffering = false
         currentIndex = nil
         pausedAt = nil
         sleepTimer.cancel()
@@ -228,6 +246,9 @@ public final class SpokenEngine {
         let item = AVPlayerItem(asset: asset)
         // Speech keeps its pitch at any speed; the other algorithms are for music.
         item.audioTimePitchAlgorithm = .timeDomain
+        // A file streams well ahead of the listener; an HLS transcode is made as it goes and
+        // asking for much more only makes the server work for nothing.
+        item.preferredForwardBufferDuration = part.url.isFileURL ? 0 : (part.isHLS ? 60 : forwardBufferSecs)
         observe(item)
         player.replaceCurrentItem(with: item)
         if offset > 0 {
@@ -272,7 +293,7 @@ public final class SpokenEngine {
                 // "End of item" for a book is the book, not the file; the timer stays armed.
                 sleepTimer.startUntilEndOfItem()
             }
-            refreshIfExpiring(partIndex: index + 1) { [weak self] in
+            prepare(partIndex: index + 1) { [weak self] in
                 self?.loadPart(at: self?.positionMs ?? 0, thenPlay: self?.isPlaying ?? false)
             }
         } else {
@@ -315,16 +336,24 @@ public final class SpokenEngine {
         }
     }
 
-    /// Before loading a part whose link is about to run out, a fresh one; `then` runs either way.
-    private func refreshIfExpiring(partIndex: Int, then: @escaping @MainActor () -> Void) {
-        guard let book, let expires = book.linksExpireAt, expires.timeIntervalSinceNow < 120, let partRefresher else {
+    /// Before a part is loaded: a copy on the phone if the app has one, else a fresh link when
+    /// the one it has is about to run out; `then` runs either way.
+    private func prepare(partIndex: Int, then: @escaping @MainActor () -> Void) {
+        guard let book, partIndex < book.timeline.parts.count else { then(); return }
+        let part = book.timeline.parts[partIndex]
+        guard !part.url.isFileURL, partLocator != nil || (book.linksExpireAt.map { $0.timeIntervalSinceNow < 120 } ?? false) else {
             then()
             return
         }
-        let part = book.timeline.parts[partIndex]
+        let locator = partLocator
+        let refresher = partRefresher
+        let expiring = book.linksExpireAt.map { $0.timeIntervalSinceNow < 120 } ?? false
         Task { [weak self] in
-            if let url = try? await partRefresher(book.id, part.id), let self, self.book?.id == book.id {
-                self.book = self.book?.replacing(partId: part.id, with: url)
+            var replacement: URL?
+            if let locator { replacement = await locator(book.id, part.id) }
+            if replacement == nil, expiring, let refresher { replacement = try? await refresher(book.id, part.id) }
+            if let replacement, let self, self.book?.id == book.id {
+                self.book = self.book?.replacing(partId: part.id, with: replacement)
             }
             then()
         }

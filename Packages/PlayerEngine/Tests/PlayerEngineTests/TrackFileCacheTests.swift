@@ -55,3 +55,22 @@ struct TrackFileCacheTests {
         #expect(await mock.requestLog().isEmpty)
     }
 }
+
+@Suite("TrackFileCache — size cap")
+struct TrackFileCacheCapTests {
+    @Test("over the cap, the files not used for longest go first")
+    func evictsOldest() async throws {
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("cache-cap-\(UUID().uuidString)", isDirectory: true)
+        let cache = TrackFileCache(remoteURL: { _ in URL(string: "https://example.com/x")! }, cacheDirectory: directory)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        for (name, age) in [("old.mp3", 300.0), ("middle.mp3", 200.0), ("new.mp3", 100.0)] {
+            let url = directory.appendingPathComponent(name)
+            try Data(count: 1000).write(to: url)
+            try FileManager.default.setAttributes([.modificationDate: Date().addingTimeInterval(-age)], ofItemAtPath: url.path)
+        }
+        #expect(await cache.totalBytes() == 3000)
+        await cache.enforce(capBytes: 2500)
+        let left = Set((try FileManager.default.contentsOfDirectory(atPath: directory.path)))
+        #expect(left == ["middle.mp3", "new.mp3"])
+    }
+}

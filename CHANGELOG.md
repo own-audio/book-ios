@@ -103,6 +103,11 @@ All notable changes to this project are documented here. The format follows
 - The app icon set's manifest named no files, so no icon was compiled into the archive.
 - Swiping a bookmark in the player's Bookmarks sheet showed bare icons; the buttons now say
   Delete and Rename.
+- Streaming stuttered on a slow server, on Audiobookshelf and own.audio alike: the player now
+  keeps three minutes of a file fetched ahead, shows "loading" while it waits for the network
+  instead of playing gaps, and keeps what it streams on Wi-Fi in a listening cache (a gigabyte,
+  the oldest let go first) — the next file of the book starts from disk, and a book heard once
+  plays again without the network. Separate from downloads, which it never counts as.
 - Stop in the player left the book in the mini player; it now lets the book go everywhere.
 - A retried request to an own.audio server (an import after the app was killed, say) was refused
   as "used for a different request": the JSON keys came out in a different order each time. They
