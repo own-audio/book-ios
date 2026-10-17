@@ -13,20 +13,22 @@ struct BookActivityAttributes: ActivityAttributes {
         var rate: Float
         /// When `positionMs` was true, so the view can count on while playing.
         var at: Date
+        /// A JPEG in the App Group container, by file name. In the state rather than the
+        /// attributes: the cover often arrives after the activity has started, and only the
+        /// state can change.
+        var coverFile: String?
     }
 
     /// The composite book id, as `ownbook://play/<id>` wants it.
     let bookId: String
     let title: String
     let author: String
-    /// A JPEG in the App Group container, by file name; nil when the book has no cover.
-    let coverFile: String?
 
     static let appGroup = "group.audio.own.bookplayer"
 
-    var coverURL: URL? {
-        guard let coverFile else { return nil }
-        return FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.appGroup)?.appendingPathComponent(coverFile)
+    static func coverURL(file: String?) -> URL? {
+        guard let file else { return nil }
+        return FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup)?.appendingPathComponent(file)
     }
 }
 

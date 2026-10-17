@@ -109,6 +109,9 @@ All notable changes to this project are documented here. The format follows
   the oldest let go first) — the next file of the book starts from disk, and a book heard once
   plays again without the network. Separate from downloads, which it never counts as.
 - Stop in the player left the book in the mini player; it now lets the book go everywhere.
+- The Live Activity showed a grey square instead of the cover: the cover's name was fixed at the
+  activity's start, before the cover had loaded. It now travels in the state and is filled in
+  as soon as it is there.
 - A retried request to an own.audio server (an import after the app was killed, say) was refused
   as "used for a different request": the JSON keys came out in a different order each time. They
   are sorted now.

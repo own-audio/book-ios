@@ -19,6 +19,10 @@ final class LiveActivityController {
     private var activityBookId: String?
     private var lastSentAt = Date.distantPast
     private var lastState: BookActivityAttributes.ContentState?
+    /// The cover written for the current book, once there is one; asked for again on every
+    /// sync until then, since the loader may not have it when the activity starts.
+    private var coverFile: String?
+    private var fetchingCover = false
 
     init(model: AppModel) {
         self.model = model
@@ -63,12 +67,13 @@ final class LiveActivityController {
         }
         let state = BookActivityAttributes.ContentState(
             chapter: model.engine.currentChapter?.title, positionMs: model.engine.positionMs, durationMs: model.engine.durationMs,
-            isPlaying: model.engine.isPlaying, rate: model.engine.rate, at: Date()
+            isPlaying: model.engine.isPlaying, rate: model.engine.rate, at: Date(), coverFile: activityBookId == spoken.id ? coverFile : nil
         )
         if activityBookId != spoken.id {
             Task { await start(book: book, serverId: serverId, composite: spoken.id, state: state) }
             return
         }
+        if coverFile == nil { fetchCover(book: book, serverId: serverId, composite: spoken.id) }
         guard let activity else { return }
         if !force, state.isPlaying == lastState?.isPlaying, Date().timeIntervalSince(lastSentAt) < 15 { return }
         lastSentAt = Date()
@@ -81,16 +86,8 @@ final class LiveActivityController {
     private func start(book: Book, serverId: UUID, composite: String, state: BookActivityAttributes.ContentState) async {
         await endCurrent()
         activityBookId = composite
-        var coverFile: String?
-        if let group = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: BookActivityAttributes.appGroup),
-           let image = await model?.coverImage(book, serverId: serverId, size: 160), let data = image.jpegData(compressionQuality: 0.75) {
-            let name = "cover-" + composite.unicodeScalars.map { CharacterSet.alphanumerics.contains($0) ? Character($0) : "-" }.map(String.init).joined() + ".jpg"
-            try? data.write(to: group.appendingPathComponent(name), options: .atomic)
-            coverFile = name
-        }
-        // The book may have changed while the cover was being made.
-        guard activityBookId == composite else { return }
-        let attributes = BookActivityAttributes(bookId: composite, title: book.title, author: book.authorLine, coverFile: coverFile)
+        coverFile = nil
+        let attributes = BookActivityAttributes(bookId: composite, title: book.title, author: book.authorLine)
         do {
             activity = try Activity.request(attributes: attributes, content: ActivityContent(state: state, staleDate: nil))
             lastSentAt = Date()
@@ -99,6 +96,34 @@ final class LiveActivityController {
         } catch {
             log.error("could not start: \(String(describing: error), privacy: .public)")
             activityBookId = nil
+            return
+        }
+        fetchCover(book: book, serverId: serverId, composite: composite)
+    }
+
+    /// The cover as a small JPEG in the App Group, readable before the phone's first unlock
+    /// wears off; the next sync carries its name.
+    private func fetchCover(book: Book, serverId: UUID, composite: String) {
+        guard !fetchingCover, coverFile == nil else { return }
+        fetchingCover = true
+        Task { [weak self] in
+            defer { self?.fetchingCover = false }
+            guard let group = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: BookActivityAttributes.appGroup),
+                  let image = await self?.model?.coverImage(book, serverId: serverId, size: 160), let data = image.jpegData(compressionQuality: 0.75)
+            else {
+                log.info("no cover for the activity yet")
+                return
+            }
+            let name = "cover-" + composite.unicodeScalars.map { CharacterSet.alphanumerics.contains($0) ? Character($0) : "-" }.map(String.init).joined() + ".jpg"
+            do {
+                try data.write(to: group.appendingPathComponent(name), options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+            } catch {
+                log.error("could not write the cover: \(String(describing: error), privacy: .public)")
+                return
+            }
+            guard let self, self.activityBookId == composite else { return }
+            self.coverFile = name
+            self.sync(force: true)
         }
     }
 

@@ -14,7 +14,7 @@ struct BookLiveActivity: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Cover(url: context.attributes.coverURL, size: 52)
+                    Cover(url: BookActivityAttributes.coverURL(file: context.state.coverFile), size: 52)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     Text(Remaining.text(context.state)).font(.caption).foregroundStyle(.secondary)
@@ -32,7 +32,7 @@ struct BookLiveActivity: Widget {
                     }
                 }
             } compactLeading: {
-                Cover(url: context.attributes.coverURL, size: 22)
+                Cover(url: BookActivityAttributes.coverURL(file: context.state.coverFile), size: 22)
             } compactTrailing: {
                 Image(systemName: context.state.isPlaying ? "waveform" : "pause.fill").foregroundStyle(accent)
             } minimal: {
@@ -49,7 +49,7 @@ private struct LockScreenView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Cover(url: context.attributes.coverURL, size: 64)
+            Cover(url: BookActivityAttributes.coverURL(file: context.state.coverFile), size: 64)
             VStack(alignment: .leading, spacing: 4) {
                 Text(context.attributes.title).font(.subheadline.weight(.semibold)).lineLimit(1)
                 Text(context.state.chapter ?? context.attributes.author).font(.caption).foregroundStyle(.secondary).lineLimit(1)
