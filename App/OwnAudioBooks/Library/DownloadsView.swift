@@ -72,6 +72,15 @@ struct DownloadsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(entry.book.title).font(.body.weight(.semibold)).foregroundStyle(Theme.Colors.foreground).lineLimit(2)
                     Text(entry.book.authorLine).font(.subheadline).foregroundStyle(Theme.Colors.muted).lineLimit(1)
+                    // Which server it came from: with several, the same title can be on more than one.
+                    HStack(spacing: 4) {
+                        Image(systemName: "server.rack").imageScale(.small).accessibilityHidden(true)
+                        Text(model.server(entry.serverId)?.displayName ?? String(localized: "Removed server"))
+                    }
+                        .font(.caption)
+                        .foregroundStyle(Theme.Colors.muted)
+                        .lineLimit(1)
+                        .accessibilityIdentifier("downloads.source.\(entry.book.id)")
                     Text(status(entry)).font(.caption).foregroundStyle(Theme.Colors.muted)
                 }
             }

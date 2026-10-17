@@ -296,6 +296,8 @@ final class OfflineTests: XCTestCase {
         // The Downloads tab lists it: where a listener finds what is on the phone.
         smoke.tapTab(app, "Downloads")
         XCTAssertTrue(app.descendants(matching: .any)["downloads.\(bookId)"].firstMatch.waitForExistence(timeout: 10), "the Downloads tab should list the book")
+        let source = app.descendants(matching: .any)["downloads.source.\(bookId)"].firstMatch
+        XCTAssertTrue(source.exists && !source.label.isEmpty, "and say which server it came from")
         smoke.screenshot(app, "12b-downloads-tab")
 
         // No network: relaunched with every request failing, the server kept.

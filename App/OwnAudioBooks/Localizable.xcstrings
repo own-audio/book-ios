@@ -2830,6 +2830,16 @@
         }
       }
     },
+    "Removed server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebraný server"
+          }
+        }
+      }
+    },
     "Rename": {
       "localizations": {
         "cs": {

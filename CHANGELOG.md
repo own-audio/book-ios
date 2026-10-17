@@ -8,6 +8,7 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Every downloaded book says which server it came from.
 - An Offline Mode switch on Home, beside Settings, as in the music app.
 - A Downloads tab: every downloaded book, from every server, one tap from anywhere (it was
   under Settings before).
