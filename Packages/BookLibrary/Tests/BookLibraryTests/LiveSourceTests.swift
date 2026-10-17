@@ -266,3 +266,39 @@ struct OwnAudioSourceLiveTests {
         await phone.signOut()
     }
 }
+
+/// A hosted own.audio server with the narration module: the voices, a count of a tiny text and
+/// its price. No job is ever started here — that would spend the family's credit.
+@Suite("own.audio narration, live", .serialized, .enabled(if: !(ProcessInfo.processInfo.environment["NARRATION_HOST"] ?? "").isEmpty))
+struct NarrationLiveTests {
+    @Test("languages, voices, a character count and a quote")
+    func optionsAndQuote() async throws {
+        let env = ProcessInfo.processInfo.environment
+        let host = try #require(URL(string: env["NARRATION_HOST"]!))
+        let config = URLSessionConfiguration.ephemeral
+        config.httpAdditionalHeaders = ["User-Agent": "own.audio Books tests"]
+        let urlSession = URLSession(configuration: config)
+        let device = DeviceIdentity(id: "book-library-live-tests", name: "Live tests", model: "iPhone", appVersion: "0.1.0", systemVersion: "18.0")
+        let result = try await ServerSetup.ownAudioSignIn(host: host, email: env["NARRATION_EMAIL"]!, password: env["NARRATION_PASSWORD"]!, device: device, urlSession: urlSession)
+        guard case .signedIn(let record) = result else { Issue.record("two-factor on the narration account"); return }
+        let info = try await ServerSetup.ownAudioInfo(at: host, urlSession: urlSession)
+        #expect(info.modules.contains("narration"), "the server should advertise narration")
+        let narrator = try #require(record.makeSource(SourceEnvironment(urlSession: urlSession, cache: nil, offline: nil, device: device)) as? any BookNarrator)
+        let options = try await narrator.narrationOptions()
+        #expect(!options.languages.isEmpty && !options.voices.isEmpty)
+        #expect(!options.targetLanguages.isEmpty, "a language with a voice")
+        let target = try #require(options.targetLanguages.first)
+        let voice = try #require(options.voices(for: target.code).first)
+
+        let text = String(repeating: "Once upon a time there was a very short book. ", count: 20)
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent("narration-test-\(UUID().uuidString).txt")
+        try text.write(to: file, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: file) }
+        let count = try await narrator.narrationCharacterCount(fileURL: file)
+        #expect(count > 500 && count <= text.count + 50, "the server should count about \(text.count) characters, counted \(count)")
+        let quote = try await narrator.narrationQuote(charCount: count, sourceLanguage: target.code, targetLanguage: target.code, voiceId: voice.id)
+        #expect(quote.charCount == count && quote.quotedPriceCents >= 0 && !quote.currency.isEmpty)
+        #expect(quote.translationCostCents == 0, "same language, no translation")
+        await narrator.signOut()
+    }
+}

@@ -282,6 +282,16 @@ client's mojibake repair, applied to display only).
   where a server has them (Audiobookshelf `/api/me/listening-stats`; own.audio when it reaches
   v2); narration (hosted servers that advertise the module in discovery) when its routes are
   in v2 shape — server work first; the app never sells credit.
+- [x] **B9c: Narrate an ebook** (asked and done 2026-10-17). On hosted own.audio servers whose
+  discovery lists the `narration` module: the Library's "+" offers *Narrate an Ebook…* beside the
+  audio import; the sheet takes an EPUB/MOBI/text, title, the language it is written in and the
+  one it is read in (only languages with a voice), a voice, one file or one per chapter, then
+  asks the server for its character count and quote (`/api/v2/narration/estimate`, `/quote`),
+  shows the family's credit, and starts the job (`/jobs`). `NarrationManager` keeps the job ids
+  on disk and polls every 4 s in the foreground; the row in the Library shows the stage and the
+  chapters done, failures say why, and the finished book comes through the catalogue sync.
+  Audiobook translation stays a server matter (the hosted service translates podcast episodes
+  only). Live test against a hosted server (`NARRATION_*` env; quotes, never starts a job).
 - [x] **B9b: Downloads as the music app has them** (asked and done 2026-10-16). One button
   downloads a whole series, an author's books or a collection, with a ring and a count while
   they come; the Downloads screen grouped by server, with Retry Failed; Whole Library When
@@ -304,13 +314,14 @@ client's mojibake repair, applied to display only).
   engine (started with the book, moved at most every 15 s, ended with it), the view and the
   `PlaybackControlIntent` buttons in the widget extension (`Shared/BookActivity.swift`). CarPlay,
   the widget and the activity are each to be seen on a device before B10 is ticked.
-- [ ] **B11: Polish, accessibility, tests.** The Czech of B4c re-read on every screen, Dynamic
-  Type at the largest sizes, VoiceOver labels on every icon button and
-  the scrubbers ("12:04 of 49:23"), 44 pt targets, Reduce Motion, both colour schemes. UI test
-  suites against each server kind (`audiobookshelf`, `ownaudio`, `demo`): add server, play,
-  seek, speed, chapters, sleep timer, bookmarks, download and offline, mobile data, two-factor,
-  misuse (wrong sign-ins, hammered player, interruptions, killed mid-download), performance
-  (cold start, library of 500+ books), large text. App size measured.
+- [ ] **B11: Polish, accessibility, tests.** In progress 2026-10-16: every icon button carries
+  a label and the scrubber reads "12:04 of 49:23" (audited); Reduce Motion and 44 pt targets
+  are in `Theme`; `MisuseTests` (wrong sign-ins, hammered player, stop while loading, restless
+  navigation and odd searches, interruptions, killed mid-download — `SERVER_DOWNLOAD_BOOK`),
+  `LargeTextTests` (every main screen at AccessibilityXXXL, screenshots for a look),
+  `testLaunchPerformance` (cold start, five launches). App size: 5.6 MB installed, the widget
+  extension 200 KB. Still to do: the Czech re-read on every screen, both colour schemes by eye,
+  a 500-book library, the sleep-timer / speed / two-factor / mobile-data UI tests.
 - [ ] **B12: Release.** Icon (its own, not a recolour of the music icon), App Store texts in
   English and Czech, screenshots from the UI test pipeline on a demo server, `PRIVACY.md`,
   `PrivacyInfo.xcprivacy`, TestFlight under `audio.own.bookplayer`, then the App Store;

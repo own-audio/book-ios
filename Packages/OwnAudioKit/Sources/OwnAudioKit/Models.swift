@@ -35,6 +35,32 @@ public struct Discovery: Decodable, Sendable, Equatable {
         public let batchMax: Int?
     }
 
+    /// What the server has switched on: `narration`, `billing`, `identify_library`, … A module
+    /// with settings of its own (`auth`) comes as an object and counts as on.
+    public struct Modules: Decodable, Sendable, Equatable {
+        public let enabled: Set<String>
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: Key.self)
+            var on: Set<String> = []
+            for key in container.allKeys {
+                if let flag = try? container.decode(Bool.self, forKey: key) {
+                    if flag { on.insert(key.stringValue) }
+                } else {
+                    on.insert(key.stringValue)
+                }
+            }
+            enabled = on
+        }
+
+        private struct Key: CodingKey {
+            let stringValue: String
+            var intValue: Int? { nil }
+            init?(stringValue: String) { self.stringValue = stringValue }
+            init?(intValue: Int) { nil }
+        }
+    }
+
     public let id: String?
     public let name: String
     public let edition: String
@@ -43,6 +69,10 @@ public struct Discovery: Decodable, Sendable, Equatable {
     public let auth: Auth
     public let addresses: [Address]
     public let limits: Limits
+    /// Absent on servers older than the module list.
+    public let modules: Modules?
+
+    public func has(module: String) -> Bool { modules?.enabled.contains(module) ?? false }
 
     /// The `/api/v2` this server speaks, if it speaks one.
     public var v2: API? { api.first { $0.version == 2 } }

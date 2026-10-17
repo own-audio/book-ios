@@ -32,6 +32,7 @@ struct BooksListView: View {
     @State private var state: LoadState<Void> = .loading
     @State private var isLoadingMore = false
     @State private var isImporting = false
+    @State private var isNarrating = false
 
     private var source: (any BookSource)? { model.source(for: serverId) }
 
@@ -41,6 +42,8 @@ struct BooksListView: View {
         }
         .navigationTitle(title)
         .sheet(isPresented: $isImporting) { ImportBookView(serverId: serverId) }
+        .sheet(isPresented: $isNarrating) { NarrateBookView(serverId: serverId) }
+        .onChange(of: model.narrations.entries.values.filter { $0.stage == "complete" }.count) { _, _ in Task { await reload() } }
         .onChange(of: model.imports.active.count) { was, now in
             // An import finished: the new book is on the server now.
             if now < was { Task { await model.syncCatalogues(); await reload() } }
@@ -54,9 +57,22 @@ struct BooksListView: View {
                     }
                 }
                 if isRoot, model.canImport(serverId: serverId) {
-                    Button { isImporting = true } label: { Image(systemName: "plus") }
-                        .accessibilityLabel("Import a Book")
-                        .accessibilityIdentifier("library.import")
+                    if model.canNarrate(serverId: serverId) {
+                        Menu {
+                            Button { isImporting = true } label: { Label("Import Audio Files…", systemImage: "waveform") }
+                                .accessibilityIdentifier("library.import")
+                            Button { isNarrating = true } label: { Label("Narrate an Ebook…", systemImage: "text.book.closed") }
+                                .accessibilityIdentifier("library.narrate")
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel("Add a Book")
+                        .accessibilityIdentifier("library.add")
+                    } else {
+                        Button { isImporting = true } label: { Image(systemName: "plus") }
+                            .accessibilityLabel("Import a Book")
+                            .accessibilityIdentifier("library.import")
+                    }
                 }
                 Menu {
                     Picker("Sort", selection: $query.sort) {
@@ -92,6 +108,10 @@ struct BooksListView: View {
                 // The ways in are there before the books are, so a slow first sync still shows
                 // a screen with something on it.
                 if showsSections ?? isRoot { sections }
+                if isRoot {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) { ImportsView(); NarrationsView() }
+                        .padding(.horizontal, Theme.Spacing.screenEdge)
+                }
                 LoadStateView(state: state, retry: { Task { await reload() } }) { _ in
                 VStack(alignment: .leading, spacing: Theme.Spacing.lg) {
                     if books.isEmpty {
@@ -120,6 +140,10 @@ struct BooksListView: View {
     private var list: some View {
         List {
             if showsSections ?? isRoot { Section { sectionLinks } }
+            if isRoot {
+                ImportsView()
+                NarrationsView()
+            }
             Section {
                 switch state {
                 case .loading: ProgressView()

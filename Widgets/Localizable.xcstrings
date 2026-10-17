@@ -57,7 +57,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skok zpět"
+            "value": "Přeskočit zpět"
           }
         }
       }
@@ -67,7 +67,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skok vpřed"
+            "value": "Přeskočit vpřed"
           }
         }
       }

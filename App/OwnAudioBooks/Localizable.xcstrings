@@ -653,6 +653,16 @@
         }
       }
     },
+    "Add a Book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat knihu"
+          }
+        }
+      }
+    },
     "Add a server in own.book first.": {
       "localizations": {
         "cs": {
@@ -814,6 +824,58 @@
         }
       }
     },
+    "Back %lld seconds": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Back %lld second"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Back %lld seconds"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zpět o %lld sekundu"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zpět o %lld sekundy"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zpět o %lld sekundy"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Zpět o %lld sekund"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Balance": {
       "localizations": {
         "cs": {
@@ -924,6 +986,16 @@
         }
       }
     },
+    "Characters": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Znaků"
+          }
+        }
+      }
+    },
     "Check Connection": {
       "localizations": {
         "cs": {
@@ -954,6 +1026,16 @@
         }
       }
     },
+    "Choose an Ebook": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vybrat e-knihu"
+          }
+        }
+      }
+    },
     "Close": {
       "localizations": {
         "cs": {
@@ -979,7 +1061,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kolekce"
+            "value": "Sbírky"
           }
         }
       }
@@ -1134,6 +1216,16 @@
         }
       }
     },
+    "Done · %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotovo · %@"
+          }
+        }
+      }
+    },
     "Download": {
       "localizations": {
         "cs": {
@@ -1254,6 +1346,16 @@
         }
       }
     },
+    "EPUB, MOBI or plain text. The file goes to the server, which reads it aloud; it is not kept afterwards.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EPUB, MOBI nebo prostý text. Soubor jde na server, který ho namluví; poté se neuchovává."
+          }
+        }
+      }
+    },
     "End of Book": {
       "localizations": {
         "cs": {
@@ -1300,6 +1402,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rodina"
+          }
+        }
+      }
+    },
+    "Family Credit": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kredit rodiny"
           }
         }
       }
@@ -1416,6 +1528,58 @@
         }
       }
     },
+    "Forward %lld seconds": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Forward %lld second"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Forward %lld seconds"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vpřed o %lld sekundu"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vpřed o %lld sekundy"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vpřed o %lld sekundy"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Vpřed o %lld sekund"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "Free and open source · MPL-2.0": {
       "localizations": {
         "cs": {
@@ -1442,6 +1606,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Žánry"
+          }
+        }
+      }
+    },
+    "Get the Price": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zjistit cenu"
           }
         }
       }
@@ -1512,6 +1686,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Domů"
+          }
+        }
+      }
+    },
+    "Import Audio Files…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importovat zvukové soubory…"
           }
         }
       }
@@ -1641,7 +1825,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nechat jen sobě"
+            "value": "Nastavit jako soukromé"
           }
         }
       }
@@ -1746,6 +1930,16 @@
         }
       }
     },
+    "Loading voices…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Načítají se hlasy…"
+          }
+        }
+      }
+    },
     "Mark as Finished": {
       "localizations": {
         "cs": {
@@ -1816,6 +2010,66 @@
         }
       }
     },
+    "Narrate": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namluvit"
+          }
+        }
+      }
+    },
+    "Narrate an Ebook": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namluvit e-knihu"
+          }
+        }
+      }
+    },
+    "Narrate an Ebook…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namluvit e-knihu…"
+          }
+        }
+      }
+    },
+    "Narrate for %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namluvit za %@"
+          }
+        }
+      }
+    },
+    "Narrating": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namlouvá se"
+          }
+        }
+      }
+    },
+    "Narrating · chapter %1$lld of %2$lld": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namlouvá se · kapitola %1$lld z %2$lld"
+          }
+        }
+      }
+    },
     "Narrator": {
       "localizations": {
         "cs": {
@@ -1842,6 +2096,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nová záložka"
+          }
+        }
+      }
+    },
+    "Next chapter": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další kapitola"
           }
         }
       }
@@ -1971,7 +2235,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zatím žádné kolekce."
+            "value": "Zatím žádné sbírky."
           }
         }
       }
@@ -2186,6 +2450,26 @@
         }
       }
     },
+    "One for the whole book": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden pro celou knihu"
+          }
+        }
+      }
+    },
+    "One per chapter": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden na kapitolu"
+          }
+        }
+      }
+    },
     "Only me": {
       "localizations": {
         "cs": {
@@ -2336,6 +2620,36 @@
         }
       }
     },
+    "Previous chapter": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Předchozí kapitola"
+          }
+        }
+      }
+    },
+    "Price": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena"
+          }
+        }
+      }
+    },
+    "Price This Voice": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nacenit tento hlas"
+          }
+        }
+      }
+    },
     "Privacy": {
       "localizations": {
         "cs": {
@@ -2366,12 +2680,52 @@
         }
       }
     },
+    "Putting the book together": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skládá se kniha"
+          }
+        }
+      }
+    },
     "QR code of the invitation": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "QR kód pozvánky"
+          }
+        }
+      }
+    },
+    "Read in": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Číst v jazyce"
+          }
+        }
+      }
+    },
+    "Read in another language than it is written in, the book is translated first; the quote includes that.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Při čtení v jiném jazyce, než ve kterém je napsána, se kniha nejdřív přeloží; cena to zahrnuje."
+          }
+        }
+      }
+    },
+    "Reading the ebook": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čte se e-kniha"
           }
         }
       }
@@ -2883,7 +3237,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skok vzad"
+            "value": "Přeskočit zpět"
           }
         }
       }
@@ -2893,7 +3247,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Skok vpřed"
+            "value": "Přeskočit vpřed"
           }
         }
       }
@@ -2924,25 +3278,25 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Skok vpřed o %lld sekundu"
+                  "value": "Přeskočit vpřed o %lld sekundu"
                 }
               },
               "few": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Skok vpřed o %lld sekundy"
+                  "value": "Přeskočit vpřed o %lld sekundy"
                 }
               },
               "many": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Skok vpřed o %lld sekundy"
+                  "value": "Přeskočit vpřed o %lld sekundy"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Skok vpřed o %lld sekund"
+                  "value": "Přeskočit vpřed o %lld sekund"
                 }
               }
             }
@@ -3026,6 +3380,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rychlost"
+          }
+        }
+      }
+    },
+    "Speed %@": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rychlost %@"
           }
         }
       }
@@ -3190,12 +3554,32 @@
         }
       }
     },
+    "The narration failed.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namlouvání se nezdařilo."
+          }
+        }
+      }
+    },
     "The position is forgotten on every device.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "Pozice se zapomene na všech zařízeních."
+          }
+        }
+      }
+    },
+    "The price is taken from the family's credit when the book is done. A narration takes minutes to hours; the Library shows how far it is, and the book appears there at the end.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cena se strhne z kreditu rodiny, až bude kniha hotová. Namlouvání trvá minuty až hodiny; Knihovna ukazuje, jak daleko je, a na konci se tam kniha objeví."
           }
         }
       }
@@ -3226,6 +3610,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Server není dostupný. Zkontrolujte adresu a připojení."
+          }
+        }
+      }
+    },
+    "The server counts the characters it will read and quotes the price; nothing is charged until you start.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server spočítá znaky, které přečte, a sdělí cenu; nic se neúčtuje, dokud nezačnete."
           }
         }
       }
@@ -3400,6 +3794,26 @@
         }
       }
     },
+    "Translating": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Překládá se"
+          }
+        }
+      }
+    },
+    "Translation": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Překlad"
+          }
+        }
+      }
+    },
     "Try Again": {
       "localizations": {
         "cs": {
@@ -3520,6 +3934,26 @@
         }
       }
     },
+    "Voice": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hlas"
+          }
+        }
+      }
+    },
+    "Waiting its turn": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Čeká, až na ni přijde řada"
+          }
+        }
+      }
+    },
     "What its members share appears instead of what this family shares.": {
       "localizations": {
         "cs": {
@@ -3545,7 +3979,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kdo ji uvidí"
+            "value": "Kdo to uslyší"
           }
         }
       }
@@ -3610,6 +4044,16 @@
         }
       }
     },
+    "Written in": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Napsána v jazyce"
+          }
+        }
+      }
+    },
     "Your audiobooks, from your own server.": {
       "localizations": {
         "cs": {
@@ -3636,6 +4080,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "jiné zařízení"
+          }
+        }
+      }
+    },
+    "female": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ženský"
+          }
+        }
+      }
+    },
+    "male": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mužský"
           }
         }
       }

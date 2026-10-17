@@ -89,11 +89,21 @@ All notable changes to this project are documented here. The format follows
   lock screen and in the Dynamic Island, with play/pause and the skip buttons working without
   opening the app (B10).
 
+- Narrate an ebook, on own.audio servers that offer it: an EPUB, MOBI or text file read aloud by
+  an AI voice into an audiobook — pick the languages and the voice, see the server's character
+  count and price against the family's credit, start, and follow the job in the Library; the book
+  arrives when it is done (B9c).
+
+- Tests: misuse (wrong sign-ins, hammered player, stop while loading, restless navigation and
+  odd searches, interruptions, the app killed mid-download), the main screens at the largest
+  text size, cold-start timing (B11).
+
 ### Fixed
 
 - The app icon set's manifest named no files, so no icon was compiled into the archive.
 - Swiping a bookmark in the player's Bookmarks sheet showed bare icons; the buttons now say
   Delete and Rename.
+- Stop in the player left the book in the mini player; it now lets the book go everywhere.
 - A retried request to an own.audio server (an import after the app was killed, say) was refused
   as "used for a different request": the JSON keys came out in a different order each time. They
   are sorted now.

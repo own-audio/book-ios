@@ -10,4 +10,13 @@ final class LaunchTests: XCTestCase {
         XCTAssertTrue(app.textFields["addServer.address"].waitForExistence(timeout: 15))
         XCTAssertTrue(app.buttons["addServer.demo"].exists)
     }
+
+    /// Cold start, five times; the number lands in the result bundle and the summary.
+    func testLaunchPerformance() {
+        measure(metrics: [XCTApplicationLaunchMetric()]) {
+            let app = XCUIApplication()
+            app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+            app.launch()
+        }
+    }
 }

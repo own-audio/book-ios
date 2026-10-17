@@ -112,6 +112,8 @@ extension ServerSetup {
         /// Sign-in providers the server has switched on.
         public let providers: [String]
         public let speaksV2: Bool
+        /// Modules the server has switched on (`narration`, `billing`, …).
+        public let modules: Set<String>
     }
 
     /// Throws when there is no own.audio server at `url`.
@@ -128,7 +130,7 @@ extension ServerSetup {
             guard let url = URL(string: address.url) else { return nil }
             return ServerAddress(url: url, scope: AddressScope(rawValue: address.scope), origin: .server)
         }
-        return OwnAudioInfo(id: discovery.id, name: discovery.name, version: discovery.version, addresses: addresses, providers: discovery.auth.providers, speaksV2: discovery.v2 != nil)
+        return OwnAudioInfo(id: discovery.id, name: discovery.name, version: discovery.version, addresses: addresses, providers: discovery.auth.providers, speaksV2: discovery.v2 != nil, modules: discovery.modules?.enabled ?? [])
     }
 
     /// Tries every candidate at once and returns the fastest that answers as the same server

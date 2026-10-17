@@ -12,6 +12,10 @@
 #   OWNAUDIO_ACCOUNT_PASSWORD=…
 #   OWNAUDIO_DOWNLOAD_BOOK="a short book"               # optional
 #
+#   NARRATION_HOST=https://hosted.example.com           # optional: a hosted own.audio server with
+#   NARRATION_EMAIL=someone@example.com                 # the narration module and some credit; the
+#   NARRATION_PASSWORD=…                                # tests quote a tiny text, never start a job
+#
 # Usage: scripts/test-servers.sh [audiobookshelf|ownaudio|demo] [--live-only]
 # One UI test only: ONLY_TESTING=testPlaysAndResumes scripts/test-servers.sh
 # (a test of another class, or a whole class: ONLY_TESTING=MisuseTests[/testHammeredPlayer])
@@ -114,6 +118,7 @@ ui_tests() { # name host user password download-book
   mkdir -p "$OUT/$name"
   TEST_RUNNER_SERVER_HOST="$host" TEST_RUNNER_SERVER_USER="$user" TEST_RUNNER_SERVER_PASSWORD="$password" \
   TEST_RUNNER_SERVER_DOWNLOAD_BOOK="$book" TEST_RUNNER_SCREENSHOT_DIR="$OUT/$name" \
+  TEST_RUNNER_NARRATION_HOST="${NARRATION_HOST:-}" TEST_RUNNER_NARRATION_EMAIL="${NARRATION_EMAIL:-}" TEST_RUNNER_NARRATION_PASSWORD="${NARRATION_PASSWORD:-}" \
     xcode_tests "$name" "$OUT/$name" -test-timeouts-enabled YES -default-test-execution-time-allowance 420 \
       ${ONLY_TESTING:+-only-testing:"OwnAudioBooksUITests/$only_testing"}
 }
@@ -156,7 +161,8 @@ if [[ "$only" == all || "$only" == ownaudio ]]; then
   live_tests ownaudio OwnAudioKit OWNAUDIO_HOST="$OWNAUDIO_HOST" OWNAUDIO_EMAIL="$OWNAUDIO_EMAIL" OWNAUDIO_ACCOUNT_PASSWORD="$OWNAUDIO_ACCOUNT_PASSWORD"
   # BookLibrary's live tests also import the tiny "Test Author" book the UI tests download as a
   # set; the demo server forgets it every night.
-  live_tests ownaudio BookLibrary OWNAUDIO_HOST="$OWNAUDIO_HOST" OWNAUDIO_EMAIL="$OWNAUDIO_EMAIL" OWNAUDIO_ACCOUNT_PASSWORD="$OWNAUDIO_ACCOUNT_PASSWORD"
+  live_tests ownaudio BookLibrary OWNAUDIO_HOST="$OWNAUDIO_HOST" OWNAUDIO_EMAIL="$OWNAUDIO_EMAIL" OWNAUDIO_ACCOUNT_PASSWORD="$OWNAUDIO_ACCOUNT_PASSWORD" \
+    NARRATION_HOST="${NARRATION_HOST:-}" NARRATION_EMAIL="${NARRATION_EMAIL:-}" NARRATION_PASSWORD="${NARRATION_PASSWORD:-}"
   [[ "$live_only" == "--live-only" ]] || ui_tests ownaudio "$OWNAUDIO_HOST" "$OWNAUDIO_EMAIL" "$OWNAUDIO_ACCOUNT_PASSWORD" "${OWNAUDIO_DOWNLOAD_BOOK:-}"
 fi
 

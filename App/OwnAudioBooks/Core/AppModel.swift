@@ -52,6 +52,7 @@ final class AppModel {
     private let pendingProgress = PendingProgress()
     private let knownPositions = KnownPositions()
     private let resumeStore = UserDefaultsResumeStore(key: "books.resume")
+    let narrations = NarrationManager()
     /// The player on the lock screen; nil only until `init` has made the engine.
     @ObservationIgnored private var liveActivity: LiveActivityController?
     private var loadTask: Task<Void, Never>?
@@ -103,6 +104,8 @@ final class AppModel {
             return try await source.partURL(for: book, fileId: fileId, startMs: nil, maxBitrateKbps: nil).url
         }
         imports.uploaderProvider = { [weak self] serverId in self?.sources[serverId] as? any BookUploader }
+        narrations.narratorProvider = { [weak self] serverId in self?.sources[serverId] as? any BookNarrator }
+        narrations.onCompleted = { [weak self] _ in Task { await self?.syncCatalogues() } }
         applyPlaybackSettings()
         network.onChange = { [weak self] _ in
             Task { await self?.chooseAddresses(); await self?.flushPendingProgress() }
@@ -177,6 +180,8 @@ final class AppModel {
         let saved = UserDefaults.standard.string(forKey: Self.activeServerKey).flatMap(UUID.init)
         activeServerId = servers.contains { $0.id == saved } ? saved : servers.first?.id
         hasLoaded = true
+        Task { await refreshModules() }
+        narrations.startPolling()
         downloads.resume()
         imports.resume()
         keepProgressFresh()
@@ -519,6 +524,8 @@ final class AppModel {
         let environment = sourceEnvironment
         sources = Dictionary(uniqueKeysWithValues: servers.map { ($0.id, $0.makeSource(environment, address: activeAddresses[$0.id])) })
         followLibraryChanges()
+        // A server added or re-addressed after launch: what it offers is asked again.
+        Task { await refreshModules() }
     }
 
     // MARK: - Connections
@@ -644,11 +651,14 @@ final class AppModel {
         isInForeground = active
         followLibraryChanges()
         if active {
+            narrations.startPolling()
             Task {
                 await syncCatalogues()
                 await flushPendingProgress()
                 await refreshProgress()
             }
+        } else {
+            narrations.stopPolling()
         }
     }
 
@@ -816,6 +826,33 @@ final class AppModel {
 
     func canImport(serverId: UUID) -> Bool {
         sources[serverId] is any BookUploader && !isOffline
+    }
+
+    // MARK: - Narration (hosted own.audio servers)
+
+    /// Servers whose discovery lists the `narration` module, asked once per launch.
+    private(set) var narrationServers: Set<UUID> = []
+
+    func canNarrate(serverId: UUID) -> Bool {
+        narrationServers.contains(serverId) && sources[serverId] is any BookNarrator && !isOffline
+    }
+
+    func refreshModules() async {
+        for server in servers where server.kind == .ownAudio {
+            let host = activeAddresses[server.id] ?? server.host
+            guard let info = try? await ServerSetup.ownAudioInfo(at: host, urlSession: Self.raceSession) else { continue }
+            if info.modules.contains("narration") { narrationServers.insert(server.id) } else { narrationServers.remove(server.id) }
+        }
+    }
+
+    /// The player's Stop: the book is let go everywhere, not only in the engine, so the mini
+    /// player and the widget follow.
+    func stopPlayback() {
+        engine.stop()
+        nowPlayingBook = nil
+        nowPlayingServerId = nil
+        nowPlayingPlan = nil
+        Task { await refreshWidget(force: true) }
     }
 
     func isNowPlaying(_ book: Book, serverId: UUID) -> Bool {

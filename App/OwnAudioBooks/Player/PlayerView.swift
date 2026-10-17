@@ -33,7 +33,7 @@ struct PlayerView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
-                        model.engine.stop()
+                        model.stopPlayback()
                         dismiss()
                     } label: { Image(systemName: "xmark.circle") }
                         .accessibilityLabel("Stop")
@@ -150,7 +150,7 @@ struct PlayerView: View {
     private var controls: some View {
         let engine = model.engine
         return HStack(spacing: Theme.Spacing.xxl) {
-            control("gobackward.\(Int(engine.skipBackwardSecs))", "Back \(Int(engine.skipBackwardSecs)) seconds", id: "player.skipBackward", font: .title) { engine.skipBackward() }
+            control("gobackward.\(Int(engine.skipBackwardSecs))", String(localized: "Back \(Int(engine.skipBackwardSecs)) seconds"), id: "player.skipBackward", font: .title) { engine.skipBackward() }
             Button {
                 Haptics.impact(.medium)
                 engine.togglePlayPause()
@@ -168,7 +168,7 @@ struct PlayerView: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("player.playPause")
             .accessibilityLabel(engine.isPlaying ? "Pause" : "Play")
-            control("goforward.\(Int(engine.skipForwardSecs))", "Forward \(Int(engine.skipForwardSecs)) seconds", id: "player.skipForward", font: .title) { engine.skipForward() }
+            control("goforward.\(Int(engine.skipForwardSecs))", String(localized: "Forward \(Int(engine.skipForwardSecs)) seconds"), id: "player.skipForward", font: .title) { engine.skipForward() }
         }
     }
 
@@ -176,8 +176,8 @@ struct PlayerView: View {
     private var steps: some View {
         let engine = model.engine
         return HStack(spacing: Theme.Spacing.xxl) {
-            control("backward.end.alt", "Previous chapter", id: "player.previousChapter", font: .title3) { engine.previousChapter() }
-            control("forward.end.alt", "Next chapter", id: "player.nextChapter", font: .title3) { engine.nextChapter() }
+            control("backward.end.alt", String(localized: "Previous chapter"), id: "player.previousChapter", font: .title3) { engine.previousChapter() }
+            control("forward.end.alt", String(localized: "Next chapter"), id: "player.nextChapter", font: .title3) { engine.nextChapter() }
         }
     }
 
@@ -201,16 +201,16 @@ struct PlayerView: View {
         let engine = model.engine
         let sleeping = engine.sleepTimer.isActive || engine.stopsAtEndOfChapter
         return HStack(spacing: Theme.Spacing.xxl) {
-            tool(id: "player.speed", label: "Speed \(String(format: "%.2g", engine.rate))", caption: "Speed", tinted: engine.rate != 1) {
+            tool(id: "player.speed", label: String(localized: "Speed \(String(format: "%.2g", engine.rate))"), caption: "Speed", tinted: engine.rate != 1) {
                 Text(String(format: "%.2g×", engine.rate)).font(.subheadline.weight(.semibold).monospacedDigit())
             } action: { sheet = .speed }
-            tool(id: "player.sleep", label: "Sleep timer", caption: "Sleep", tinted: sleeping) {
+            tool(id: "player.sleep", label: String(localized: "Sleep Timer"), caption: "Sleep", tinted: sleeping) {
                 Image(systemName: sleeping ? "moon.zzz.fill" : "moon.zzz").font(.title3)
             } action: { sheet = .sleep }
-            tool(id: "player.bookmarks", label: "Bookmarks", caption: "Bookmarks", tinted: false) {
+            tool(id: "player.bookmarks", label: String(localized: "Bookmarks"), caption: "Bookmarks", tinted: false) {
                 Image(systemName: "bookmark").font(.title3)
             } action: { sheet = .bookmarks }
-            tool(id: "player.chapters", label: "Chapters", caption: "Chapters", tinted: false) {
+            tool(id: "player.chapters", label: String(localized: "Chapters"), caption: "Chapters", tinted: false) {
                 Image(systemName: "list.bullet").font(.title3)
             } action: { sheet = .chapters }
         }

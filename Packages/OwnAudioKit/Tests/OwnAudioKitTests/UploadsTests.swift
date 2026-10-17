@@ -57,3 +57,38 @@ struct EncodingDeterminismTests {
         }
     }
 }
+
+@Suite("Narration")
+struct NarrationTests {
+    @Test("the estimate and the job go up as multipart; the body carries the fields and the file")
+    func multipart() async throws {
+        let source = FileManager.default.temporaryDirectory.appendingPathComponent("book-\(UUID().uuidString).txt")
+        try "Chapter one. It was a dark and stormy night.".write(to: source, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: source) }
+        let mock = await MockURLProtocol.makeStubbedSession { request in
+            switch (request.httpMethod, request.url?.path) {
+            case ("POST", "/api/v2/narration/estimate"):
+                #expect(request.value(forHTTPHeaderField: "Content-Type")?.hasPrefix("multipart/form-data; boundary=") == true)
+                return .init(statusCode: 200, body: Data(#"{"estimated_char_count":44}"#.utf8), headers: ["Content-Type": "application/json"])
+            case ("POST", "/api/v2/narration/jobs"):
+                return .init(statusCode: 201, body: Data(#"{"id":"j1","title":"Night","stages":["extracting","narrating","assembling"],"stage":"queued","error":null,"chapters":[],"download_url":null,"book_id":null,"quoted_price_cents":600,"actual_cost_cents":null,"charged_price_cents":null,"currency":"USD"}"#.utf8), headers: ["Content-Type": "application/json"])
+            default:
+                return .init(statusCode: 404, body: Data())
+            }
+        }
+        let client = OwnAudioClient(host: URL(string: "https://books.example.com")!, tokens: TokenSession(Tokens(accessToken: "a", refreshToken: "r", expiresAt: Date().addingTimeInterval(3600), scope: "")), session: mock.urlSession)
+        let estimate = try await client.narrationEstimate(fileURL: source)
+        #expect(estimate.estimatedCharCount == 44)
+        let job = try await client.createNarration(fileURL: source, title: "Night", sourceLanguage: "en", targetLanguage: "en", voiceId: "v", output: .multiFile)
+        #expect(job.id == "j1" && job.stage == "queued" && !job.isTerminal)
+
+        // A file upload's body never reaches URLProtocol; the multipart file itself is checked.
+        let body = try Multipart.write(fields: [("voice_profile_id", "v"), ("output_mode", "multi_file")], fileURL: source)
+        defer { try? FileManager.default.removeItem(at: body.url) }
+        let text = String(decoding: try Data(contentsOf: body.url), as: UTF8.self)
+        #expect(text.hasPrefix("--\(body.boundary)\r\n"))
+        #expect(text.contains("name=\"voice_profile_id\"\r\n\r\nv\r\n") && text.contains("name=\"output_mode\"\r\n\r\nmulti_file\r\n"))
+        #expect(text.contains("name=\"file\"; filename=\"\(source.lastPathComponent)\"\r\nContent-Type: text/plain\r\n\r\nChapter one. It was a dark and stormy night."))
+        #expect(text.hasSuffix("\r\n--\(body.boundary)--\r\n"))
+    }
+}
