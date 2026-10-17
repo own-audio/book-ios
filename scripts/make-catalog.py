@@ -364,6 +364,7 @@ cs = {
  "Library on This iPhone": "Knihovna v tomto iPhonu",
  "No network · only downloaded books play": "Bez sítě · hrají jen stažené knihy",
  "Not synced yet": "Zatím nesynchronizováno",
+ "Offline, only downloaded books are here. Turn Offline Mode off, or download books to listen with no network.": "Offline jsou tu jen stažené knihy. Vypněte režim offline, nebo si knihy stáhněte a poslouchejte bez sítě.",
  "Offline Mode · only downloaded books play": "Režim offline · hrají jen stažené knihy",
  "Offline, an own.audio server's whole library is listed from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.": "Offline se celá knihovna serveru own.audio vypíše z kopie v tomto iPhonu; nestažené knihy jsou zašedlé a hrají jen ty stažené.",
  "Remove These Downloads": "Odstranit tato stažení",

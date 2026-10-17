@@ -15,7 +15,12 @@ struct HomeView: View {
                 LoadStateView(state: state, retry: load) { shelves in
                     VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                         if shelves.isEmpty {
-                            ContentUnavailableView("No Books Yet", systemImage: "books.vertical", description: Text("This server's library is empty."))
+                            if model.isOffline {
+                                // Offline, Home shows what is on the phone; empty means nothing downloaded.
+                                ContentUnavailableView("Nothing Downloaded", systemImage: "wifi.slash", description: Text("Offline, only downloaded books are here. Turn Offline Mode off, or download books to listen with no network."))
+                            } else {
+                                ContentUnavailableView("No Books Yet", systemImage: "books.vertical", description: Text("This server's library is empty."))
+                            }
                         }
                         ForEach(shelves) { shelf in
                             if let serverId = model.activeServerId { ShelfView(shelf: shelf, serverId: serverId) }
@@ -29,6 +34,13 @@ struct HomeView: View {
         .toolbar {
             if model.servers.count > 1 {
                 ToolbarItem(placement: .topBarLeading) { serverMenu }
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Toggle(isOn: Binding(get: { model.settings.offlineMode }, set: { model.setOfflineMode($0) })) {
+                    Label("Offline Mode", systemImage: model.settings.offlineMode ? "wifi.slash" : "wifi")
+                }
+                .toggleStyle(.button)
+                .accessibilityIdentifier("home.offlineMode")
             }
             ToolbarItem(placement: .primaryAction) {
                 Button { isShowingSettings = true } label: { Image(systemName: "gearshape") }

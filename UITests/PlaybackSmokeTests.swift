@@ -351,18 +351,21 @@ final class ImportTests: XCTestCase {
     }
 }
 
-/// Offline Mode from the Downloads tab: on, the banner says so; off again, it goes.
+/// Offline Mode from Home, beside Settings as in the music app: on, the banner says so; off again, it goes.
 final class OfflineModeButtonTests: XCTestCase {
-    func testDownloadsTabSwitchesOfflineMode() throws {
+    func testHomeSwitchesOfflineMode() throws {
+        continueAfterFailure = false
         guard ProcessInfo.processInfo.environment["SERVER_HOST"] != nil else { throw XCTSkip("SERVER_HOST is not set") }
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
         app.launch()
         smoke.addServer(app)
-        smoke.tapTab(app, "Downloads")
-        let toggle = app.buttons["downloads.offlineMode"].firstMatch
+        // iOS's "Save Password?" sheet comes a moment after the sign-in and covers the toolbar.
+        smoke.dismissSavePasswordPrompt(app)
+        let toggle = app.buttons["home.offlineMode"].firstMatch
         XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+        XCTAssertTrue(smoke.waitUntil(timeout: 10) { toggle.isHittable })
         let banner = app.descendants(matching: .any)["offline.banner"].firstMatch
         XCTAssertFalse(banner.exists)
         toggle.tap()

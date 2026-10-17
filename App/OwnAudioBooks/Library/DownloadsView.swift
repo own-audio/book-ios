@@ -60,17 +60,6 @@ struct DownloadsView: View {
         }
         .listStyle(.insetGrouped)
         .navigationTitle("Downloads")
-        .toolbar {
-            // Offline Mode where the offline library is: one tap and the app shows and plays
-            // only this list. The same switch as in Settings, at the top left as in the music app.
-            ToolbarItem(placement: .topBarLeading) {
-                Toggle(isOn: Binding(get: { model.settings.offlineMode }, set: { model.setOfflineMode($0) })) {
-                    Label("Offline Mode", systemImage: model.settings.offlineMode ? "wifi.slash" : "wifi")
-                }
-                .toggleStyle(.button)
-                .accessibilityIdentifier("downloads.offlineMode")
-            }
-        }
         .confirmationDialog("Remove All Downloads?", isPresented: $isConfirmingRemoveAll, titleVisibility: .visible) {
             Button("Remove All Downloads", role: .destructive) { model.downloads.removeAll() }
         }

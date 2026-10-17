@@ -2430,6 +2430,16 @@
         }
       }
     },
+    "Offline, only downloaded books are here. Turn Offline Mode off, or download books to listen with no network.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline jsou tu jen stažené knihy. Vypněte režim offline, nebo si knihy stáhněte a poslouchejte bez sítě."
+          }
+        }
+      }
+    },
     "On Mobile Data": {
       "localizations": {
         "cs": {

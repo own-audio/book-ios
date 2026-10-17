@@ -8,7 +8,7 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
-- An Offline Mode switch on the Downloads tab, beside the list it narrows the app to.
+- An Offline Mode switch on Home, beside Settings, as in the music app.
 - A Downloads tab: every downloaded book, from every server, one tap from anywhere (it was
   under Settings before).
 - The implementation plan, README, licence and working rules.
@@ -111,6 +111,8 @@ All notable changes to this project are documented here. The format follows
   instead of playing gaps, and keeps what it streams on Wi-Fi in a listening cache (a gigabyte,
   the oldest let go first) — the next file of the book starts from disk, and a book heard once
   plays again without the network. Separate from downloads, which it never counts as.
+- Offline with nothing downloaded, Home said the server's library was empty; it now says what
+  offline shows.
 - Stop in the player left the book in the mini player; it now lets the book go everywhere.
 - The Live Activity showed a grey square instead of the cover: the cover's name was fixed at the
   activity's start, before the cover had loaded. It now travels in the state and is filled in
