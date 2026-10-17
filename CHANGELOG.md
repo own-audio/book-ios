@@ -8,6 +8,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- An Offline Mode switch on the Downloads tab, beside the list it narrows the app to.
+- A Downloads tab: every downloaded book, from every server, one tap from anywhere (it was
+  under Settings before).
 - The implementation plan, README, licence and working rules.
 - The project (`project.yml`, iOS 18, Swift 6), an app that launches to a placeholder, and a
   launch UI test (B0).

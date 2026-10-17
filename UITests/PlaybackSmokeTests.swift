@@ -285,6 +285,7 @@ final class OfflineTests: XCTestCase {
         app.buttons["Length"].firstMatch.tap()
         let book = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'")).firstMatch
         XCTAssertTrue(book.waitForExistence(timeout: 30))
+        let bookId = String(book.identifier.dropFirst("library.book.".count))
         book.tap()
         let download = app.buttons["detail.download"]
         XCTAssertTrue(download.waitForExistence(timeout: 20))
@@ -292,6 +293,10 @@ final class OfflineTests: XCTestCase {
         download.tap()
         XCTAssertTrue(smoke.waitUntil(timeout: 180) { download.label == "Downloaded" }, "the shortest book should download: \(download.label)")
         smoke.screenshot(app, "12-downloaded")
+        // The Downloads tab lists it: where a listener finds what is on the phone.
+        smoke.tapTab(app, "Downloads")
+        XCTAssertTrue(app.descendants(matching: .any)["downloads.\(bookId)"].firstMatch.waitForExistence(timeout: 10), "the Downloads tab should list the book")
+        smoke.screenshot(app, "12b-downloads-tab")
 
         // No network: relaunched with every request failing, the server kept.
         app.terminate()
@@ -343,5 +348,27 @@ final class ImportTests: XCTestCase {
         smoke.screenshot(app, "16-import")
         app.buttons["Cancel"].tap()
         XCTAssertTrue(plus.waitForExistence(timeout: 5))
+    }
+}
+
+/// Offline Mode from the Downloads tab: on, the banner says so; off again, it goes.
+final class OfflineModeButtonTests: XCTestCase {
+    func testDownloadsTabSwitchesOfflineMode() throws {
+        guard ProcessInfo.processInfo.environment["SERVER_HOST"] != nil else { throw XCTSkip("SERVER_HOST is not set") }
+        let smoke = PlaybackSmokeTests()
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
+        app.launch()
+        smoke.addServer(app)
+        smoke.tapTab(app, "Downloads")
+        let toggle = app.buttons["downloads.offlineMode"].firstMatch
+        XCTAssertTrue(toggle.waitForExistence(timeout: 10))
+        let banner = app.descendants(matching: .any)["offline.banner"].firstMatch
+        XCTAssertFalse(banner.exists)
+        toggle.tap()
+        XCTAssertTrue(banner.waitForExistence(timeout: 5), "Offline Mode on: the banner says so")
+        smoke.screenshot(app, "13b-offline-mode-button")
+        toggle.tap()
+        XCTAssertTrue(smoke.waitUntil(timeout: 5) { !banner.exists }, "and off again")
     }
 }
