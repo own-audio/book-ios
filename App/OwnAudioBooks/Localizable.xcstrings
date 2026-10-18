@@ -1940,6 +1940,16 @@
         }
       }
     },
+    "Loading…": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Načítám…"
+          }
+        }
+      }
+    },
     "Mark as Finished": {
       "localizations": {
         "cs": {
@@ -2376,6 +2386,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "OK"
+          }
+        }
+      }
+    },
+    "Offline": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline"
           }
         }
       }
@@ -3530,6 +3550,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tento kód nebyl přijat."
+          }
+        }
+      }
+    },
+    "The book library this app shows from the server. With several, each is also in the switch on Home.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna knih, kterou aplikace ze serveru ukazuje. Je-li jich víc, má každá i vlastní položku v přepínači na kartě Domů."
           }
         }
       }

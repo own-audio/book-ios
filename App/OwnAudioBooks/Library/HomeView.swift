@@ -32,7 +32,7 @@ struct HomeView: View {
         }
         .background(Theme.Colors.background)
         .toolbar {
-            if model.servers.count > 1 {
+            if choices.count > 1 {
                 ToolbarItem(placement: .topBarLeading) { serverMenu }
             }
             ToolbarItem(placement: .primaryAction) {
@@ -57,20 +57,45 @@ struct HomeView: View {
         }
     }
 
-    /// With more than one server, which one the shelves and the library show is a tap away.
+    /// The switch's entries: one per server, and on an Audiobookshelf account with several book
+    /// libraries, one per library instead, since the shelves show one library at a time.
+    private struct Choice: Hashable {
+        let serverId: UUID
+        let libraryId: String?
+    }
+
+    private var choices: [(choice: Choice, name: String, kind: ServerKind)] {
+        model.serversInOrder.flatMap { server -> [(choice: Choice, name: String, kind: ServerKind)] in
+            if server.kind == .audiobookshelf, let libraries = server.libraries, libraries.count > 1 {
+                return libraries.map { (Choice(serverId: server.id, libraryId: $0.id), "\(server.displayName) · \($0.name)", server.kind) }
+            }
+            return [(Choice(serverId: server.id, libraryId: nil), server.displayName, server.kind)]
+        }
+    }
+
+    private var currentChoice: Choice? {
+        guard let server = model.activeServer else { return nil }
+        let several = server.kind == .audiobookshelf && (server.libraries?.count ?? 0) > 1
+        return Choice(serverId: server.id, libraryId: several ? server.libraryId : nil)
+    }
+
+    /// With more than one server or library, which one the shelves and the library show is a tap away.
     private var serverMenu: some View {
         Menu {
             Picker("Server", selection: Binding(
-                get: { model.activeServerId },
-                set: { if let id = $0 { model.selectServer(id: id) } }
+                get: { currentChoice },
+                set: { choice in
+                    guard let choice else { return }
+                    Task { await model.select(serverId: choice.serverId, libraryId: choice.libraryId) }
+                }
             )) {
-                ForEach(model.serversInOrder) { server in
-                    Label(server.displayName, systemImage: server.kind == .ownAudio ? "person.3" : "server.rack")
-                        .tag(Optional(server.id))
+                ForEach(choices, id: \.choice) { entry in
+                    Label(entry.name, systemImage: entry.kind == .ownAudio ? "person.3" : "server.rack")
+                        .tag(Optional(entry.choice))
                 }
             }
         } label: {
-            Label(model.activeServer?.displayName ?? "", systemImage: "server.rack")
+            Label(choices.first { $0.choice == currentChoice }?.name ?? model.activeServer?.displayName ?? "", systemImage: "server.rack")
                 .labelStyle(.titleAndIcon)
         }
         .accessibilityIdentifier("home.serverMenu")

@@ -8,6 +8,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Audiobookshelf book libraries: the server's page lists them and which one the app shows, to
+  choose there; with several, each is its own entry in the server switch on Home ("server ·
+  library"), and the names are kept for offline.
 - Every downloaded book says which server it came from.
 - An Offline Mode switch on Home, beside Settings, as in the music app.
 - A Downloads tab: every downloaded book, from every server, one tap from anywhere (it was

@@ -50,6 +50,9 @@ public struct ServerRecord: Codable, Sendable, Equatable, Identifiable {
     /// Every other address the server is known by: told by the server, or added by hand.
     public var addresses: [ServerAddress]
     public var connection: ConnectionMode
+    /// Audiobookshelf: the account's book libraries as last read, so their names are known
+    /// offline (the Home switch lists each). nil until read; optional so older records decode.
+    public var libraries: [ServerLibraryRef]?
 
     public init(
         id: UUID = UUID(), displayName: String, kind: ServerKind, host: URL, auth: ServerAuth,
@@ -86,6 +89,17 @@ public struct ServerRecord: Codable, Sendable, Equatable, Identifiable {
         var text = url.absoluteString
         while text.hasSuffix("/") { text.removeLast() }
         return URL(string: text) ?? url
+    }
+}
+
+/// One library of an Audiobookshelf server.
+public struct ServerLibraryRef: Codable, Sendable, Equatable, Hashable, Identifiable {
+    public var id: String
+    public var name: String
+
+    public init(id: String, name: String) {
+        self.id = id
+        self.name = name
     }
 }
 

@@ -209,6 +209,7 @@ final class AppModel {
         keepProgressFresh()
         Task {
             await chooseAddresses()
+            await refreshBookLibraries()
             await syncCatalogues()
             await flushPendingProgress()
         }
@@ -313,10 +314,37 @@ final class AppModel {
     func bookLibraries(serverId: UUID) async -> [(id: String, name: String)] {
         if let known = audiobookshelfLibraries[serverId] { return known }
         guard let source = sources[serverId] as? AudiobookshelfSource,
-              let libraries = try? await source.client.bookLibraries() else { return [] }
-        let list = libraries.map { ($0.id, $0.name) }
+              let libraries = try? await source.client.bookLibraries() else {
+            return server(serverId)?.libraries?.map { ($0.id, $0.name) } ?? []
+        }
+        let list: [(id: String, name: String)] = libraries.map { ($0.id, $0.name) }
         audiobookshelfLibraries[serverId] = list
+        // Kept on the record, so the Home switch can name them offline.
+        let refs = list.map { ServerLibraryRef(id: $0.id, name: $0.name) }
+        if var record = server(serverId), record.libraries != refs {
+            record.libraries = refs
+            try? await store.update(record)
+            if let index = servers.firstIndex(where: { $0.id == serverId }) { servers[index] = record }
+        }
         return list
+    }
+
+    /// Every Audiobookshelf server's book libraries, read again (at launch).
+    func refreshBookLibraries() async {
+        guard !isOffline else { return }
+        for record in servers where record.kind == .audiobookshelf {
+            audiobookshelfLibraries[record.id] = nil
+            _ = await bookLibraries(serverId: record.id)
+        }
+    }
+
+    /// The Home switch's choice: a server, and on an Audiobookshelf account with several book
+    /// libraries, one of them.
+    func select(serverId: UUID, libraryId: String?) async {
+        selectServer(id: serverId)
+        if let libraryId, server(serverId)?.libraryId != libraryId {
+            try? await setLibrary(serverId: serverId, libraryId: libraryId)
+        }
     }
 
     func setLibrary(serverId: UUID, libraryId: String) async throws {

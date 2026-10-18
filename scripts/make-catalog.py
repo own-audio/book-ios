@@ -4,6 +4,9 @@
 
 import json
 cs = {
+ "Loading…": "Načítám…",
+ "Offline": "Offline",
+ "The book library this app shows from the server. With several, each is also in the switch on Home.": "Knihovna knih, kterou aplikace ze serveru ukazuje. Je-li jich víc, má každá i vlastní položku v přepínači na kartě Domů.",
  "%@ left": "zbývá %@",
  "%1$@ of %2$@": "%1$@ z %2$@",
  "%1$@ · %2$@": "%1$@ · %2$@",

@@ -245,6 +245,7 @@ struct ServerDetailView: View {
     @State private var status: ConnectionStatus?
     @State private var isChecking = false
     @State private var isSigningIn = false
+    @State private var libraries: [(id: String, name: String)] = []
 
     var body: some View {
         List {
@@ -271,6 +272,29 @@ struct ServerDetailView: View {
                 .accessibilityIdentifier("serverDetail.check")
                 Button { isSigningIn = true } label: { Label("Sign In Again…", systemImage: "key") }
             }
+            if server.kind == .audiobookshelf {
+                Section {
+                    if libraries.isEmpty {
+                        Text(model.isOffline ? "Offline" : "Loading…").foregroundStyle(Theme.Colors.muted)
+                    }
+                    ForEach(libraries, id: \.id) { library in
+                        Button {
+                            model.perform { try await model.setLibrary(serverId: server.id, libraryId: library.id) }
+                        } label: {
+                            HStack {
+                                Text(library.name).foregroundStyle(Theme.Colors.foreground)
+                                Spacer()
+                                if library.id == model.server(server.id)?.libraryId { Image(systemName: "checkmark").foregroundStyle(.tint) }
+                            }
+                        }
+                        .accessibilityIdentifier("serverDetail.library.\(library.name)")
+                    }
+                } header: {
+                    Text("Library")
+                } footer: {
+                    Text("The book library this app shows from the server. With several, each is also in the switch on Home.")
+                }
+            }
             if server.kind == .ownAudio {
                 Section {
                     catalogueRow
@@ -287,6 +311,9 @@ struct ServerDetailView: View {
         .navigationTitle(server.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isSigningIn) { SignInAgainView(server: server) }
+        .task {
+            if server.kind == .audiobookshelf { libraries = await model.bookLibraries(serverId: server.id) }
+        }
     }
 
     @ViewBuilder
