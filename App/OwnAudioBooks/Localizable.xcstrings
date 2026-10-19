@@ -1556,6 +1556,16 @@
         }
       }
     },
+    "Favourites": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oblíbené"
+          }
+        }
+      }
+    },
     "File %lld": {
       "localizations": {
         "en": {
@@ -2080,6 +2090,16 @@
         }
       }
     },
+    "Logs": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznamy"
+          }
+        }
+      }
+    },
     "Mark as Finished": {
       "localizations": {
         "cs": {
@@ -2380,6 +2400,16 @@
         }
       }
     },
+    "No favourite books yet. Mark one with the heart in its menu.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím žádné oblíbené knihy. Označte knihu srdíčkem v její nabídce."
+          }
+        }
+      }
+    },
     "No network · downloaded books only": {
       "localizations": {
         "cs": {
@@ -2466,6 +2496,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nic není staženo"
+          }
+        }
+      }
+    },
+    "Nothing Logged Yet": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zatím nic nezaznamenáno"
           }
         }
       }
@@ -3272,6 +3312,16 @@
         }
       }
     },
+    "Share Log": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sdílet záznam"
+          }
+        }
+      }
+    },
     "Share with the Family": {
       "localizations": {
         "cs": {
@@ -3710,6 +3760,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tohle nevypadá jako adresa serveru."
+          }
+        }
+      }
+    },
+    "The app writes here when something goes wrong.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplikace sem zapisuje, když se něco nepovede."
           }
         }
       }
@@ -4381,6 +4441,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "own.audio: e-mail a heslo vašeho účtu. Audiobookshelf: vaše uživatelské jméno a heslo."
+          }
+        }
+      }
+    },
+    "own.book log": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Záznam own.book"
           }
         }
       }

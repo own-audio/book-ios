@@ -73,7 +73,6 @@ struct BookCard: View {
     var width: CGFloat = 140
     /// For Continue Listening, where a tap plays rather than opens.
     var showsPlayOverlay = false
-    var isFavourite = false
 
     var body: some View {
         let progress = model.knownProgress(book, serverId: serverId)
@@ -84,7 +83,7 @@ struct BookCard: View {
                     if book.visibility == .family { FamilyBadge().padding(6) }
                 }
                 .overlay(alignment: .topLeading) {
-                    if isFavourite { FavouriteBadge().padding(6) }
+                    if model.isFavourite(book, serverId: serverId) { FavouriteBadge().padding(6) }
                 }
                 .overlay(alignment: .bottomTrailing) {
                     DownloadBadge(state: model.downloadState(book, serverId: serverId)).padding(6)

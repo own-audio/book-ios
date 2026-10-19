@@ -298,7 +298,10 @@ struct BookDetailView: View {
         progress = await model.progress(for: book, serverId: serverId)
         guard let source, !model.isOffline else { return }
         bookmarks = (try? await source.bookmarks(bookId: book.id)) ?? []
-        if source.capabilities.contains(.favourites) { isFavourite = (try? await source.favourites().contains(book.id)) ?? false }
+        if source.capabilities.contains(.favourites) {
+            isFavourite = (try? await source.favourites().contains(book.id)) ?? model.isFavourite(book, serverId: serverId)
+            model.noteFavourite(book, serverId: serverId, isFavourite)
+        }
     }
 
     private func play() {
@@ -341,8 +344,15 @@ struct BookDetailView: View {
     private func toggleFavourite() {
         let wanted = !isFavourite
         isFavourite = wanted
+        model.noteFavourite(book, serverId: serverId, wanted)
         model.perform {
-            do { try await source?.setFavourite(bookId: book.id, wanted) } catch { isFavourite = !wanted; throw error }
+            do {
+                try await source?.setFavourite(bookId: book.id, wanted)
+            } catch {
+                isFavourite = !wanted
+                model.noteFavourite(book, serverId: serverId, !wanted)
+                throw error
+            }
         }
     }
 }

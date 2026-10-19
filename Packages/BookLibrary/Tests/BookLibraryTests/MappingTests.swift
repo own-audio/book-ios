@@ -179,6 +179,7 @@ struct OwnAudioMappingTests {
         #expect(try await source.books(BookQuery(sort: .added, descending: true)).books.map(\.id) == ["b2", "b1"])
         #expect(try await source.books(BookQuery(filter: .inProgress)).books.map(\.id) == ["b1"])
         #expect(try await source.books(BookQuery(filter: .notStarted)).books.map(\.id) == ["b2"])
+        #expect(try await source.books(BookQuery(filter: .favourites)).books.map(\.id) == ["b2"])
         #expect(try await source.books(BookQuery(seriesId: "s1")).books.map(\.id) == ["b2", "b1"])
         #expect(try await source.books(BookQuery(text: "glass")).books.map(\.id) == ["b2"])
         let first = try await source.books(BookQuery(), cursor: nil, limit: 1)

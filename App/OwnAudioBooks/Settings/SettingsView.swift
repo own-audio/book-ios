@@ -103,6 +103,8 @@ struct SettingsView: View {
                 LabeledContent("Version", value: version)
                 Link("Source Code and Licence", destination: URL(string: "https://github.com/own-audio/book-ios")!)
                 Link("Privacy", destination: URL(string: "https://github.com/own-audio/book-ios/blob/main/PRIVACY.md")!)
+                NavigationLink("Logs") { LogsView() }
+                    .accessibilityIdentifier("settings.logs")
             } header: {
                 Text("About")
             } footer: {

@@ -64,6 +64,8 @@ public struct AudiobookshelfSource: BookSource {
                 case .notStarted: filter = .progress(.notStarted)
                 case .inProgress: filter = .progress(.inProgress)
                 case .finished: filter = .progress(.finished)
+                // Audiobookshelf has no favourites; the screens don't offer the filter there.
+                case .favourites: return BooksPage(books: [], next: nil, total: 0)
                 }
             }
             let sort: AudiobookshelfClient.ItemSort

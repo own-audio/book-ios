@@ -64,6 +64,7 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
         case .notStarted: books = books.filter { library.progress[$0.id] == nil }
         case .inProgress: books = books.filter { library.progress[$0.id].map { !$0.finished } ?? false }
         case .finished: books = books.filter { library.progress[$0.id]?.finished ?? false }
+        case .favourites: books = books.filter { library.favourites.contains($0.id) }
         }
         if let id = query.seriesId {
             books.sort { ($0.series.first { $0.id == id }?.position ?? 0, $0.title) < ($1.series.first { $0.id == id }?.position ?? 0, $1.title) }

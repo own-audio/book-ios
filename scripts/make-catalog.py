@@ -4,6 +4,13 @@
 
 import json
 cs = {
+ "Favourites": "Oblíbené",
+ "Logs": "Záznamy",
+ "No favourite books yet. Mark one with the heart in its menu.": "Zatím žádné oblíbené knihy. Označte knihu srdíčkem v její nabídce.",
+ "Nothing Logged Yet": "Zatím nic nezaznamenáno",
+ "Share Log": "Sdílet záznam",
+ "The app writes here when something goes wrong.": "Aplikace sem zapisuje, když se něco nepovede.",
+ "own.book log": "Záznam own.book",
  "Add Address": "Přidat adresu",
  "Add the server's address on your home network, a VPN such as Tailscale, or a second public name. On each network the app uses the fastest one that answers.": "Přidejte adresu serveru v domácí síti, ve VPN jako Tailscale nebo druhé veřejné jméno. V každé síti aplikace použije tu nejrychlejší, která odpovídá.",
  "Addresses": "Adresy",

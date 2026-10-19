@@ -41,6 +41,27 @@ final class PlayerParityTests: XCTestCase {
         app.buttons["player.stop"].tap()
     }
 
+    /// Settings → Logs: the app's own log after playing something, with Share.
+    func testLogsInSettings() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
+        app.launchChecked()
+        smoke.addServer(app)
+        startBook(app)
+        app.buttons["miniPlayer.playPause"].tap()
+        smoke.tapTab(app, "Home")
+        let settings = app.buttons["home.settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 10))
+        settings.tap()
+        let logs = app.buttons["settings.logs"].firstMatch
+        for _ in 0..<6 where !logs.isHittable { app.swipeUp() }
+        XCTAssertTrue(logs.exists)
+        logs.tap()
+        XCTAssertTrue(app.navigationBars["Logs"].waitForExistence(timeout: 10))
+        let share = app.buttons["logs.share"].firstMatch, empty = app.staticTexts["Nothing Logged Yet"]
+        XCTAssertTrue(smoke.waitUntil(timeout: 10) { share.exists || empty.exists }, "the log, or that there is none yet")
+    }
+
     /// Played, paused, the app killed and started again: the book waits in the mini player and
     /// plays on from where it was. Stop clears it.
     func testLastBookBackAfterARelaunch() {

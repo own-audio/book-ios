@@ -3,6 +3,11 @@ import SwiftUI
 /// Background downloads: iOS relaunches the app to report on them, and hands over a completion
 /// handler to call once the session has delivered its events.
 final class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        BackgroundRefresh.register()
+        return true
+    }
+
     func application(_ application: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
         Task { @MainActor in
             switch identifier {

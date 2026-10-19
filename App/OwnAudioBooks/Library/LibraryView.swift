@@ -88,6 +88,9 @@ struct BooksListView: View {
                         Text("Not Started").tag(BookFilter.notStarted)
                         Text("In Progress").tag(BookFilter.inProgress)
                         Text("Finished").tag(BookFilter.finished)
+                        if model.capabilitiesFor(serverId).contains(.favourites) {
+                            Text("Favourites").tag(BookFilter.favourites)
+                        }
                     }
                     Divider()
                     Toggle("Grid", isOn: $isGrid)
@@ -171,6 +174,7 @@ struct BooksListView: View {
         case .notStarted: String(localized: "Every book has been started.")
         case .inProgress: String(localized: "No book is in progress.")
         case .finished: String(localized: "No book is finished yet.")
+        case .favourites: String(localized: "No favourite books yet. Mark one with the heart in its menu.")
         }
     }
 
@@ -212,7 +216,7 @@ struct BooksListView: View {
     private func reload() async {
         guard let source else { return }
         if model.isOffline, !model.showsWholeLibraryOffline(serverId: serverId) {
-            books = Self.filtered(model.offlineBooks(serverId: serverId), query, progress: { model.knownProgress($0, serverId: serverId) })
+            books = Self.filtered(model.offlineBooks(serverId: serverId), query, progress: { model.knownProgress($0, serverId: serverId) }, isFavourite: { model.isFavourite($0, serverId: serverId) })
             next = nil
             total = books.count
             state = .loaded(())
@@ -233,7 +237,7 @@ struct BooksListView: View {
     }
 
     /// The downloaded books as the query asks, done here because there is no server to ask.
-    static func filtered(_ all: [Book], _ query: BookQuery, progress: (Book) -> ListeningProgress?) -> [Book] {
+    static func filtered(_ all: [Book], _ query: BookQuery, progress: (Book) -> ListeningProgress?, isFavourite: (Book) -> Bool = { _ in false }) -> [Book] {
         var books = all
         if let id = query.authorId { books = books.filter { $0.authors.contains { $0.id == id } } }
         if let id = query.narratorId { books = books.filter { $0.narrators.contains { $0.id == id } } }
@@ -244,6 +248,7 @@ struct BooksListView: View {
         case .notStarted: books = books.filter { progress($0) == nil }
         case .inProgress: books = books.filter { progress($0).map { !$0.finished } ?? false }
         case .finished: books = books.filter { progress($0)?.finished ?? false }
+        case .favourites: books = books.filter(isFavourite)
         }
         books.sort { a, b in
             let less: Bool

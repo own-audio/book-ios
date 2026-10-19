@@ -43,6 +43,8 @@ final class AppModel {
     private(set) var lastBook: LastBook?
     /// Each Audiobookshelf server's own icon, once loaded (`loadServerIcons`).
     var serverIcons: [UUID: UIImage] = [:]
+    /// Each server's favourite books (own.audio), for the badge on covers and the filter.
+    var favouriteBooks: [UUID: Set<String>] = [:]
     private(set) var nowPlayingPlan: PlayPlan?
     /// Positions the app knows, by composite id, for the screens; the server's answer wins.
     private(set) var progress: [String: ListeningProgress] = [:]
@@ -669,6 +671,24 @@ final class AppModel {
         for server in servers where server.kind == .ownAudio && server.auth.isSignedIn {
             await syncCatalogue(server.id)
         }
+        await loadFavourites()
+    }
+
+    /// From the library copy on the phone (own.audio), so covers can wear the badge offline too.
+    func loadFavourites() async {
+        for server in servers {
+            guard let source = sources[server.id], source.capabilities.contains(.favourites),
+                  let ids = try? await source.favourites() else { continue }
+            favouriteBooks[server.id] = ids
+        }
+    }
+
+    func isFavourite(_ book: Book, serverId: UUID) -> Bool {
+        favouriteBooks[serverId]?.contains(book.id) == true
+    }
+
+    func noteFavourite(_ book: Book, serverId: UUID, _ on: Bool) {
+        if on { favouriteBooks[serverId, default: []].insert(book.id) } else { favouriteBooks[serverId]?.remove(book.id) }
     }
 
     /// What the copy of an own.audio library on this phone holds; nil for other servers and
@@ -718,6 +738,7 @@ final class AppModel {
             }
         } else {
             narrations.stopPolling()
+            BackgroundRefresh.schedule()
         }
     }
 

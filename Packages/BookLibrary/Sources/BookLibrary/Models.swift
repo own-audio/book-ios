@@ -269,7 +269,8 @@ public enum BookSort: String, Sendable, CaseIterable, Codable {
 }
 
 public enum BookFilter: String, Sendable, CaseIterable, Codable {
-    case all, notStarted, inProgress, finished
+    /// `favourites` only where the source has them (`Capabilities.favourites`).
+    case all, notStarted, inProgress, finished, favourites
 }
 
 /// What to list: a filter, and at most one of author, narrator or series.

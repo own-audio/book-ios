@@ -23,6 +23,14 @@ All notable changes to this project are documented here. The format follows
   network — or one fixed address. The model had both already; now there is a screen, as in the
   podcasts app. UI test.
 
+- Favourites (own.audio): the badge on a favourite book's cover, now set from the library copy
+  on the phone (it was never shown), and Favourites in the Library's filter, offline too. The heart
+  on a book's page updates both at once. UI test: marked, filtered, badge, unmarked again.
+- Settings → Logs: what the app logged since it started, to read and to share as a text file with
+  a bug report; nothing is sent anywhere unless shared. Copied from the podcasts app. UI test.
+- Background refresh: iOS may wake the app about once an hour to bring the own.audio library copy
+  up to date and send any position still waiting. iOS decides whether it runs.
+
 ### Fixed
 
 - The Live Activity's skip buttons show the chosen intervals; they always showed 15 s back and 30 s
