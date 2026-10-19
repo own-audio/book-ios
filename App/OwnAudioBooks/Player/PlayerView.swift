@@ -200,7 +200,8 @@ struct PlayerView: View {
     private var tools: some View {
         let engine = model.engine
         let sleeping = engine.sleepTimer.isActive || engine.stopsAtEndOfChapter
-        return HStack(spacing: Theme.Spacing.xxl) {
+        // The tools share the width: five at fixed gaps are wider than a phone.
+        return HStack(spacing: 0) {
             tool(id: "player.speed", label: String(localized: "Speed \(String(format: "%.2g", engine.rate))"), caption: "Speed", tinted: engine.rate != 1) {
                 Text(String(format: "%.2g×", engine.rate)).font(.subheadline.weight(.semibold).monospacedDigit())
             } action: { sheet = .speed }
@@ -213,6 +214,13 @@ struct PlayerView: View {
             tool(id: "player.chapters", label: String(localized: "Chapters"), caption: "Chapters", tinted: false) {
                 Image(systemName: "list.bullet").font(.title3)
             } action: { sheet = .chapters }
+            VStack(spacing: Theme.Spacing.xs) {
+                AirPlayRouteButton().frame(width: 28, height: 24)
+                Text("AirPlay").font(.caption2).foregroundStyle(Theme.Colors.foreground)
+            }
+            .frame(maxWidth: .infinity, minHeight: Theme.minTarget)
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("player.airplay")
         }
         .padding(.top, Theme.Spacing.sm)
     }
@@ -224,7 +232,7 @@ struct PlayerView: View {
                 Text(caption).font(.caption2)
             }
             .foregroundStyle(tinted ? Theme.Colors.accent : Theme.Colors.foreground)
-            .frame(minWidth: 56, minHeight: Theme.minTarget)
+            .frame(maxWidth: .infinity, minHeight: Theme.minTarget)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

@@ -45,6 +45,8 @@ final class LiveActivityController {
             _ = model.engine.isPlaying
             _ = model.engine.rate
             _ = model.engine.currentChapter?.startMs
+            _ = model.settings.skipBackwardSecs
+            _ = model.settings.skipForwardSecs
         } onChange: {
             Task { @MainActor [weak self] in
                 self?.sync(force: true)
@@ -67,7 +69,8 @@ final class LiveActivityController {
         }
         let state = BookActivityAttributes.ContentState(
             chapter: model.engine.currentChapter?.title, positionMs: model.engine.positionMs, durationMs: model.engine.durationMs,
-            isPlaying: model.engine.isPlaying, rate: model.engine.rate, at: Date(), coverFile: activityBookId == spoken.id ? coverFile : nil
+            isPlaying: model.engine.isPlaying, rate: model.engine.rate, at: Date(), coverFile: activityBookId == spoken.id ? coverFile : nil,
+            skipBackSecs: Int(model.settings.skipBackwardSecs), skipForwardSecs: Int(model.settings.skipForwardSecs)
         )
         if activityBookId != spoken.id {
             Task { await start(book: book, serverId: serverId, composite: spoken.id, state: state) }

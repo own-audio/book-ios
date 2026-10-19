@@ -14,7 +14,7 @@ final class LargeTextTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         XCTAssertTrue(app.buttons["addServer.connect"].waitForExistence(timeout: 10))
         smoke.screenshot(app, "large-00-onboarding")
         smoke.addServer(app)

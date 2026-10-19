@@ -17,6 +17,10 @@ struct BookActivityAttributes: ActivityAttributes {
         /// attributes: the cover often arrives after the activity has started, and only the
         /// state can change.
         var coverFile: String?
+        /// The listener's skip intervals, so the buttons' icons say what they do. Optional, so
+        /// an activity started by an older build still decodes.
+        var skipBackSecs: Int?
+        var skipForwardSecs: Int?
     }
 
     /// The composite book id, as `ownbook://play/<id>` wants it.
@@ -25,6 +29,14 @@ struct BookActivityAttributes: ActivityAttributes {
     let author: String
 
     static let appGroup = "group.audio.own.bookplayer"
+
+    /// SF Symbols has numbered skip icons for these intervals; others get the plain arrow.
+    static func skipSymbol(back: Bool, seconds: Int?) -> String {
+        let numbered = [5, 10, 15, 30, 45, 60, 75, 90]
+        let base = back ? "gobackward" : "goforward"
+        guard let seconds, numbered.contains(seconds) else { return base }
+        return "\(base).\(seconds)"
+    }
 
     static func coverURL(file: String?) -> URL? {
         guard let file else { return nil }

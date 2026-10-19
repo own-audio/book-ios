@@ -25,7 +25,7 @@ final class PlaybackSmokeTests: XCTestCase {
     func testAddServerPlayBookAndMoveAround() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + Self.english
-        app.launch()
+        app.launchChecked()
 
         addServer(app)
         screenshot(app, "01-home")
@@ -139,7 +139,7 @@ final class PlaybackSmokeTests: XCTestCase {
     func testDevicesScreen() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + Self.english
-        app.launch()
+        app.launchChecked()
         addServer(app)
         app.buttons["home.settings"].tap()
         if !app.navigationBars["Settings"].waitForExistence(timeout: 3) {
@@ -160,7 +160,7 @@ final class PlaybackSmokeTests: XCTestCase {
     func testHousehold() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + Self.english
-        app.launch()
+        app.launchChecked()
         addServer(app)
         app.buttons["home.settings"].tap()
         if !app.navigationBars["Settings"].waitForExistence(timeout: 3) {
@@ -180,7 +180,7 @@ final class PlaybackSmokeTests: XCTestCase {
     func testWrongPasswordIsRefused() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + Self.english
-        app.launch()
+        app.launchChecked()
         let address = app.textFields["addServer.address"]
         XCTAssertTrue(address.waitForExistence(timeout: 10))
         address.tap(); address.typeText(env["SERVER_HOST"]!)
@@ -278,7 +278,7 @@ final class OfflineTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
         smoke.tapTab(app, "Library")
         app.buttons["library.sortFilter"].tap()
@@ -303,7 +303,7 @@ final class OfflineTests: XCTestCase {
         // No network: relaunched with every request failing, the server kept.
         app.terminate()
         app.launchArguments = ["-simulateOffline"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         XCTAssertTrue(app.otherElements["offline.banner"].waitForExistence(timeout: 15) || app.staticTexts["offline.banner"].waitForExistence(timeout: 1), "the offline banner")
         let shelf = app.staticTexts["home.shelf.downloaded"]
         XCTAssertTrue(shelf.waitForExistence(timeout: 15), "the downloaded shelf")
@@ -338,7 +338,7 @@ final class ImportTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
         smoke.tapTab(app, "Library")
         let plus = app.buttons["library.import"]
@@ -361,7 +361,7 @@ final class OfflineModeButtonTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
         // iOS's "Save Password?" sheet comes a moment after the sign-in and covers the toolbar.
         smoke.dismissSavePasswordPrompt(app)

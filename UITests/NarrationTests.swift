@@ -15,7 +15,7 @@ final class NarrationTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         let address = app.textFields["addServer.address"]
         XCTAssertTrue(address.waitForExistence(timeout: 10))
         address.tap(); address.typeText(env["NARRATION_HOST"]!)

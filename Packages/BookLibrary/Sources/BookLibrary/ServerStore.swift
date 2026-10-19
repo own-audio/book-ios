@@ -85,7 +85,7 @@ public struct ServerRecord: Codable, Sendable, Equatable, Identifiable {
         addresses += named.filter { !known.contains(Self.normalized($0.url)) }
     }
 
-    static func normalized(_ url: URL) -> URL {
+    public static func normalized(_ url: URL) -> URL {
         var text = url.absoluteString
         while text.hasSuffix("/") { text.removeLast() }
         return URL(string: text) ?? url

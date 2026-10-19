@@ -12,7 +12,7 @@ final class CzechScreensTests: XCTestCase {
     func testCzechScreens() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset", "-AppleLanguages", "(cs)", "-AppleLocale", "cs_CZ"]
-        app.launch()
+        app.launchChecked()
         XCTAssertTrue(app.buttons["addServer.demo"].waitForExistence(timeout: 10))
         XCTAssertEqual(app.buttons["addServer.demo"].label, "Vyzkoušet ukázkovou knihovnu")
         XCTAssertEqual(app.buttons["addServer.connect"].label, "Připojit")

@@ -13,7 +13,7 @@ final class DeepLinkTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
         smoke.tapTab(app, "Library")
         let book = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'")).firstMatch

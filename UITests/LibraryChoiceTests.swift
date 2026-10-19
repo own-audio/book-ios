@@ -14,7 +14,7 @@ final class LibraryChoiceTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
 
         app.buttons["home.settings"].tap()

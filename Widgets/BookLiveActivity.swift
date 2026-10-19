@@ -71,11 +71,11 @@ private struct Controls: View {
 
     var body: some View {
         HStack(spacing: 18) {
-            Button(intent: PlaybackControlIntent(.back)) { Image(systemName: "gobackward.15") }
+            Button(intent: PlaybackControlIntent(.back)) { Image(systemName: BookActivityAttributes.skipSymbol(back: true, seconds: state.skipBackSecs ?? 15)) }
                 .accessibilityLabel("Skip back")
             Button(intent: PlaybackControlIntent(.toggle)) { Image(systemName: state.isPlaying ? "pause.fill" : "play.fill").font(.title3) }
                 .accessibilityLabel(state.isPlaying ? "Pause" : "Play")
-            Button(intent: PlaybackControlIntent(.forward)) { Image(systemName: "goforward.30") }
+            Button(intent: PlaybackControlIntent(.forward)) { Image(systemName: BookActivityAttributes.skipSymbol(back: false, seconds: state.skipForwardSecs ?? 30)) }
                 .accessibilityLabel("Skip forward")
         }
         .buttonStyle(.plain)

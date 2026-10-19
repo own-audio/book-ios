@@ -241,7 +241,7 @@ final class MisuseTests: XCTestCase {
     private func launch(reset: Bool, offline: Bool = false) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = (reset ? ["-uiTestReset"] : []) + (offline ? ["-simulateOffline"] : []) + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         return app
     }
 

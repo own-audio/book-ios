@@ -8,6 +8,33 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- The last book comes back after a relaunch: the mini player shows it with its cover and time left,
+  and a tap plays it from where it was. It is loaded only then, so a launch never opens a play
+  session on Audiobookshelf for a book nobody pressed play on. Stop and the end of the book clear
+  it. Built in the podcasts app first; UI test: played, paused, killed, started again.
+- An AirPlay button among the player's tools (`AirPlayRouteButton`, from the music app through the
+  podcasts app).
+
+- Server logos: own.audio's mark, and each Audiobookshelf server's own icon, loaded from the server
+  and kept (the app ships no Audiobookshelf artwork), in the server list and on the server's page.
+- The server's page lists its addresses and where each came from (added with, from the server,
+  added by you); Add Address takes another (a home network, a VPN such as Tailscale), swipe
+  removes one, and Connection chooses Automatic — the fastest that answers as this server on each
+  network — or one fixed address. The model had both already; now there is a screen, as in the
+  podcasts app. UI test.
+
+### Fixed
+
+- The Live Activity's skip buttons show the chosen intervals; they always showed 15 s back and 30 s
+  forward. The intervals travel in the activity's state (optional, so an activity from an older
+  build still decodes).
+- The player's tools share the row's width, so all five fit on an iPhone; at fixed gaps five would
+  have run past the edge. UI test: every tool on screen.
+- UI tests launch through `launchChecked()`, which makes sure the app got its arguments: iOS can
+  hand a test a prewarmed copy of the app, started without them — in the device's language and
+  without `-uiTestReset`. Playback and download settings are reset on `-uiTestReset` too. Copied
+  from the podcasts app, where both were found.
+
 - Audiobookshelf book libraries: the server's page lists them and which one the app shows, to
   choose there; with several, each is its own entry in the server switch on Home ("server ·
   library"), and the names are kept for offline.

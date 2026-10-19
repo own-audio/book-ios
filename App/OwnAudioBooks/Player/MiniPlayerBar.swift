@@ -74,7 +74,45 @@ struct MiniPlayerBar: View {
             }
             .padding(.horizontal, Theme.Spacing.screenEdge)
             .padding(.bottom, Theme.Spacing.xs)
+        } else if let last = model.lastBook {
+            lastBookBar(last)
         }
+    }
+
+    /// The book from before the relaunch, not loaded yet: a tap plays it from where it was.
+    private func lastBookBar(_ last: LastBook) -> some View {
+        Button {
+            Haptics.impact(.medium)
+            Task {
+                await model.playLastBook()
+                if model.nowPlayingBook != nil { onTap() }
+            }
+        } label: {
+            HStack(spacing: Theme.Spacing.md) {
+                CoverView(book: last.book, serverId: last.serverId, pointSize: 40, radius: 8)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(last.book.title).font(.subheadline.weight(.semibold)).foregroundStyle(Theme.Colors.foreground).lineLimit(1)
+                    Text(ProgressText.leftAtSpeed(last.durationMs - last.positionMs, rate: model.settings.rate(for: BookID.make(serverId: last.serverId, bookId: last.book.id))))
+                        .font(.caption)
+                        .foregroundStyle(Theme.Colors.muted)
+                        .lineLimit(1)
+                }
+                Spacer()
+                Image(systemName: "play.fill")
+                    .font(.title3)
+                    .foregroundStyle(Theme.Colors.foreground)
+                    .frame(minWidth: Theme.minTarget, minHeight: Theme.minTarget)
+                    .accessibilityHidden(true)
+            }
+            .padding(Theme.Spacing.sm)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("miniPlayer.last")
+        .accessibilityLabel("\(last.book.title), play from where you left off")
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.miniPlayer, style: .continuous))
+        .padding(.horizontal, Theme.Spacing.screenEdge)
+        .padding(.bottom, Theme.Spacing.xs)
     }
 }
 

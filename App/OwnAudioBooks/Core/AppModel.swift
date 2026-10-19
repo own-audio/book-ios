@@ -38,6 +38,11 @@ final class AppModel {
     /// The book in the engine, with the server it came from.
     private(set) var nowPlayingBook: Book?
     private(set) var nowPlayingServerId: UUID?
+    /// The book in the player when the app last went away, shown in the mini player until it is
+    /// played again; nil while a book is loaded.
+    private(set) var lastBook: LastBook?
+    /// Each Audiobookshelf server's own icon, once loaded (`loadServerIcons`).
+    var serverIcons: [UUID: UIImage] = [:]
     private(set) var nowPlayingPlan: PlayPlan?
     /// Positions the app knows, by composite id, for the screens; the server's answer wins.
     private(set) var progress: [String: ListeningProgress] = [:]
@@ -191,7 +196,9 @@ final class AppModel {
             downloads.removeAll()
             for item in imports.imports.values { imports.cancel(item.id) }
             settings.offlineMode = false
+            forgetLastBook()
         }
+        lastBook = LastBook.load()
         servers = await store.loadAll()
         await addServerFromLaunchArguments()
         for server in servers where server.kind == .ownAudio {
@@ -209,6 +216,7 @@ final class AppModel {
         keepProgressFresh()
         Task {
             await chooseAddresses()
+            await loadServerIcons()
             await refreshBookLibraries()
             await syncCatalogues()
             await flushPendingProgress()
@@ -523,6 +531,7 @@ final class AppModel {
         activeServerId = record.id
         Task {
             await chooseAddresses()
+            await loadServerIcons()
             await syncCatalogues()
         }
     }
@@ -841,6 +850,8 @@ final class AppModel {
             engine.setRate(settings.rate(for: composite))
             engine.load(spoken, at: start, autoplay: true)
             scheduleListeningCache(for: spoken)
+            lastBook = nil
+            LastBook(serverId: serverId, book: detail, positionMs: start, durationMs: spoken.timeline.durationMs).save()
         } catch {
             actionError = (error as? SourceError)?.userMessage ?? error.localizedDescription
         }
@@ -958,6 +969,7 @@ final class AppModel {
         nowPlayingBook = nil
         nowPlayingServerId = nil
         nowPlayingPlan = nil
+        forgetLastBook()
         Task { await refreshWidget(force: true) }
     }
 
@@ -980,6 +992,11 @@ final class AppModel {
             finished: position.finished, at: position.at, closes: closes
         ))
         liveActivity?.tick()
+        if position.finished {
+            forgetLastBook()
+        } else if position.reason != .stop, let book = nowPlayingBook, nowPlayingServerId == serverId, book.id == bookId {
+            LastBook(serverId: serverId, book: book, positionMs: position.positionMs, durationMs: engine.durationMs).save()
+        }
         Task { await flushPendingProgress(); await refreshWidget(force: closes); await cacheFollowingParts() }
     }
 
@@ -1229,12 +1246,13 @@ enum AddServerError: LocalizedError, Equatable {
     case serverTooOld
     case twoFactorNeeded
     case wrongCode
+    case badAddress
     case server(String)
 
     /// Errors that mean the address was right and trying another scheme is pointless.
     var isFinal: Bool {
         switch self {
-        case .rejected, .noBookLibrary, .serverTooOld, .twoFactorNeeded, .wrongCode, .server: true
+        case .rejected, .noBookLibrary, .serverTooOld, .twoFactorNeeded, .wrongCode, .badAddress, .server: true
         case .unreachable, .notAServer: false
         }
     }
@@ -1248,6 +1266,7 @@ enum AddServerError: LocalizedError, Equatable {
         case .serverTooOld: String(localized: "This own.audio server is too old for the app; update it to 1.0.0-beta.20 or later.")
         case .twoFactorNeeded: String(localized: "A code from your authenticator is needed.")
         case .wrongCode: String(localized: "That code was not accepted.")
+        case .badAddress: String(localized: "That doesn't look like a server address.")
         case .server(let message): message
         }
     }
@@ -1270,5 +1289,47 @@ extension SourceError {
         case .unsupported: String(localized: "This server does not offer that.")
         case .server(let message): message
         }
+    }
+}
+
+// MARK: - The last book, back after a relaunch
+
+/// The book in the player when the app went away. Shown in the mini player at its position, and
+/// loaded only when played: loading it at launch would open a play session on Audiobookshelf
+/// for a book nobody pressed play on. Stop and the end of the book clear it.
+struct LastBook: Codable, Equatable {
+    let serverId: UUID
+    let book: Book
+    let positionMs: Int64
+    let durationMs: Int64
+
+    private static var file: URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("last-book.json")
+    }
+
+    static func load() -> LastBook? {
+        (try? Data(contentsOf: file)).flatMap { try? JSONDecoder().decode(LastBook.self, from: $0) }
+    }
+
+    func save() {
+        guard let data = try? JSONEncoder().encode(self) else { return }
+        try? data.write(to: Self.file, options: .atomic)
+    }
+
+    static func remove() {
+        try? FileManager.default.removeItem(at: file)
+    }
+}
+
+extension AppModel {
+    func forgetLastBook() {
+        lastBook = nil
+        LastBook.remove()
+    }
+
+    /// Plays the last book from where it was; offline, only if it is downloaded.
+    func playLastBook() async {
+        guard let last = lastBook else { return }
+        await play(last.book, serverId: last.serverId, startAt: last.positionMs)
     }
 }

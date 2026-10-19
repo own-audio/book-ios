@@ -16,7 +16,7 @@ final class OtherDeviceTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
         smoke.tapTab(app, "Library")
         // The first book by title, not the shortest: the import test leaves a two-second book
@@ -41,7 +41,7 @@ final class OtherDeviceTests: XCTestCase {
         try save(token: token, bookId: bookId, positionMs: 400_000)
 
         app.launchArguments = PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         let card = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'home.book.'")).firstMatch
         XCTAssertTrue(card.waitForExistence(timeout: 30))
         smoke.tapTab(app, "Library")

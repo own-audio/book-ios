@@ -77,11 +77,7 @@ struct ServersView: View {
             model.selectServer(id: server.id)
         } label: {
             HStack(spacing: Theme.Spacing.md) {
-                Image(systemName: server.kind == .ownAudio ? "person.2.fill" : "books.vertical.fill")
-                    .font(.title3)
-                    .foregroundStyle(.tint)
-                    .frame(width: 34, height: 34)
-                    .accessibilityHidden(true)
+                ServerIcon(brand: ServerBrand(server), image: model.serverIcons[server.id])
                 VStack(alignment: .leading, spacing: 2) {
                     Text(server.displayName).foregroundStyle(.primary)
                     Text(server.kind == .ownAudio ? "own.audio" : "Audiobookshelf")
@@ -246,10 +242,24 @@ struct ServerDetailView: View {
     @State private var isChecking = false
     @State private var isSigningIn = false
     @State private var libraries: [(id: String, name: String)] = []
+    @State private var isAddingAddress = false
+    @State private var newAddress = ""
+    @State private var addressError: String?
+
+    /// The record as it is now: addresses change while the page is open.
+    private var current: ServerRecord { model.server(server.id) ?? server }
+
+    private var fixedAddress: URL? {
+        if case .fixed(let url) = current.connection { url } else { nil }
+    }
 
     var body: some View {
         List {
             Section {
+                HStack(spacing: Theme.Spacing.md) {
+                    ServerIcon(brand: ServerBrand(server), image: model.serverIcons[server.id], size: 44)
+                    Text(current.displayName).font(.headline)
+                }
                 LabeledContent("Account", value: server.auth.username)
                 LabeledContent("Address", value: (model.activeAddresses[server.id] ?? server.host).absoluteString)
                 LabeledContent("Server", value: server.kind == .ownAudio ? "own.audio" : "Audiobookshelf")
@@ -307,6 +317,70 @@ struct ServerDetailView: View {
                     Text("A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.")
                 }
             }
+            Section("Connection") {
+                Picker("Use", selection: Binding(
+                    get: { fixedAddress },
+                    set: { url in Task { await model.setFixedAddress(url, for: server.id) } }
+                )) {
+                    Text("Automatic").tag(URL?.none)
+                    ForEach(current.candidateAddresses) { address in
+                        Text(address.url.absoluteString).tag(URL?.some(address.url))
+                    }
+                }
+                .pickerStyle(.inline)
+                .labelsHidden()
+                .accessibilityIdentifier("serverDetail.mode")
+            }
+            Section {
+                ForEach(current.candidateAddresses) { address in
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(address.url.absoluteString).lineLimit(1)
+                        Text(origin(address)).font(.caption).foregroundStyle(Theme.Colors.muted)
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityIdentifier("serverDetail.address.\(address.url.absoluteString)")
+                    .swipeActions {
+                        if address.origin != .added {
+                            Button(role: .destructive) {
+                                Task { await model.removeAddress(address.url, from: server.id) }
+                            } label: {
+                                Label("Remove", systemImage: "trash")
+                            }
+                        }
+                    }
+                }
+                Button {
+                    newAddress = ""
+                    addressError = nil
+                    isAddingAddress = true
+                } label: {
+                    Label("Add Address", systemImage: "plus")
+                }
+                .accessibilityIdentifier("serverDetail.addAddress")
+                if let addressError { Text(addressError).font(.footnote).foregroundStyle(Theme.Colors.error) }
+            } header: {
+                Text("Addresses")
+            } footer: {
+                Text(server.kind == .ownAudio
+                     ? "The server tells the app its other addresses. Add one it doesn't know, such as a VPN like Tailscale; on each network the app uses the fastest that answers as this server."
+                     : "Add the server's address on your home network, a VPN such as Tailscale, or a second public name. On each network the app uses the fastest one that answers.")
+            }
+        }
+        .alert("Add Address", isPresented: $isAddingAddress) {
+            TextField("http://192.168.1.20:13378", text: $newAddress)
+                .keyboardType(.URL)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .accessibilityIdentifier("serverDetail.newAddress")
+            Button("Cancel", role: .cancel) {}
+            Button("Add") {
+                let text = newAddress
+                Task {
+                    do { try await model.addAddress(text, to: server.id) } catch { addressError = error.localizedDescription }
+                }
+            }
+        } message: {
+            Text("Another address this server answers at.")
         }
         .navigationTitle(server.displayName)
         .navigationBarTitleDisplayMode(.inline)
@@ -331,6 +405,14 @@ struct ServerDetailView: View {
             .accessibilityIdentifier("serverDetail.catalogue")
         } else {
             Text("Not synced yet").foregroundStyle(Theme.Colors.muted)
+        }
+    }
+
+    private func origin(_ address: ServerAddress) -> String {
+        switch address.origin {
+        case .added: String(localized: "Added with")
+        case .server: String(localized: "From the server")
+        case .user: String(localized: "Added by you")
         }
     }
 

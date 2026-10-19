@@ -14,7 +14,7 @@ final class DownloadSetTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
 
         // Settings → Servers → ⓘ: the copy of the library on the phone.
@@ -66,7 +66,7 @@ final class DownloadSetTests: XCTestCase {
         // Offline with Whole Library on: more than the one download is listed.
         app.terminate()
         app.launchArguments = ["-simulateOffline"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.tapTab(app, "Library")
         let books = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'"))
         XCTAssertTrue(smoke.waitUntil(timeout: 30) { books.count > 1 }, "offline, the whole library should be listed, not the one download: \(books.count)")

@@ -72,6 +72,56 @@
         }
       }
     },
+    "Action": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akce"
+          }
+        }
+      }
+    },
+    "Control Playback": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovládat přehrávání"
+          }
+        }
+      }
+    },
+    "Play or Pause": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát nebo pozastavit"
+          }
+        }
+      }
+    },
+    "Skip Back": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přeskočit zpět"
+          }
+        }
+      }
+    },
+    "Skip Forward": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přeskočit vpřed"
+          }
+        }
+      }
+    },
     "Your last books, a tap away.": {
       "localizations": {
         "cs": {

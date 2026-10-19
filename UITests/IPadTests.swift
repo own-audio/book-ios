@@ -15,7 +15,7 @@ final class IPadTests: XCTestCase {
         let smoke = PlaybackSmokeTests()
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
-        app.launch()
+        app.launchChecked()
         smoke.addServer(app)
         smoke.tapTab(app, "Library")
         let books = app.descendants(matching: .any)["sidebar.books"].firstMatch

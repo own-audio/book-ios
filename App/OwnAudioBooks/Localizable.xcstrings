@@ -141,6 +141,16 @@
         }
       }
     },
+    "%@, play from where you left off": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, přehrát od místa, kde jste skončili"
+          }
+        }
+      }
+    },
     "%lld": {
       "localizations": {
         "cs": {
@@ -603,6 +613,16 @@
         }
       }
     },
+    "Action": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akce"
+          }
+        }
+      }
+    },
     "Add": {
       "localizations": {
         "cs": {
@@ -619,6 +639,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přidat 10 minut"
+          }
+        }
+      }
+    },
+    "Add Address": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat adresu"
           }
         }
       }
@@ -683,6 +713,16 @@
         }
       }
     },
+    "Add the server's address on your home network, a VPN such as Tailscale, or a second public name. On each network the app uses the fastest one that answers.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidejte adresu serveru v domácí síti, ve VPN jako Tailscale nebo druhé veřejné jméno. V každé síti aplikace použije tu nejrychlejší, která odpovídá."
+          }
+        }
+      }
+    },
     "Add to Favourites": {
       "localizations": {
         "cs": {
@@ -703,6 +743,26 @@
         }
       }
     },
+    "Added by you": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidali jste"
+          }
+        }
+      }
+    },
+    "Added with": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidáno s"
+          }
+        }
+      }
+    },
     "Address": {
       "localizations": {
         "cs": {
@@ -713,12 +773,32 @@
         }
       }
     },
+    "Addresses": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adresy"
+          }
+        }
+      }
+    },
     "Admin": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
             "value": "Správce"
+          }
+        }
+      }
+    },
+    "AirPlay": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPlay"
           }
         }
       }
@@ -759,6 +839,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pozvánka je kód pro jednoho člověka. Přihlásí se k tomuto serveru a zadá ho, nebo otevře její odkaz."
+          }
+        }
+      }
+    },
+    "Another address this server answers at.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Další adresa, na které tento server odpovídá."
           }
         }
       }
@@ -820,6 +910,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Autoři"
+          }
+        }
+      }
+    },
+    "Automatic": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automaticky"
           }
         }
       }
@@ -1086,6 +1186,16 @@
         }
       }
     },
+    "Connection": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Připojení"
+          }
+        }
+      }
+    },
     "Continue Listening": {
       "localizations": {
         "cs": {
@@ -1122,6 +1232,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokračovat přes Google"
+          }
+        }
+      }
+    },
+    "Control Playback": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ovládat přehrávání"
           }
         }
       }
@@ -1596,6 +1716,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ze souboru, nebo vyberte"
+          }
+        }
+      }
+    },
+    "From the server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Od serveru"
           }
         }
       }
@@ -2590,6 +2720,16 @@
         }
       }
     },
+    "Play ${book}": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát ${book}"
+          }
+        }
+      }
+    },
     "Play %@": {
       "localizations": {
         "cs": {
@@ -2606,6 +2746,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přehrát knihu"
+          }
+        }
+      }
+    },
+    "Play or Pause": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát nebo pozastavit"
           }
         }
       }
@@ -3554,6 +3704,16 @@
         }
       }
     },
+    "That doesn't look like a server address.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle nevypadá jako adresa serveru."
+          }
+        }
+      }
+    },
     "The book library this app shows from the server. With several, each is also in the switch on Home.": {
       "localizations": {
         "cs": {
@@ -3720,6 +3880,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Server odmítl přihlášení. Přihlaste se znovu v Nastavení › Servery."
+          }
+        }
+      }
+    },
+    "The server tells the app its other addresses. Add one it doesn't know, such as a VPN like Tailscale; on each network the app uses the fastest that answers as this server.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Server aplikaci sdělí své další adresy. Přidejte takovou, kterou nezná, třeba VPN jako Tailscale; v každé síti aplikace použije nejrychlejší, která odpovídá jako tento server."
           }
         }
       }
@@ -3964,6 +4134,16 @@
         }
       }
     },
+    "Use": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít"
+          }
+        }
+      }
+    },
     "User name or email": {
       "localizations": {
         "cs": {
@@ -4140,6 +4320,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "ženský"
+          }
+        }
+      }
+    },
+    "http://192.168.1.20:13378": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "http://192.168.1.20:13378"
           }
         }
       }

@@ -5,7 +5,7 @@ final class LaunchTests: XCTestCase {
     func testLaunchesToTheFirstScreen() {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestReset", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
-        app.launch()
+        app.launchChecked()
         // A clean start lands on the first screen, which asks for a server.
         XCTAssertTrue(app.textFields["addServer.address"].waitForExistence(timeout: 15))
         XCTAssertTrue(app.buttons["addServer.demo"].exists)

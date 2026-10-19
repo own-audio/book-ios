@@ -19,6 +19,12 @@ final class PlaybackSettings {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        // A UI test starts from the defaults, whatever the previous one left switched on.
+        if ProcessInfo.processInfo.arguments.contains("-uiTestReset") {
+            for key in defaults.dictionaryRepresentation().keys where key.hasPrefix("playback.") || key.hasPrefix("downloads.") {
+                defaults.removeObject(forKey: key)
+            }
+        }
         skipForwardSecs = defaults.object(forKey: "playback.skipForward") as? Double ?? 30
         skipBackwardSecs = defaults.object(forKey: "playback.skipBackward") as? Double ?? 15
         defaultRate = defaults.object(forKey: "playback.defaultRate") as? Float ?? 1.0
