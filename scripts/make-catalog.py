@@ -128,7 +128,7 @@ cs = {
  "OK": "OK",
  "On Mobile Data": "Na mobilních datech",
  "Opens the player": "Otevře přehrávač",
- "Original": "Originál",
+ "Original": "Původní",
  "Password": "Heslo",
  "Pause": "Pozastavit",
  "Paused": "Pozastaveno",
@@ -266,6 +266,7 @@ cs = {
  "Offline Mode": "Režim offline",
  "Offline Mode · downloaded books only": "Režim offline · jen stažené knihy",
  "Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.": "Režim offline zobrazí a přehraje jen to, co je v tomto iPhonu, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.",
+ "Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.": "Režim offline zobrazí a přehraje jen to, co je v tomto iPhonu, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.\n\nS celou knihovnou se knihovna serveru own.audio ukazuje offline z kopie v tomto iPhonu, nestažené knihy jsou zašedlé; přehrají se jen stažené.",
  "On This iPhone": "V tomto iPhonu",
  "Remove All Downloads": "Odstranit všechna stažení",
  "Remove All Downloads?": "Odstranit všechna stažení?",
@@ -402,6 +403,15 @@ cs = {
  "Updated %@": "Aktualizováno %@",
  "Updating…": "Aktualizuje se…",
  "Whole Library When Offline": "Celá knihovna offline",
+ "Check Now": "Zkontrolovat",
+ "Signed in as %@. Downloads and the library on this iPhone stay as they are.": "Přihlášeno jako %@. Stažené knihy a knihovna v tomto iPhonu zůstanou, jak jsou.",
+ "Use This Server": "Použít tento server",
+ "The library shows the selected server.": "Knihovna ukazuje vybraný server.",
+ "Streaming": "Streamování",
+ "Add a Server": "Přidat server",
+ "Remove Server": "Odebrat server",
+ "Remove %@?": "Odebrat %@?",
+ "Its downloads leave this iPhone. Nothing changes on the server.": "Jeho stažené položky z tohoto iPhonu zmizí. Na serveru se nic nezmění.",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {

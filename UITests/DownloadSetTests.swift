@@ -17,14 +17,13 @@ final class DownloadSetTests: XCTestCase {
         app.launchChecked()
         smoke.addServer(app)
 
-        // Settings → Servers → ⓘ: the copy of the library on the phone.
+        // Settings → the server: the copy of the library on the phone.
         app.buttons["home.settings"].tap()
         if !app.navigationBars["Settings"].waitForExistence(timeout: 3) {
             smoke.dismissSavePasswordPrompt(app)
             app.buttons["home.settings"].tap()
         }
-        app.buttons["settings.servers"].tap()
-        let info = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.info.'")).firstMatch
+        let info = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.row.'")).firstMatch
         XCTAssertTrue(info.waitForExistence(timeout: 10), "every server row should have a details button")
         info.tap()
         XCTAssertTrue(app.buttons["serverDetail.check"].waitForExistence(timeout: 10))

@@ -147,7 +147,9 @@ final class PlaybackSmokeTests: XCTestCase {
             app.buttons["home.settings"].tap()
         }
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
-        let devices = app.buttons["settings.devices"]
+        // On the server's page, as in the podcasts app.
+        app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.row.'")).firstMatch.tap()
+        let devices = app.buttons["serverDetail.devices"]
         guard devices.waitForExistence(timeout: 3) else { return }
         devices.tap()
         let thisDevice = app.staticTexts["This device"]
@@ -168,7 +170,9 @@ final class PlaybackSmokeTests: XCTestCase {
             app.buttons["home.settings"].tap()
         }
         XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 10))
-        let household = app.buttons["settings.household"]
+        // On the server's page, as in the podcasts app.
+        app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.row.'")).firstMatch.tap()
+        let household = app.buttons["serverDetail.family"]
         guard household.waitForExistence(timeout: 3) else { throw XCTSkip("this server has no family") }
         household.tap()
         XCTAssertTrue(app.staticTexts["Members"].waitForExistence(timeout: 20), "the members should be listed")

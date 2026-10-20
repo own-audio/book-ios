@@ -40,7 +40,7 @@ final class LargeTextTests: XCTestCase {
         smoke.tapTab(app, "Home")
         app.buttons["home.settings"].tap()
         if !app.navigationBars["Settings"].waitForExistence(timeout: 3) { smoke.dismissSavePasswordPrompt(app); app.buttons["home.settings"].tap() }
-        XCTAssertTrue(app.buttons["settings.servers"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["servers.add"].waitForExistence(timeout: 10))
         smoke.screenshot(app, "large-06-settings")
     }
 }

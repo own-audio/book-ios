@@ -172,16 +172,20 @@ final class MisuseTests: XCTestCase {
 
         smoke.tapTab(app, "Home")
         app.buttons["home.settings"].tap()
-        let servers = app.buttons["settings.servers"]
+        // Settings lists the servers itself, as in the podcasts app.
+        let servers = app.buttons["servers.add"]
         if !servers.waitForExistence(timeout: 3) { smoke.dismissSavePasswordPrompt(app); app.buttons["home.settings"].tap() }
         XCTAssertTrue(servers.waitForExistence(timeout: 10))
-        servers.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.row.'")).firstMatch
         XCTAssertTrue(row.waitForExistence(timeout: 10))
         row.swipeLeft()
         let remove = app.buttons["Remove"].firstMatch
         XCTAssertTrue(remove.waitForExistence(timeout: 5))
         remove.tap()
+        // It asks first, as in the podcasts app.
+        let confirm = app.buttons["Remove"].firstMatch
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        confirm.tap()
         XCTAssertTrue(smoke.waitUntil(timeout: 15) { !app.buttons["miniPlayer"].exists }, "removing the server should stop its book")
         XCTAssertTrue(smoke.waitUntil(timeout: 15) { app.textFields["addServer.address"].exists || !row.exists }, "and leave no server behind")
         XCTAssertEqual(app.state, .runningForeground)

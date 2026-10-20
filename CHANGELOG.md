@@ -6,6 +6,27 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed on iOS 27
+
+- The Search tab had no search field on iOS 27: iOS no longer put the field into the tab by
+  itself, so there was nothing to type into (found in the podcasts app). Selecting the tab now
+  opens the field, with the keyboard (`tabViewSearchActivation(.searchTabSelection)`), on
+  iOS 26 as well.
+
+### Settings the same in all three apps
+
+- The servers are listed in Settings, as in the podcasts app: a tap opens the server's page, a
+  swipe removes one after asking ("Remove ‹name›?"), the selected server has a checkmark, and a
+  refused sign-in shows on its row. The page has **Use This Server**, Check Now, Sign In Again,
+  Family and Devices for own.audio (moved off the Settings screen), **Name** (rename), the
+  library, the addresses, Library on This iPhone and **Remove Server**, in the order the other
+  apps use. The Servers screen, its rename alert and its long-press menu are gone.
+- Settings in the same order as the other apps: Whole Library When Offline joins Downloads,
+  Skip Back comes before Skip Forward, On Mobile Data is under Streaming, and Logs has the
+  links' colour.
+- Czech: "Původní" for Original, "Odebrat ‹name›?" for removing a server.
+- UI tests follow the new layout; `ServerPageTests.testRenameAndRemoveOnTheServerPage`.
+
 ### Added
 
 - The last book comes back after a relaunch: the mini player shows it with its cover and time left,

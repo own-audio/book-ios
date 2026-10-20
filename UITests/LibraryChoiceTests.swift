@@ -22,8 +22,7 @@ final class LibraryChoiceTests: XCTestCase {
             smoke.dismissSavePasswordPrompt(app)
             app.buttons["home.settings"].tap()
         }
-        app.buttons["settings.servers"].tap()
-        let info = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.info.'")).firstMatch
+        let info = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.row.'")).firstMatch
         XCTAssertTrue(info.waitForExistence(timeout: 10))
         info.tap()
         XCTAssertTrue(app.buttons["serverDetail.check"].waitForExistence(timeout: 10))

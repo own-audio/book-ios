@@ -1,131 +1,63 @@
 import BookLibrary
 import SwiftUI
 
-/// Every configured server: pick the one to browse, check, rename, sign in again or remove.
-struct ServersView: View {
+/// The servers, listed in Settings as in the podcasts app: a tap opens the server's page
+/// (use it, check it, sign in again, rename it, remove it); a swipe removes one, after asking.
+/// The selected server — the one the library shows — has a checkmark.
+struct ServersSection: View {
     @Environment(AppModel.self) private var model
     @State private var isAdding = false
-    @State private var renaming: ServerRecord?
-    @State private var newName = ""
-    @State private var statuses: [UUID: ConnectionStatus] = [:]
-    @State private var checking: Set<UUID> = []
-    @State private var signingIn: ServerRecord?
-    @State private var pickingLibrary: ServerRecord?
+    @State private var removing: ServerRecord?
 
     var body: some View {
-        List {
-            Section {
-                ForEach(model.serversInOrder) { server in row(server) }
-            } footer: {
-                Text("The library shows the selected server. A book keeps playing when you switch.")
+        Section {
+            ForEach(model.serversInOrder) { server in
+                NavigationLink {
+                    ServerDetailView(server: server)
+                } label: {
+                    HStack(spacing: Theme.Spacing.md) {
+                        ServerIcon(brand: ServerBrand(server), image: model.serverIcons[server.id], size: 32)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(server.displayName).foregroundStyle(Theme.Colors.foreground)
+                            Text("\(server.kind == .ownAudio ? "own.audio" : "Audiobookshelf") · \(server.auth.username)")
+                                .font(.caption)
+                                .foregroundStyle(Theme.Colors.muted)
+                                .lineLimit(1)
+                                .accessibilityIdentifier("servers.kind.\(server.displayName)")
+                            if model.signInRefused.contains(server.id) || !server.auth.isSignedIn {
+                                Text("Sign-in refused · Sign in again")
+                                    .font(.caption.weight(.semibold))
+                                    .foregroundStyle(.red)
+                                    .accessibilityIdentifier("servers.refused.\(server.displayName)")
+                            }
+                        }
+                        Spacer()
+                        if server.id == model.activeServerId {
+                            Image(systemName: "checkmark").foregroundStyle(Theme.Colors.muted).accessibilityLabel("Selected")
+                        }
+                    }
+                }
+                .swipeActions {
+                    Button("Remove", role: .destructive) { removing = server }
+                }
+                .accessibilityIdentifier("servers.row.\(server.displayName)")
             }
-            Section {
-                Button { isAdding = true } label: { Label("Add Server", systemImage: "plus") }
-                    .accessibilityIdentifier("servers.add")
-            }
+            Button { isAdding = true } label: { Label("Add a Server", systemImage: "plus") }
+                .accessibilityIdentifier("servers.add")
+        } header: {
+            Text("Servers")
+        } footer: {
+            Text("The library shows the selected server. A book keeps playing when you switch.")
         }
-        .navigationTitle("Servers")
         .sheet(isPresented: $isAdding) { NavigationStack { AddServerView() } }
-        .sheet(item: $signingIn) { server in SignInAgainView(server: server) }
-        .sheet(item: $pickingLibrary) { server in LibraryPickerView(server: server) }
-        .alert("Rename Server", isPresented: Binding(get: { renaming != nil }, set: { if !$0 { renaming = nil } })) {
-            TextField("Name", text: $newName)
-            Button("Cancel", role: .cancel) { renaming = nil }
-            Button("Save") {
-                guard let server = renaming else { return }
-                let name = newName.trimmingCharacters(in: .whitespaces)
-                renaming = nil
-                guard !name.isEmpty else { return }
-                model.perform { try await model.renameServer(id: server.id, to: name) }
-            }
-        }
-    }
-
-    private func row(_ server: ServerRecord) -> some View {
-        HStack(spacing: Theme.Spacing.sm) {
-            selectButton(server)
-            NavigationLink { ServerDetailView(server: server) } label: { Image(systemName: "info.circle").font(.title3) }
-                .buttonStyle(.borderless)
-                .accessibilityLabel("Details")
-                .accessibilityIdentifier("servers.info.\(server.displayName)")
-        }
-        .swipeActions {
-            Button(role: .destructive) {
-                model.perform { try await model.removeServer(id: server.id) }
-            } label: {
-                Label("Remove", systemImage: "trash")
-            }
-        }
-        .contextMenu {
-            Button { check(server) } label: { Label("Check Connection", systemImage: "antenna.radiowaves.left.and.right") }
-            Button { signingIn = server } label: { Label("Sign In Again…", systemImage: "key") }
-            if server.kind == .audiobookshelf {
-                Button { pickingLibrary = server } label: { Label("Library…", systemImage: "books.vertical") }
-            }
-            Button { newName = server.displayName; renaming = server } label: { Label("Rename…", systemImage: "pencil") }
-            Button(role: .destructive) {
-                model.perform { try await model.removeServer(id: server.id) }
-            } label: {
-                Label("Remove", systemImage: "trash")
-            }
-        }
-    }
-
-    private func selectButton(_ server: ServerRecord) -> some View {
-        Button {
-            Haptics.selection()
-            model.selectServer(id: server.id)
-        } label: {
-            HStack(spacing: Theme.Spacing.md) {
-                ServerIcon(brand: ServerBrand(server), image: model.serverIcons[server.id])
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(server.displayName).foregroundStyle(.primary)
-                    Text(server.kind == .ownAudio ? "own.audio" : "Audiobookshelf")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .accessibilityIdentifier("servers.kind.\(server.displayName)")
-                    Text("\(server.auth.username) · \((model.activeAddresses[server.id] ?? server.host).host() ?? "")")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
-                    statusText(server)
-                }
-                Spacer()
-                if server.id == model.activeServerId {
-                    Image(systemName: "checkmark").foregroundStyle(.tint).accessibilityLabel("Selected")
-                }
-            }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("servers.row.\(server.displayName)")
-    }
-
-    @ViewBuilder
-    private func statusText(_ server: ServerRecord) -> some View {
-        if model.signInRefused.contains(server.id) || !server.auth.isSignedIn {
-            Button("Sign-in refused · Sign in again") { signingIn = server }
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.red)
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("servers.refused.\(server.displayName)")
-        } else if checking.contains(server.id) {
-            Text("Checking…").font(.caption).foregroundStyle(.secondary)
-        } else if let status = statuses[server.id] {
-            Text(status == .ok ? "Connected" : status == .rejected ? "Sign-in refused" : "Unreachable")
-                .font(.caption)
-                .foregroundStyle(status == .ok ? .green : .red)
-                .accessibilityIdentifier("servers.status.\(server.displayName)")
-        } else if case .unreachable = model.connectionStates[server.id] {
-            Text("Unreachable").font(.caption).foregroundStyle(.red)
-        }
-    }
-
-    private func check(_ server: ServerRecord) {
-        checking.insert(server.id)
-        Task {
-            statuses[server.id] = await model.checkConnection(id: server.id)
-            checking.remove(server.id)
+        .confirmationDialog(
+            "Remove \(removing?.displayName ?? "")?",
+            isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } }),
+            titleVisibility: .visible, presenting: removing
+        ) { server in
+            Button("Remove", role: .destructive) { model.perform { try await model.removeServer(id: server.id) } }
+        } message: { _ in
+            Text("Its downloads leave this iPhone. Nothing changes on the server.")
         }
     }
 }
@@ -237,7 +169,11 @@ struct LibraryPickerView: View {
 /// this iPhone with when it was last updated.
 struct ServerDetailView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.dismiss) private var dismiss
     let server: ServerRecord
+    @State private var isRenaming = false
+    @State private var newName = ""
+    @State private var confirmRemove = false
     @State private var status: ConnectionStatus?
     @State private var isChecking = false
     @State private var isSigningIn = false
@@ -255,19 +191,24 @@ struct ServerDetailView: View {
 
     var body: some View {
         List {
-            Section {
-                HStack(spacing: Theme.Spacing.md) {
-                    ServerIcon(brand: ServerBrand(server), image: model.serverIcons[server.id], size: 44)
-                    Text(current.displayName).font(.headline)
+            // The library shows one server at a time; this one, from here.
+            if server.id != model.activeServerId {
+                Section {
+                    Button {
+                        Haptics.selection()
+                        model.selectServer(id: server.id)
+                    } label: {
+                        Label("Use This Server", systemImage: "checkmark.circle")
+                    }
+                    .accessibilityIdentifier("serverDetail.use")
+                } footer: {
+                    Text("The library shows the selected server.")
                 }
-                LabeledContent("Account", value: server.auth.username)
-                LabeledContent("Address", value: (model.activeAddresses[server.id] ?? server.host).absoluteString)
-                LabeledContent("Server", value: server.kind == .ownAudio ? "own.audio" : "Audiobookshelf")
             }
             Section {
                 Button { check() } label: {
                     HStack {
-                        Label("Check Connection", systemImage: "antenna.radiowaves.left.and.right")
+                        Text("Check Now")
                         Spacer()
                         if isChecking {
                             ProgressView()
@@ -280,7 +221,44 @@ struct ServerDetailView: View {
                 }
                 .disabled(isChecking)
                 .accessibilityIdentifier("serverDetail.check")
-                Button { isSigningIn = true } label: { Label("Sign In Again…", systemImage: "key") }
+            }
+            Section {
+                Button("Sign In Again") { isSigningIn = true }
+                    .accessibilityIdentifier("serverDetail.signInAgain")
+            } header: {
+                Text("Account")
+            } footer: {
+                Text("Signed in as \(server.auth.username). Downloads and the library on this iPhone stay as they are.")
+            }
+            // The account's family and signed-in devices, on its server's page as in the
+            // podcasts app.
+            if server.kind == .ownAudio {
+                Section {
+                    if server.id == model.activeServerId, model.household != nil {
+                        NavigationLink { HouseholdView() } label: { Label("Family", systemImage: "person.3") }
+                            .accessibilityIdentifier("serverDetail.family")
+                    }
+                    NavigationLink { DevicesView(serverId: server.id) } label: { Label("Devices", systemImage: "iphone.gen3") }
+                        .accessibilityIdentifier("serverDetail.devices")
+                }
+            }
+            Section {
+                LabeledContent("Server") {
+                    HStack(spacing: Theme.Spacing.sm) {
+                        ServerIcon(brand: ServerBrand(server), image: model.serverIcons[server.id], size: 22)
+                        Text(server.kind == .ownAudio ? "own.audio" : "Audiobookshelf")
+                    }
+                }
+                LabeledContent("Address", value: (model.activeAddresses[server.id] ?? server.host).absoluteString)
+                // Renamed here, as in the podcasts and music apps.
+                Button {
+                    newName = current.displayName
+                    isRenaming = true
+                } label: {
+                    LabeledContent("Name", value: current.displayName)
+                }
+                .foregroundStyle(Theme.Colors.foreground)
+                .accessibilityIdentifier("serverDetail.name")
             }
             if server.kind == .audiobookshelf {
                 Section {
@@ -303,18 +281,6 @@ struct ServerDetailView: View {
                     Text("Library")
                 } footer: {
                     Text("The book library this app shows from the server. With several, each is also in the switch on Home.")
-                }
-            }
-            if server.kind == .ownAudio {
-                Section {
-                    catalogueRow
-                    Button("Update Now") { Task { await model.updateCatalogue(server.id) } }
-                        .disabled(model.catalogueSyncing.contains(server.id) || model.isOffline)
-                        .accessibilityIdentifier("serverDetail.syncCatalogue")
-                } header: {
-                    Text("Library on This iPhone")
-                } footer: {
-                    Text("A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.")
                 }
             }
             Section("Connection") {
@@ -365,6 +331,42 @@ struct ServerDetailView: View {
                      ? "The server tells the app its other addresses. Add one it doesn't know, such as a VPN like Tailscale; on each network the app uses the fastest that answers as this server."
                      : "Add the server's address on your home network, a VPN such as Tailscale, or a second public name. On each network the app uses the fastest one that answers.")
             }
+
+            if server.kind == .ownAudio {
+                Section {
+                    catalogueRow
+                    Button("Update Now") { Task { await model.updateCatalogue(server.id) } }
+                        .disabled(model.catalogueSyncing.contains(server.id) || model.isOffline)
+                        .accessibilityIdentifier("serverDetail.syncCatalogue")
+                } header: {
+                    Text("Library on This iPhone")
+                } footer: {
+                    Text("A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.")
+                }
+            }
+
+            Section {
+                Button("Remove Server", role: .destructive) { confirmRemove = true }
+                    .accessibilityIdentifier("serverDetail.remove")
+            }
+        }
+        .alert("Rename", isPresented: $isRenaming) {
+            TextField("Name", text: $newName)
+            Button("Cancel", role: .cancel) {}
+            Button("Save") {
+                let name = newName.trimmingCharacters(in: .whitespaces)
+                guard !name.isEmpty else { return }
+                model.perform { try await model.renameServer(id: server.id, to: name) }
+            }
+        }
+        .confirmationDialog("Remove \(current.displayName)?", isPresented: $confirmRemove, titleVisibility: .visible) {
+            Button("Remove", role: .destructive) {
+                let id = server.id
+                dismiss()
+                model.perform { try await model.removeServer(id: id) }
+            }
+        } message: {
+            Text("Its downloads leave this iPhone. Nothing changes on the server.")
         }
         .alert("Add Address", isPresented: $isAddingAddress) {
             TextField("http://192.168.1.20:13378", text: $newAddress)
@@ -382,7 +384,7 @@ struct ServerDetailView: View {
         } message: {
             Text("Another address this server answers at.")
         }
-        .navigationTitle(server.displayName)
+        .navigationTitle(current.displayName)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isSigningIn) { SignInAgainView(server: server) }
         .task {

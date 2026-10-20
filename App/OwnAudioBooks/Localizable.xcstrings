@@ -693,6 +693,16 @@
         }
       }
     },
+    "Add a Server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přidat server"
+          }
+        }
+      }
+    },
     "Add a server in own.book first.": {
       "localizations": {
         "cs": {
@@ -1102,6 +1112,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zkontrolovat spojení"
+          }
+        }
+      }
+    },
+    "Check Now": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zkontrolovat"
           }
         }
       }
@@ -1910,6 +1930,16 @@
         }
       }
     },
+    "Its downloads leave this iPhone. Nothing changes on the server.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeho stažené položky z tohoto iPhonu zmizí. Na serveru se nic nezmění."
+          }
+        }
+      }
+    },
     "Join": {
       "localizations": {
         "cs": {
@@ -2590,6 +2620,16 @@
         }
       }
     },
+    "Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Režim offline zobrazí a přehraje jen to, co je v tomto iPhonu, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.\n\nS celou knihovnou se knihovna serveru own.audio ukazuje offline z kopie v tomto iPhonu, nestažené knihy jsou zašedlé; přehrají se jen stažené."
+          }
+        }
+      }
+    },
     "Offline Mode · downloaded books only": {
       "localizations": {
         "cs": {
@@ -2695,7 +2735,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Originál"
+            "value": "Původní"
           }
         }
       }
@@ -2980,6 +3020,16 @@
         }
       }
     },
+    "Remove %@?": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat %@?"
+          }
+        }
+      }
+    },
     "Remove All Downloads": {
       "localizations": {
         "cs": {
@@ -3026,6 +3076,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Odebrat z oblíbených"
+          }
+        }
+      }
+    },
+    "Remove Server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odebrat server"
           }
         }
       }
@@ -3472,6 +3532,16 @@
         }
       }
     },
+    "Signed in as %@. Downloads and the library on this iPhone stay as they are.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlášeno jako %@. Stažené knihy a knihovna v tomto iPhonu zůstanou, jak jsou."
+          }
+        }
+      }
+    },
     "Skip Back": {
       "localizations": {
         "cs": {
@@ -3704,6 +3774,16 @@
         }
       }
     },
+    "Streaming": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Streamování"
+          }
+        }
+      }
+    },
     "Swipe a device to sign it out. Signing out everywhere ends every session, this iPhone's too, and asks for a fresh sign-in.": {
       "localizations": {
         "cs": {
@@ -3810,6 +3890,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Soubory se zkopírují a nahrají na pozadí; tuto obrazovku můžete opustit. Kniha se v knihovně objeví, jakmile je nahrávání hotové."
+          }
+        }
+      }
+    },
+    "The library shows the selected server.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knihovna ukazuje vybraný server."
           }
         }
       }
@@ -4200,6 +4290,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Použít"
+          }
+        }
+      }
+    },
+    "Use This Server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Použít tento server"
           }
         }
       }

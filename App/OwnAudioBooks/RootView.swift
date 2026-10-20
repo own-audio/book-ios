@@ -74,6 +74,7 @@ struct RootView: View {
                     .miniPlayerInset { isShowingPlayer = true }
             }
         }
+        .searchOpensWithItsTab()
         // Switching servers starts every tab over: their screens belong to the old library.
         .id(model.activeServerId)
     }
@@ -139,6 +140,20 @@ private extension View {
                 OfflineBanner()
                 MiniPlayerBar(onTap: onTap)
             }
+        }
+    }
+}
+
+private extension View {
+    /// iOS 27 no longer puts the search field into the Search tab by itself: the tab opened with
+    /// no field at all (found in the podcasts app). Selecting the tab now opens the field, on
+    /// iOS 26 as well.
+    @ViewBuilder
+    func searchOpensWithItsTab() -> some View {
+        if #available(iOS 26, *) {
+            tabViewSearchActivation(.searchTabSelection)
+        } else {
+            self
         }
     }
 }
