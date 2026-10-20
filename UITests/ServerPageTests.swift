@@ -83,4 +83,24 @@ final class ServerPageTests: XCTestCase {
         confirm.tap()
         XCTAssertTrue(app.textFields["addServer.address"].waitForExistence(timeout: 15), "with no server left, the welcome screen")
     }
+
+    /// Settings → Add a Server opens the sign-in sheet, and it stays open. It used to close at
+    /// once: the sheet hung on the servers' section, not on the Settings screen.
+    func testAddServerSheetStaysOpen() {
+        let app = XCUIApplication()
+        app.launchArguments = ["-uiTestReset"] + PlaybackSmokeTests.english
+        app.launchChecked()
+        smoke.addServer(app)
+        let settings = app.buttons["home.settings"]
+        XCTAssertTrue(settings.waitForExistence(timeout: 20))
+        settings.tap()
+        let add = app.buttons["servers.add"]
+        if !add.waitForExistence(timeout: 5) { smoke.dismissSavePasswordPrompt(app); settings.tap() }
+        XCTAssertTrue(add.waitForExistence(timeout: 10))
+        add.tap()
+        let address = app.textFields["addServer.address"]
+        XCTAssertTrue(address.waitForExistence(timeout: 10), "the sign-in sheet opens")
+        sleep(3)
+        XCTAssertTrue(address.exists, "and stays open")
+    }
 }

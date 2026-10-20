@@ -6,6 +6,12 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Settings → Add a Server closed its sheet at once: the sheet hung on the servers' section, not
+  on the Settings screen. It is shown by Settings now. UI test
+  `ServerPageTests.testAddServerSheetStaysOpen` (failed before the fix in the music app).
+
 ### Fixed on iOS 27
 
 - The Search tab had no search field on iOS 27: iOS no longer put the field into the tab by
