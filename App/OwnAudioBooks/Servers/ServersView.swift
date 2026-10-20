@@ -7,7 +7,9 @@ import SwiftUI
 struct ServersSection: View {
     @Environment(AppModel.self) private var model
     @State private var isAdding = false
-    @State private var removing: ServerRecord?
+    /// Owned by Settings, where the question is asked: a dialog on a section of a form didn't
+    /// show on iOS 26.5.
+    @Binding var removing: ServerRecord?
 
     var body: some View {
         Section {
@@ -50,15 +52,6 @@ struct ServersSection: View {
             Text("The library shows the selected server. A book keeps playing when you switch.")
         }
         .sheet(isPresented: $isAdding) { NavigationStack { AddServerView() } }
-        .confirmationDialog(
-            "Remove \(removing?.displayName ?? "")?",
-            isPresented: Binding(get: { removing != nil }, set: { if !$0 { removing = nil } }),
-            titleVisibility: .visible, presenting: removing
-        ) { server in
-            Button("Remove", role: .destructive) { model.perform { try await model.removeServer(id: server.id) } }
-        } message: { _ in
-            Text("Its downloads leave this iPhone. Nothing changes on the server.")
-        }
     }
 }
 

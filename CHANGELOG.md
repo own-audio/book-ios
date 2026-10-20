@@ -26,6 +26,8 @@ All notable changes to this project are documented here. The format follows
   links' colour.
 - Czech: "Původní" for Original, "Odebrat ‹name›?" for removing a server.
 - UI tests follow the new layout; `ServerPageTests.testRenameAndRemoveOnTheServerPage`.
+- The "Remove ‹name›?" question is asked by the Settings screen itself, as in the podcasts app:
+  attached to the servers' section it didn't show on iOS 26.5, and a swipe removed nothing.
 
 ### Added
 

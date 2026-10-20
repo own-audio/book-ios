@@ -1,7 +1,9 @@
+import BookLibrary
 import SwiftUI
 
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
+    @State private var removingServer: ServerRecord?
     @Environment(\.dismiss) private var dismiss
 
     private var version: String {
@@ -12,7 +14,7 @@ struct SettingsView: View {
     var body: some View {
         @Bindable var settings = model.settings
         Form {
-            ServersSection()
+            ServersSection(removing: $removingServer)
 
             Section {
                 NavigationLink {
@@ -86,6 +88,15 @@ struct SettingsView: View {
             } footer: {
                 Text("own.audio Books is free and open source (MPL-2.0). It talks only to the servers you add.")
             }
+        }
+        .confirmationDialog(
+            "Remove \(removingServer?.displayName ?? "")?",
+            isPresented: Binding(get: { removingServer != nil }, set: { if !$0 { removingServer = nil } }),
+            titleVisibility: .visible, presenting: removingServer
+        ) { server in
+            Button("Remove", role: .destructive) { model.perform { try await model.removeServer(id: server.id) } }
+        } message: { _ in
+            Text("Its downloads leave this iPhone. Nothing changes on the server.")
         }
         .navigationTitle("Settings")
         .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
