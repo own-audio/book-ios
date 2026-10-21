@@ -67,7 +67,7 @@ final class PlaybackSmokeTests: XCTestCase {
         let preset = app.buttons["speed.preset.1.5"]
         XCTAssertTrue(preset.waitForExistence(timeout: 5))
         preset.tap()
-        XCTAssertEqual(app.staticTexts["speed.value"].label, "1.50×")
+        XCTAssertEqual(app.staticTexts["speed.value"].label, "1.5×", "no trailing zero")
         app.buttons["Done"].tap()
         XCTAssertTrue(waitUntil(timeout: 5) { app.buttons["player.speed"].label.contains("1.5") })
         screenshot(app, "06-speed")

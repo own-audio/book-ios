@@ -55,7 +55,7 @@ struct SettingsView: View {
                 }
                 .accessibilityIdentifier("settings.skipForward")
                 Picker("Speed for New Books", selection: $settings.defaultRate) {
-                    ForEach([0.75, 1.0, 1.25, 1.5, 1.75, 2.0] as [Float], id: \.self) { Text(String(format: "%.2g×", $0)).tag($0) }
+                    ForEach([0.75, 1.0, 1.25, 1.5, 1.75, 2.0] as [Float], id: \.self) { Text($0.speedText).tag($0) }
                 }
                 Toggle("Smart Rewind", isOn: $settings.smartRewind)
                     .accessibilityIdentifier("settings.smartRewind")

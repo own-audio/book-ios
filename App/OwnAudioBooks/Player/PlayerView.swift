@@ -202,8 +202,8 @@ struct PlayerView: View {
         let sleeping = engine.sleepTimer.isActive || engine.stopsAtEndOfChapter
         // The tools share the width: five at fixed gaps are wider than a phone.
         return HStack(spacing: 0) {
-            tool(id: "player.speed", label: String(localized: "Speed \(String(format: "%.2g", engine.rate))"), caption: "Speed", tinted: engine.rate != 1) {
-                Text(String(format: "%.2g×", engine.rate)).font(.subheadline.weight(.semibold).monospacedDigit())
+            tool(id: "player.speed", label: String(localized: "Speed \(engine.rate.speedNumber)"), caption: "Speed", tinted: engine.rate != 1) {
+                Text(engine.rate.speedText).font(.subheadline.weight(.semibold).monospacedDigit())
             } action: { sheet = .speed }
             tool(id: "player.sleep", label: String(localized: "Sleep Timer"), caption: "Sleep", tinted: sleeping) {
                 Image(systemName: sleeping ? "moon.zzz.fill" : "moon.zzz").font(.title3)

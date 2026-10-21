@@ -8,6 +8,12 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- The speed shows as the listener reads it, everywhere (player, speed sheet, Settings):
+  "1.75×" instead of "1.8×" (`%.2g` kept two digits), "1.5×" instead of "1.50×", and with the
+  phone's decimal sign ("0,75×" in Czech). UI test `PlayerSpeedTests` (demo library): 1×, 0.75×, 1.75× on the button and in the sheet.
+
+### Fixed
+
 - Settings → Add a Server closed its sheet at once: the sheet hung on the servers' section, not
   on the Settings screen. It is shown by Settings now. UI test
   `ServerPageTests.testAddServerSheetStaysOpen` (failed before the fix in the music app).

@@ -12,7 +12,7 @@ struct SpeedSheet: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: Theme.Spacing.xl) {
-                Text(String(format: "%.2f×", model.engine.rate))
+                Text(model.engine.rate.speedText)
                     .font(.system(size: 48, weight: .semibold, design: .rounded).monospacedDigit())
                     .accessibilityIdentifier("speed.value")
                 HStack(spacing: Theme.Spacing.xl) {
@@ -30,7 +30,7 @@ struct SpeedSheet: View {
                         Button {
                             model.setRate(preset)
                         } label: {
-                            Text(String(format: "%.2g×", preset))
+                            Text(preset.speedText)
                                 .font(.subheadline.weight(.semibold))
                                 .frame(maxWidth: .infinity, minHeight: Theme.minTarget)
                         }
