@@ -105,6 +105,21 @@ targets:
       path: Widgets/OwnAudioBooksWidgets.entitlements
       properties:
         com.apple.security.application-groups: [group.audio.own.bookplayer]
+  # Unit tests of the app's own code (what CarPlay shows), hosted by the app.
+  OwnAudioBooksTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: UnitTests
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/OwnAudioBooks.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/OwnAudioBooks
+        BUNDLE_LOADER: $(TEST_HOST)
+        CODE_SIGN_STYLE: Automatic
+    dependencies:
+      - target: OwnAudioBooks
   OwnAudioBooksUITests:
     type: bundle.ui-testing
     platform: iOS
@@ -123,12 +138,14 @@ schemes:
     build:
       targets:
         OwnAudioBooks: all
+        OwnAudioBooksTests: [test]
         OwnAudioBooksUITests: [test]
     run:
       config: Debug
     test:
       config: Debug
       targets:
+        - OwnAudioBooksTests
         - OwnAudioBooksUITests
     archive:
       config: Release

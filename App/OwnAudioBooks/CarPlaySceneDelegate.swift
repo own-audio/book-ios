@@ -16,8 +16,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     private var interfaceController: CPInterfaceController?
     private var model: AppModel { AppModel.shared }
 
-    /// CarPlay's guidelines ask for short lists; the system also caps them.
-    private static let maxItems = 100
+    private static var maxItems: Int { CarPlayContent.maxItems }
     private static let title = "own.book"
 
     func templateApplicationScene(
@@ -46,7 +45,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     // MARK: - Root
 
     private func showRoot() {
-        guard let serverId = model.activeServerId, model.activeSource != nil else {
+        guard let serverId = model.activeServerId, !CarPlayContent.rootEntries(hasServer: model.activeSource != nil).isEmpty else {
             let item = CPListItem(text: String(localized: "Add a server on your iPhone"), detailText: nil)
             item.isEnabled = false
             interfaceController?.setRootTemplate(
@@ -54,19 +53,18 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
             ) { _, _ in }
             return
         }
-        let entries: [(String, String, () async -> Void)] = [
-            (String(localized: "Continue Listening"), "play.circle", { [weak self] in await self?.pushContinueListening(serverId) }),
-            (String(localized: "Downloads"), "arrow.down.circle", { [weak self] in self?.pushDownloads(serverId) }),
-            (String(localized: "Library"), "books.vertical", { [weak self] in await self?.pushBooks(BookQuery(), title: String(localized: "Library"), serverId: serverId) }),
-            (String(localized: "Series"), "square.stack.3d.up", { [weak self] in await self?.pushSeries(serverId) }),
-            (String(localized: "Authors"), "person.2", { [weak self] in await self?.pushAuthors(serverId) }),
-        ]
-        let items = entries.map { text, symbol, action -> CPListItem in
-            let item = CPListItem(text: text, detailText: nil, image: UIImage(systemName: symbol))
+        let items = CarPlayContent.rootEntries(hasServer: true).map { entry -> CPListItem in
+            let item = CPListItem(text: entry.title, detailText: nil, image: UIImage(systemName: entry.symbol))
             item.accessoryType = .disclosureIndicator
-            item.handler = { _, completion in
+            item.handler = { [weak self] _, completion in
                 Task {
-                    await action()
+                    switch entry {
+                    case .continueListening: await self?.pushContinueListening(serverId)
+                    case .downloads: self?.pushDownloads(serverId)
+                    case .library: await self?.pushBooks(BookQuery(), title: entry.title, serverId: serverId)
+                    case .series: await self?.pushSeries(serverId)
+                    case .authors: await self?.pushAuthors(serverId)
+                    }
                     completion()
                 }
             }
@@ -81,12 +79,9 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     private func pushContinueListening(_ serverId: UUID) async {
         var books: [Book] = []
         if model.isOffline {
-            books = model.offlineBooks(serverId: serverId).filter { book in
-                model.knownProgress(book, serverId: serverId).map { $0.positionMs > 0 && !$0.finished } ?? false
-            }
-        } else if let shelves = try? await model.activeSource?.shelves(),
-                  let shelf = shelves.first(where: { $0.id == "continue-listening" }), case .books(let found) = shelf.kind {
-            books = found
+            books = CarPlayContent.continueListening(offline: model.offlineBooks(serverId: serverId)) { self.model.knownProgress($0, serverId: serverId) }
+        } else if let shelves = try? await model.activeSource?.shelves() {
+            books = CarPlayContent.continueListening(fromShelves: shelves)
         }
         pushBookList(books, title: String(localized: "Continue Listening"), serverId: serverId, emptyText: String(localized: "Nothing started yet"))
     }
@@ -180,9 +175,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
 
     /// 1× → 1.25× → … → 2× → 0.75× → 1×, remembered for the book as the phone's speed sheet does.
     private func cycleRate() {
-        let rates: [Float] = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
-        let current = model.engine.rate
-        let next = rates.first { $0 > current + 0.01 } ?? rates[0]
+        let next = CarPlayContent.nextRate(after: model.engine.rate)
         model.engine.setRate(next)
         if let book = model.nowPlayingBook, let serverId = model.nowPlayingServerId {
             model.settings.remember(rate: next, for: BookID.make(serverId: serverId, bookId: book.id))
@@ -193,7 +186,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
         guard let book = model.engine.book else { return }
         let current = model.engine.currentChapter
         let items = book.timeline.chapters.enumerated().map { index, chapter -> CPListItem in
-            let item = CPListItem(text: chapter.title.isEmpty ? String(localized: "Chapter \(index + 1)") : chapter.title, detailText: ProgressText.clock(chapter.startMs))
+            let item = CPListItem(text: CarPlayContent.chapterTitle(chapter.title, index: index), detailText: ProgressText.clock(chapter.startMs))
             item.isPlaying = chapter == current
             item.handler = { [weak self] _, completion in
                 guard let self else { completion(); return }
@@ -216,9 +209,7 @@ final class CarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegat
     }
 
     private func push(title: String, items: [CPListItem], emptyText: String) {
-        let template = CPListTemplate(title: title, sections: [CPListSection(items: items)])
-        template.emptyViewTitleVariants = [emptyText]
-        interfaceController?.pushTemplate(template, animated: true) { _, _ in }
+        interfaceController?.pushTemplate(CarPlayContent.listTemplate(title: title, items: items, emptyText: emptyText), animated: true) { _, _ in }
     }
 
     /// The row appears at once; its cover fills in when loaded.

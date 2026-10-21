@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Tests
+
+- CarPlay unit tests (`UnitTests/CarPlayContentTests`, a new unit-test target hosted by the app):
+  the start list, Continue Listening online (the server's shelf) and offline (started, not
+  finished), the rate button's steps, untitled chapters and how a list is built. What CarPlay
+  shows moved out of the scene delegate into `CarPlayContent`, as in the podcasts app.
+
 ### Fixed
 
 - The speed shows as the listener reads it, everywhere (player, speed sheet, Settings):
