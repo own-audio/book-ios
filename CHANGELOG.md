@@ -8,6 +8,10 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- The Continue Listening widget was redrawn every minute while a book played: the check for "no
+  change" compared the snapshot's time too, so it never matched. Only the books are compared
+  now, and the widget follows play, pause and a change of book instead of the position ticks.
+  `WidgetSnapshotTests`.
 - Fewer progress reports and file writes while a book plays. Every 10 s the position is
   written to one file (the queue in `PendingProgress`) instead of five places and a request.
   The server gets it once a minute while playing, and at once on pause, seek, chapter change,

@@ -3,8 +3,8 @@ import Foundation
 import WidgetKit
 #endif
 
-/// What the Continue Listening widget shows: the app writes it into the App Group whenever the
-/// home screen loads or a position moves, the widget only reads. Covers travel as small JPEGs,
+/// What the Continue Listening widget shows: the app writes it into the App Group when the home
+/// screen loads, on play and pause and when the book changes; the widget only reads. Covers travel as small JPEGs,
 /// so the widget never needs the network or a sign-in.
 struct WidgetSnapshot: Codable, Equatable {
     struct Entry: Codable, Equatable, Identifiable {
@@ -33,9 +33,15 @@ struct WidgetSnapshot: Codable, Equatable {
         return try? JSONDecoder().decode(WidgetSnapshot.self, from: data)
     }
 
+    /// Whether this differs from what was saved in what the widget shows. `at` is left out: it
+    /// changes on every write, and counting it would redraw the widget each time.
+    func differs(from saved: WidgetSnapshot?) -> Bool {
+        saved?.entries != entries
+    }
+
     /// Writes the snapshot and asks the widgets to redraw; nothing happens when it is unchanged.
     func save() {
-        guard let file = Self.file, Self.load() != self, let data = try? JSONEncoder().encode(self) else { return }
+        guard let file = Self.file, differs(from: Self.load()), let data = try? JSONEncoder().encode(self) else { return }
         try? data.write(to: file, options: .atomic)
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()

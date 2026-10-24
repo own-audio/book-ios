@@ -147,6 +147,7 @@ final class AppModel {
         }
         reporter.onSignInRefused = { [weak self] serverId in self?.signInRefused.insert(serverId) }
         applyPlaybackSettings()
+        followWidgetTriggers()
         network.onChange = { [weak self] _ in
             Task { await self?.chooseAddresses(); await self?.flushPendingProgress() }
         }
@@ -1003,7 +1004,7 @@ final class AppModel {
         nowPlayingServerId = nil
         nowPlayingPlan = nil
         forgetLastBook()
-        Task { await refreshWidget(force: true) }
+        Task { await refreshWidget() }
     }
 
     func isNowPlaying(_ book: Book, serverId: UUID) -> Bool {
@@ -1039,7 +1040,7 @@ final class AppModel {
         } else if position.reason != .stop, let book = nowPlayingBook, nowPlayingServerId == serverId, book.id == bookId {
             LastBook(serverId: serverId, book: book, positionMs: position.positionMs, durationMs: engine.durationMs).save()
         }
-        Task { await flushPendingProgress(); await refreshWidget(force: closes); await cacheFollowingParts() }
+        Task { await flushPendingProgress(); await cacheFollowingParts() }
     }
 
     /// The app was killed between two checkpoints: positions still queued that are newer than
@@ -1070,7 +1071,6 @@ final class AppModel {
 
     /// Continue Listening as the home screen last saw it, for the widget.
     private var widgetBooks: [(book: Book, serverId: UUID)] = []
-    private var widgetRefreshedAt = Date.distantPast
 
     func noteShelves(_ shelves: [Shelf], serverId: UUID) {
         // No shelf means nothing under way: the widget says so rather than keeping an old list.
@@ -1079,14 +1079,25 @@ final class AppModel {
         } else {
             widgetBooks = []
         }
-        Task { await refreshWidget(force: true) }
+        Task { await refreshWidget() }
     }
 
-    /// Writes the widget's snapshot: the book playing first, then the shelf; at most once a
-    /// minute while a book plays, at once when something changed.
-    func refreshWidget(force: Bool = false) async {
-        guard force || Date().timeIntervalSince(widgetRefreshedAt) > 60 else { return }
-        widgetRefreshedAt = Date()
+    /// The widget follows play, pause and the book changing, not the position ticks: each
+    /// write that changes it costs a redraw from the system's budget.
+    private func followWidgetTriggers() {
+        withObservationTracking {
+            _ = engine.isPlaying
+            _ = engine.book?.id
+        } onChange: {
+            Task { @MainActor [weak self] in
+                await self?.refreshWidget()
+                self?.followWidgetTriggers()
+            }
+        }
+    }
+
+    /// Writes the widget's snapshot: the book playing first, then the shelf.
+    func refreshWidget() async {
         var list = widgetBooks
         if let now = nowPlayingBook, let serverId = nowPlayingServerId {
             list.removeAll { $0.book.id == now.id && $0.serverId == serverId }
