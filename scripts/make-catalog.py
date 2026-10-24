@@ -409,6 +409,7 @@ cs = {
  "Remove Server": "Odebrat server",
  "Remove %@?": "Odebrat %@?",
  "Its downloads leave this iPhone. Nothing changes on the server.": "Jeho stažené položky z tohoto iPhonu zmizí. Na serveru se nic nezmění.",
+ "This part of the book is not on this iPhone. It plays when there is a network again.": "Tato část knihy v tomto iPhonu není. Přehraje se, až bude zase k dispozici síť.",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {

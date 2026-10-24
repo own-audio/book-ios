@@ -60,12 +60,12 @@ struct BookTimelineTests {
     }
 }
 
-private func fixture(_ name: String) -> URL {
+func fixture(_ name: String) -> URL {
     Bundle.module.url(forResource: name, withExtension: nil, subdirectory: "Fixtures")!
 }
 
 /// A 6-second M4B with three 2-second chapters, then a 2-second M4A: an 8-second book.
-private func testBook(chapters: [SpokenChapter]? = nil, linksExpireAt: Date? = nil) -> SpokenBook {
+func testBook(chapters: [SpokenChapter]? = nil, linksExpireAt: Date? = nil) -> SpokenBook {
     let parts = [SpokenPart(id: "p1", url: fixture("test-book.m4b"), durationMs: 6000), SpokenPart(id: "p2", url: fixture("test-part-2s.m4a"), durationMs: 2000)]
     return SpokenBook(id: "book1", title: "Test Book", author: "Test Author", parts: parts, chapters: chapters ?? [
         SpokenChapter(title: "One", startMs: 0, endMs: 2000), SpokenChapter(title: "Two", startMs: 2000, endMs: 4000),
@@ -74,7 +74,7 @@ private func testBook(chapters: [SpokenChapter]? = nil, linksExpireAt: Date? = n
 }
 
 @MainActor
-private func wait(until condition: @MainActor () -> Bool, seconds: Double = 8, file: StaticString = #filePath, line: UInt = #line) async -> Bool {
+func wait(until condition: @MainActor () -> Bool, seconds: Double = 8, file: StaticString = #filePath, line: UInt = #line) async -> Bool {
     let deadline = Date().addingTimeInterval(seconds)
     while !condition() {
         if Date() > deadline { return false }

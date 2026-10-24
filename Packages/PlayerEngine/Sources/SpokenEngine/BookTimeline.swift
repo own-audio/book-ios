@@ -14,6 +14,19 @@ public struct SpokenPart: Sendable, Equatable, Identifiable {
         self.durationMs = durationMs
         self.isHLS = isHLS
     }
+
+    /// A part with no copy on the phone and no link yet (a partly downloaded book started with
+    /// no network): the engine asks the app's locator and refresher when its turn comes.
+    public static func unresolved(id: String, durationMs: Int64) -> SpokenPart {
+        var components = URLComponents()
+        components.scheme = unresolvedScheme
+        components.path = id
+        return SpokenPart(id: id, url: components.url ?? URL(string: "\(unresolvedScheme):part")!, durationMs: durationMs)
+    }
+
+    public static let unresolvedScheme = "spoken-unresolved"
+
+    public var isUnresolved: Bool { url.scheme == Self.unresolvedScheme }
 }
 
 public struct SpokenChapter: Sendable, Equatable, Identifiable {

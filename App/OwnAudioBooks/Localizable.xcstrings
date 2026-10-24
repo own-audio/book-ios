@@ -4094,6 +4094,16 @@
         }
       }
     },
+    "This part of the book is not on this iPhone. It plays when there is a network again.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tato část knihy v tomto iPhonu není. Přehraje se, až bude zase k dispozici síť."
+          }
+        }
+      }
+    },
     "This server does not offer that.": {
       "localizations": {
         "cs": {

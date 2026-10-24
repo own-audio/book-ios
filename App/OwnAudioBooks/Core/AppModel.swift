@@ -125,9 +125,14 @@ final class AppModel {
         }, session: Self.session, cacheDirectory: cachesDirectory)
         engine.partLocator = { [weak self] compositeId, partId in
             guard let self else { return nil }
-            let local = await self.listeningCache.existingLocalURL(trackId: Self.cacheKey(compositeId, partId))
-            if local != nil { await self.cacheFollowingParts() }
+            let local = await self.partLocator.locate(compositeId: compositeId, fileId: partId).localURL
+            // The chain goes on whether this part was on the phone or not.
+            await self.cacheFollowingParts()
             return local
+        }
+        downloads.onFileReady = { [weak self] compositeId, fileId, url in
+            guard let self, self.engine.book?.id == compositeId else { return }
+            self.engine.useLocalCopy(partId: fileId, at: url)
         }
         downloads.urlProvider = { [weak self] compositeId, fileId in
             guard let self, let (serverId, _) = BookID.parse(compositeId), let source = self.sources[serverId],
@@ -851,30 +856,29 @@ final class AppModel {
             let detail: Book
             let parts: [SpokenPart]
             var plan: PlayPlan?
+            let record = downloads.books[composite]
+            if record != nil { downloads.notePlayed(composite) }
             if let local = downloads.downloaded(composite) {
                 // From the phone: the files as downloaded, the record as it was.
                 detail = local.book
-                parts = (detail.files ?? []).compactMap { file in
-                    downloads.fileURL(compositeId: composite, fileId: file.id).map { SpokenPart(id: file.id, url: $0, durationMs: file.durationMs) }
-                }
-                downloads.notePlayed(composite)
+                parts = await partLocator.parts(compositeId: composite, files: (detail.files ?? []).map { ($0.id, $0.durationMs) }, streams: nil)
             } else if isOffline {
-                actionError = String(localized: "This book is not on this iPhone. Download it, or turn Offline Mode off.")
-                return
+                // What is on the phone plays — a partly downloaded book, files heard before; a
+                // file that is not waits for the network.
+                let known = record?.book ?? book
+                let files = (known.files ?? []).map { (id: $0.id, durationMs: $0.durationMs) }
+                let offlineParts = await partLocator.parts(compositeId: composite, files: files, streams: nil)
+                guard offlineParts.contains(where: { !$0.isUnresolved }) else {
+                    actionError = String(localized: "This book is not on this iPhone. Download it, or turn Offline Mode off.")
+                    return
+                }
+                detail = known
+                parts = offlineParts
             } else {
                 detail = book.files == nil ? try await source.book(id: book.id) : book
                 let made = try await source.playPlan(for: detail, maxBitrateKbps: maxBitrateKbps)
                 plan = made
-                var resolved: [SpokenPart] = []
-                for part in made.parts {
-                    // A part heard before plays from the listening cache rather than the network.
-                    if !part.isHLS, let local = await listeningCache.existingLocalURL(trackId: Self.cacheKey(composite, part.fileId)) {
-                        resolved.append(SpokenPart(id: part.fileId, url: local, durationMs: part.durationMs))
-                    } else {
-                        resolved.append(SpokenPart(id: part.fileId, url: part.url, durationMs: part.durationMs, isHLS: part.isHLS))
-                    }
-                }
-                parts = resolved
+                parts = await partLocator.parts(compositeId: composite, files: [], streams: made.parts)
             }
             let serverProgress = isOffline ? progress[composite] : try? await source.progress(bookId: book.id)
             if let serverProgress { progress[composite] = serverProgress }
@@ -943,6 +947,16 @@ final class AppModel {
 
     // MARK: - The listening cache
 
+    /// Downloads first, then the listening cache, then the stream; asked per file every time.
+    var partLocator: PartLocator {
+        let downloads = downloads
+        let cache = listeningCache!
+        return PartLocator(
+            downloaded: { compositeId, fileId in downloads.fileURL(compositeId: compositeId, fileId: fileId) },
+            cached: { compositeId, fileId in await cache.existingLocalURL(trackId: Self.cacheKey(compositeId, fileId)) }
+        )
+    }
+
     nonisolated static func cacheKey(_ compositeId: String, _ fileId: String) -> String { compositeId + "#" + fileId }
 
     nonisolated static func splitCacheKey(_ key: String) -> (compositeId: String, fileId: String)? {
@@ -988,6 +1002,7 @@ final class AppModel {
     }
 
     private func freshPartURL(serverId: UUID, bookId: String, partId: String) async throws -> URL {
+        if isOffline { throw PartNotOnPhone() }
         guard let source = sources[serverId], let book = nowPlayingBook, book.id == bookId else { throw SourceError.notFound }
         let part = try await source.partURL(for: book, fileId: partId, startMs: nil, maxBitrateKbps: maxBitrateKbps)
         return part.url

@@ -8,6 +8,17 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- A file on the phone is played from the phone, file by file, every time. One locator decides
+  for each file of a book — the download, then the listening cache, then the stream — at play,
+  on a seek into another file (which used to reuse the link from the start), and when the file
+  before ends. A partly downloaded book plays its downloaded files from disk, also online, and
+  with no network it plays what is on the phone: a file that is not there stops with "This
+  part of the book is not on this iPhone" instead of a player error. A download that finishes
+  while the book plays is used at once for a file still to come; the file playing now switches
+  at the next pause or seek, never mid-sentence. The listening cache fetches the next file
+  whether the one starting was on the phone or not (it used to stop at the first streamed one).
+  `PartLocatorTests`, `LocalCopyTests`.
+
 - Less work in the background and while nothing changes:
   - narration jobs are asked about 4 s after a change, then half as often each time nothing
     moved, up to once a minute; the polling stops when no running job's server is set up, and

@@ -48,6 +48,9 @@ final class DownloadManager: NSObject {
     var wifiOnly = false { didSet { if wifiOnly != oldValue { restart() } } }
     /// What the app asks for a file's URL; the session can't, it only knows ids.
     var urlProvider: ((_ compositeId: String, _ fileId: String) async throws -> URL)?
+    /// A file is on the phone now, so a book playing can switch to it without waiting for the
+    /// rest of the book.
+    var onFileReady: ((_ compositeId: String, _ fileId: String, _ url: URL) -> Void)?
     /// Called when the session reports that its background work is done, so the app can tell
     /// iOS (`handleEventsForBackgroundURLSession`).
     var backgroundCompletion: (() -> Void)?
@@ -270,6 +273,7 @@ final class DownloadManager: NSObject {
         books[compositeId] = book
         written[key] = nil
         saveIndex()
+        onFileReady?(compositeId, fileId, destination)
     }
 
     // MARK: - Index

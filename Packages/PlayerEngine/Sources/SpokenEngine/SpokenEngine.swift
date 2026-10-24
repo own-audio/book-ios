@@ -82,6 +82,13 @@ public final class SpokenEngine {
     private var listenedSinceTickMs: Int64 = 0
     private var lastTickAt = Date()
     private var refreshing = false
+    /// The link or file the current item was made from. When the timeline names another one
+    /// (a download finished meanwhile), the item is made again at the next pause or seek.
+    private(set) var loadedURL: URL?
+    /// Moving to another part waits for the app's locator; meanwhile the old item's time and
+    /// end mean nothing, and only the last of several quick moves is loaded.
+    private var switchingPart = false
+    private var loadGeneration = 0
     private var artwork: NowPlayingImage?
     private let log = Logger(subsystem: "audio.own.player", category: "spoken")
 
@@ -120,6 +127,8 @@ public final class SpokenEngine {
         pausedAt = nil
         stopsAtEndOfChapter = false
         self.positionMs = book.timeline.clamp(positionMs)
+        loadGeneration += 1
+        switchingPart = false
         artwork = nil
         if let provider = artworkProvider {
             let id = book.id
@@ -155,6 +164,10 @@ public final class SpokenEngine {
         isPlaying = false
         pausedAt = Date()
         flushListening(reason: .pause)
+        // A copy that arrived while this part played is used from here on, while it is quiet.
+        if let book, let index = currentIndex, !switchingPart, loadedURL != book.timeline.parts[index].url {
+            loadPart(at: positionMs, thenPlay: false)
+        }
         updateNowPlaying()
     }
 
@@ -172,6 +185,9 @@ public final class SpokenEngine {
         book = nil
         isBuffering = false
         currentIndex = nil
+        loadedURL = nil
+        switchingPart = false
+        loadGeneration += 1
         pausedAt = nil
         sleepTimer.cancel()
         stopsAtEndOfChapter = false
@@ -195,10 +211,10 @@ public final class SpokenEngine {
         let clamped = book.timeline.clamp(target)
         let chapterBefore = book.timeline.chapterIndex(at: positionMs)
         positionMs = clamped
-        if index == currentIndex, player.currentItem != nil {
+        if index == currentIndex, !switchingPart, player.currentItem != nil, loadedURL == book.timeline.parts[index].url {
             player.seek(to: CMTime(value: offset, timescale: 1000), toleranceBefore: .zero, toleranceAfter: .zero)
         } else {
-            loadPart(at: clamped, thenPlay: isPlaying)
+            switchPart(to: index)
         }
         if report { flushListening(reason: book.timeline.chapterIndex(at: clamped) != chapterBefore ? .chapter : .seek) }
         updateNowPlaying()
@@ -236,12 +252,46 @@ public final class SpokenEngine {
 
     // MARK: - Parts
 
+    /// A local copy of a part arrived (a download finished): the timeline names it from now on.
+    /// A part still to come plays from it; the part playing now switches at the next pause or
+    /// seek, never mid-sentence.
+    public func useLocalCopy(partId: String, at url: URL) {
+        guard let book, let index = book.timeline.index(ofPart: partId), book.timeline.parts[index].url != url else { return }
+        self.book = book.replacing(partId: partId, with: url)
+        if index == currentIndex, !isPlaying, !switchingPart, !refreshing {
+            loadPart(at: positionMs, thenPlay: false)
+        }
+    }
+
+    /// Another part (a seek, or the one before ended): the app's locator is asked for a copy on
+    /// the phone first. `currentIndex` moves at once, so a report made meanwhile names the
+    /// right part.
+    private func switchPart(to index: Int) {
+        loadGeneration += 1
+        let generation = loadGeneration
+        currentIndex = index
+        switchingPart = true
+        player.pause()
+        prepare(partIndex: index) { [weak self] in
+            guard let self, self.loadGeneration == generation, self.book != nil else { return }
+            self.switchingPart = false
+            self.loadPart(at: self.positionMs, thenPlay: self.isPlaying)
+        }
+    }
+
     private func loadPart(at bookPositionMs: Int64, thenPlay: Bool) {
         guard let book, let (index, offset) = book.timeline.locate(bookPositionMs) else { return }
         let part = book.timeline.parts[index]
         currentIndex = index
         isLoading = true
         errorMessage = nil
+        loadedURL = part.url
+        if part.isUnresolved {
+            // Nothing to play from yet: straight to the app for a link.
+            player.replaceCurrentItem(with: nil)
+            Task { await recover(from: "This part is not on this device.", thenPlay: thenPlay) }
+            return
+        }
         let asset = AVURLAsset(url: part.url)
         let item = AVPlayerItem(asset: asset)
         // Speech keeps its pitch at any speed; the other algorithms are for music.
@@ -274,7 +324,7 @@ public final class SpokenEngine {
             let status = item.status
             let message = item.error?.localizedDescription
             Task { @MainActor [weak self] in
-                guard let self, self.player.currentItem === item else { return }
+                guard let self, self.player.currentItem === item, !self.switchingPart else { return }
                 switch status {
                 case .readyToPlay: self.isLoading = false
                 case .failed: await self.recover(from: message ?? "The file could not be played.")
@@ -286,16 +336,14 @@ public final class SpokenEngine {
 
     /// The part played to its end: the next one, or the book is finished.
     private func partEnded() {
-        guard let book, let index = currentIndex else { return }
+        guard let book, let index = currentIndex, !switchingPart else { return }
         if index + 1 < book.timeline.parts.count {
             positionMs = book.timeline.starts[index + 1]
             if sleepTimer.consumeEndOfItem() {
                 // "End of item" for a book is the book, not the file; the timer stays armed.
                 sleepTimer.startUntilEndOfItem()
             }
-            prepare(partIndex: index + 1) { [weak self] in
-                self?.loadPart(at: self?.positionMs ?? 0, thenPlay: self?.isPlaying ?? false)
-            }
+            switchPart(to: index + 1)
         } else {
             positionMs = book.timeline.durationMs
             isPlaying = false
@@ -309,8 +357,8 @@ public final class SpokenEngine {
     }
 
     /// A link that failed: one fresh link from the app, the same position again; otherwise the
-    /// error is shown.
-    private func recover(from message: String) async {
+    /// error is shown — the app's own words when it gave a reason (no network, say).
+    private func recover(from message: String, thenPlay: Bool? = nil) async {
         guard let book, let index = currentIndex, let partRefresher, !refreshing else {
             isLoading = false
             isPlaying = false
@@ -325,12 +373,12 @@ public final class SpokenEngine {
         do {
             let url = try await partRefresher(book.id, part.id)
             guard self.book?.id == book.id else { return }
-            self.book = book.replacing(partId: part.id, with: url)
-            loadPart(at: positionMs, thenPlay: isPlaying)
+            self.book = self.book?.replacing(partId: part.id, with: url)
+            loadPart(at: positionMs, thenPlay: thenPlay ?? isPlaying)
         } catch {
             isLoading = false
             isPlaying = false
-            errorMessage = message
+            errorMessage = (error as? LocalizedError)?.errorDescription ?? message
             log.error("part failed and no fresh link came: \(message, privacy: .public)")
             updateNowPlaying()
         }
@@ -368,7 +416,7 @@ public final class SpokenEngine {
     }
 
     private func timeAdvanced(to time: CMTime) {
-        guard let book, let index = currentIndex, time.isNumeric, isPlaying else { return }
+        guard let book, let index = currentIndex, time.isNumeric, isPlaying, !switchingPart else { return }
         let offset = Int64((time.seconds * 1000).rounded())
         let before = positionMs
         positionMs = book.timeline.position(partIndex: index, offsetMs: offset)
