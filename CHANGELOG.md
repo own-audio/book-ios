@@ -8,6 +8,11 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- Network changes are settled before the app acts on them: three seconds after the last path
+  update, and a change that only reorders the same interfaces is none. In the background (a
+  car handing over between cells) only queued positions are sent; the addresses are raced again
+  when the app comes to the front. The remembered address per network is keyed by the sorted
+  interfaces now, so each network is raced once more after the update. `NetworkChangeTests`.
 - The Continue Listening widget was redrawn every minute while a book played: the check for "no
   change" compared the snapshot's time too, so it never matched. Only the books are compared
   now, and the widget follows play, pause and a change of book instead of the position ticks.

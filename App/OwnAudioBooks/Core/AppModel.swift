@@ -73,6 +73,9 @@ final class AppModel {
     private var loadTask: Task<Void, Never>?
     private var liveUpdates: Task<Void, Never>?
     private var isInForeground = true
+    @ObservationIgnored private let networkDebounce = Debouncer(delay: .seconds(3))
+    /// A network change came while in the background; the addresses are chosen on return.
+    private var addressesStale = false
 
     /// The hosted service's edge refuses requests with no User-Agent.
     static let session: URLSession = {
@@ -149,7 +152,7 @@ final class AppModel {
         applyPlaybackSettings()
         followWidgetTriggers()
         network.onChange = { [weak self] _ in
-            Task { await self?.chooseAddresses(); await self?.flushPendingProgress() }
+            self?.networkDebounce.schedule { [weak self] in await self?.networkSettled() }
         }
     }
 
@@ -738,6 +741,14 @@ final class AppModel {
         } catch {}
     }
 
+    /// A network change, three seconds after the last path update (`NetworkChangeWork`).
+    private func networkSettled() async {
+        offlineSwitch.isOn = isOffline
+        let work = NetworkChangeWork.after(inForeground: isInForeground)
+        if work.chooseAddresses { await chooseAddresses() } else { addressesStale = true }
+        if work.flushProgress { await flushPendingProgress() }
+    }
+
     func sceneBecame(active: Bool) {
         guard isInForeground != active else { return }
         isInForeground = active
@@ -745,6 +756,10 @@ final class AppModel {
         if active {
             narrations.startPolling()
             Task {
+                if addressesStale {
+                    addressesStale = false
+                    await chooseAddresses()
+                }
                 await syncCatalogues()
                 await flushPendingProgress()
                 await refreshProgress()

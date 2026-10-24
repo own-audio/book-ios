@@ -24,9 +24,7 @@ final class NetworkMonitor {
             let connected = path.status == .satisfied
             let expensive = path.isExpensive
             let constrained = path.isConstrained
-            // Interface names carry the VPN (utun…) as well as Wi-Fi and cellular.
-            let signature = ([connected ? "up" : "down"] + path.availableInterfaces.map { "\($0.type)-\($0.name)" })
-                .joined(separator: ",")
+            let signature = Self.signature(connected: connected, interfaces: path.availableInterfaces.map { "\($0.type)-\($0.name)" })
             Task { @MainActor in
                 guard let self, self.signature != signature || self.isExpensive != expensive || self.isConstrained != constrained else { return }
                 self.isConnected = connected
@@ -37,5 +35,45 @@ final class NetworkMonitor {
             }
         }
         monitor.start(queue: DispatchQueue(label: "NetworkMonitor"))
+    }
+
+    /// Interface names carry the VPN (utun…) as well as Wi-Fi and cellular. Sorted: iOS reorders
+    /// the same interfaces as it prefers one or the other, which is no new network.
+    nonisolated static func signature(connected: Bool, interfaces: [String]) -> String {
+        ([connected ? "up" : "down"] + interfaces.sorted()).joined(separator: ",")
+    }
+}
+
+/// What a settled network change sets off. In front: the best address to each server is chosen
+/// again, then queued positions are sent. In the background (a car's handovers between cells
+/// while a book plays), only the positions: racing every address can wait until the app is
+/// opened.
+struct NetworkChangeWork: Equatable {
+    var chooseAddresses: Bool
+    var flushProgress: Bool
+
+    static func after(inForeground: Bool) -> NetworkChangeWork {
+        NetworkChangeWork(chooseAddresses: inForeground, flushProgress: true)
+    }
+}
+
+/// Runs the last of a burst of calls once things have been quiet for `delay`: a network change
+/// often comes as several path updates within a second or two.
+@MainActor
+final class Debouncer {
+    private let delay: Duration
+    private var task: Task<Void, Never>?
+
+    init(delay: Duration) {
+        self.delay = delay
+    }
+
+    func schedule(_ work: @escaping @MainActor () async -> Void) {
+        task?.cancel()
+        task = Task { [delay] in
+            try? await Task.sleep(for: delay)
+            guard !Task.isCancelled else { return }
+            await work()
+        }
     }
 }
