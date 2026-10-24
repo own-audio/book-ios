@@ -27,6 +27,10 @@ public struct SpokenBook: Sendable, Equatable, Identifiable {
     }
 }
 
+/// An error of the app's that means there is no network (offline mode, no signal), so the
+/// engine waits for one instead of showing a failure.
+public protocol NetworkUnavailable: Error {}
+
 /// Chapter marks read from the files themselves (an M4B's chapter track, ID3 chapters), for
 /// servers that know none. Works on a download and, over range requests, on a stream.
 public enum EmbeddedChapters {

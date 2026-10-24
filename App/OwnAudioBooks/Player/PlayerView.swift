@@ -143,6 +143,13 @@ struct PlayerView: View {
                 .font(.caption.monospacedDigit())
                 .foregroundStyle(Theme.Colors.muted)
             }
+            if let saved = engine.savedAheadMs {
+                // How long the book plays on with no signal: worth knowing before the metro.
+                Label("\(saved / 60_000) min saved", systemImage: "arrow.down.circle")
+                    .font(.caption2.monospacedDigit())
+                    .foregroundStyle(Theme.Colors.muted)
+                    .accessibilityIdentifier("player.savedAhead")
+            }
         }
         .padding(.horizontal, Theme.Spacing.xl)
     }

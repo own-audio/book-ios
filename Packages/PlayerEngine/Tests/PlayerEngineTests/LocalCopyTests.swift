@@ -51,8 +51,9 @@ struct LocalCopyTests {
     @Test("a download that finishes while an earlier part plays is used when its turn comes")
     func downloadFinishesForLaterPart() async {
         let engine = engine()
-        engine.load(halfStreamedBook(), at: 1500, autoplay: true)
-        #expect(await wait(until: { engine.isPlaying && engine.positionMs > 1550 }))
+        engine.load(halfStreamedBook(), at: 500, autoplay: true)
+        #expect(await wait(until: { engine.isPlaying && engine.positionMs > 550 }))
+        #expect(engine.positionMs < 2000, "still in the first part")
         engine.useLocalCopy(partId: "p2", at: fixture("test-book.m4b"))
         #expect(engine.book?.timeline.parts[1].url.isFileURL == true)
         #expect(await wait(until: { engine.positionMs > 2400 }, seconds: 10), "the second part plays from the new copy")

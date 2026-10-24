@@ -35,6 +35,7 @@ final class PlaybackSettings {
         wholeLibraryOffline = defaults.bool(forKey: "downloads.wholeLibrary")
         wifiOnlyDownloads = defaults.object(forKey: "downloads.wifiOnly") as? Bool ?? true
         storageCapBytes = defaults.object(forKey: "downloads.capBytes") as? Int64
+        lookAheadMinutes = defaults.object(forKey: "playback.lookAheadMinutes") as? Int ?? 10
     }
 
     /// Show and play only what is on the phone, and ask nothing of the servers.
@@ -52,6 +53,12 @@ final class PlaybackSettings {
     var defaultRate: Float { didSet { defaults.set(defaultRate, forKey: "playback.defaultRate") } }
     var smartRewind: Bool { didSet { defaults.set(smartRewind, forKey: "playback.smartRewind") } }
     var mobileData: MobileData { didSet { defaults.set(mobileData.rawValue, forKey: "playback.mobileData") } }
+    /// While streaming, how many minutes ahead of the playhead are kept on the phone, on any
+    /// network: a tunnel or a gap in the signal shorter than that goes unheard.
+    var lookAheadMinutes: Int { didSet { defaults.set(lookAheadMinutes, forKey: "playback.lookAheadMinutes") } }
+    static let lookAheadChoices = [5, 10, 15]
+    /// With Low Data Mode on, the window is the smallest choice whatever was picked.
+    static let constrainedLookAheadMinutes = 5
     /// Per book (composite id): the speed it was last played at.
     private(set) var bookRates: [String: Float]
 

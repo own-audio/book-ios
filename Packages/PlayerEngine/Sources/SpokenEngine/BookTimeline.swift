@@ -7,12 +7,19 @@ public struct SpokenPart: Sendable, Equatable, Identifiable {
     public let durationMs: Int64
     /// An HLS playlist rather than a file (a server transcoding on the fly).
     public let isHLS: Bool
+    /// The link is the original file and answers Range, so it can stream through the
+    /// look-ahead window (`StreamWindow`); a transcode made as it goes can't.
+    public let streamsByRange: Bool
+    /// The server's content type for the file, for when its first bytes don't tell.
+    public let contentType: String?
 
-    public init(id: String, url: URL, durationMs: Int64, isHLS: Bool = false) {
+    public init(id: String, url: URL, durationMs: Int64, isHLS: Bool = false, streamsByRange: Bool = false, contentType: String? = nil) {
         self.id = id
         self.url = url
         self.durationMs = durationMs
         self.isHLS = isHLS
+        self.streamsByRange = streamsByRange && !isHLS
+        self.contentType = contentType
     }
 
     /// A part with no copy on the phone and no link yet (a partly downloaded book started with

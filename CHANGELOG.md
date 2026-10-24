@@ -6,6 +6,26 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The next minutes of a streamed book are kept on the phone, so a tunnel or a car with no
+  signal goes unheard. A streamed file plays through `StreamWindow`, an
+  `AVAssetResourceLoaderDelegate` that serves the player from a sparse file per part and
+  fetches what is missing with HTTP Range; a prefetcher keeps the playhead plus the chosen
+  minutes on disk (estimated from size and duration, with 20 % margin), in a burst of 1 MB
+  chunks once the stretch ahead has shrunk by a quarter, then the radio is idle; near the end
+  of a file it fetches the start of the next. Beyond the window the player waits for the
+  playhead, so a long file is not fetched whole on mobile data. Which bytes are on disk is kept
+  beside them, so a relaunch or a later replay uses them. A link the server refuses (401/403)
+  is renewed once and shared by the fetches waiting for it. The player is told the type from
+  the file's first bytes, else the server's content type (M4B/M4A, MP3, FLAC, WAV, AIFF); a
+  server that ignores Range, or a type the player can't be told, streams as before. The window
+  shares the listening cache's 1 GB cap (its stretches go first, the book playing keeps its
+  own), and works on any network, also with Wi-Fi-only downloads. Settings → Streaming → Keep
+  Ahead: 5, 10 or 15 minutes, 10 by default; 5 with Low Data Mode. Saver streams (a transcode
+  or HLS made as it plays) are not kept. The player shows how much is saved ahead ("8 min
+  saved"). `StreamWindowTests`, `PartLocatorTests`.
+
 ### Changed
 
 - A file on the phone is played from the phone, file by file, every time. One locator decides

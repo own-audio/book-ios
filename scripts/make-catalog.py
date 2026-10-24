@@ -410,6 +410,8 @@ cs = {
  "Remove %@?": "Odebrat %@?",
  "Its downloads leave this iPhone. Nothing changes on the server.": "Jeho stažené položky z tohoto iPhonu zmizí. Na serveru se nic nezmění.",
  "This part of the book is not on this iPhone. It plays when there is a network again.": "Tato část knihy v tomto iPhonu není. Přehraje se, až bude zase k dispozici síť.",
+ "Keep Ahead": "Uchovávat dopředu",
+ "While a book streams, its next minutes are kept on this iPhone, on mobile data too, so a tunnel or a gap in the signal goes unheard; with Low Data Mode, 5 minutes. Saver streams are not kept.": "Během streamování se v tomto iPhonu uchovávají další minuty knihy, i přes mobilní data, takže tunel ani výpadek signálu nebude slyšet; v režimu nízkých dat 5 minut. Úsporné streamy se neuchovávají.",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {
@@ -419,6 +421,7 @@ plurals = {
  "%lld days": {"en": {"one": "%lld day", "other": "%lld days"}, "cs": {"one": "%lld den", "few": "%lld dny", "many": "%lld dne", "other": "%lld dní"}},
  "Retry %lld Failed": {"en": {"one": "Retry %lld Failed", "other": "Retry %lld Failed"}, "cs": {"one": "Zkusit znovu %lld neúspěšné", "few": "Zkusit znovu %lld neúspěšná", "many": "Zkusit znovu %lld neúspěšného", "other": "Zkusit znovu %lld neúspěšných"}},
  "%lld books": {"en": {"one": "%lld book", "other": "%lld books"}, "cs": {"one": "%lld kniha", "few": "%lld knihy", "many": "%lld knihy", "other": "%lld knih"}},
+ "%lld min saved": {"en": {"one": "%lld min saved", "other": "%lld min saved"}, "cs": {"one": "uloženo %lld min", "few": "uloženo %lld min", "many": "uloženo %lld min", "other": "uloženo %lld min"}},
  "%lld min": {"en": {"one": "%lld min", "other": "%lld min"}, "cs": {"one": "%lld min", "few": "%lld min", "many": "%lld min", "other": "%lld min"}},
  "File %lld": {"en": {"one": "File %lld", "other": "File %lld"}, "cs": {"one": "Soubor %lld", "few": "Soubor %lld", "many": "Soubor %lld", "other": "Soubor %lld"}},
  "Skip forward %lld seconds": {"en": {"one": "Skip forward %lld second", "other": "Skip forward %lld seconds"}, "cs": {"one": "Přeskočit vpřed o %lld sekundu", "few": "Přeskočit vpřed o %lld sekundy", "many": "Přeskočit vpřed o %lld sekundy", "other": "Přeskočit vpřed o %lld sekund"}},

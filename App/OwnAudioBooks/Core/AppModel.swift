@@ -69,6 +69,12 @@ final class AppModel {
     static let listeningCacheCapBytes: Int64 = 1 << 30
     nonisolated static let cacheLog = Logger(subsystem: "audio.own.bookplayer", category: "listeningCache")
     private var listeningCacheTask: Task<Void, Never>?
+    /// The next minutes of a streamed book, on disk (`StreamWindow`); shares the listening
+    /// cache's cap.
+    let streamWindow = StreamWindow(
+        directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("listening-window", isDirectory: true),
+        session: AppModel.session
+    )
     let narrations = NarrationManager()
     private var loadTask: Task<Void, Never>?
     private var liveUpdates: Task<Void, Never>?
@@ -123,6 +129,7 @@ final class AppModel {
             let book = await self.nowPlayingBook?.id == bookId ? await self.nowPlayingBook! : try await source.book(id: bookId)
             return try await source.partURL(for: book, fileId: fileId, startMs: nil, maxBitrateKbps: nil).url
         }, session: Self.session, cacheDirectory: cachesDirectory)
+        engine.window = streamWindow
         engine.partLocator = { [weak self] compositeId, partId in
             guard let self else { return nil }
             let local = await self.partLocator.locate(compositeId: compositeId, fileId: partId).localURL
@@ -752,6 +759,8 @@ final class AppModel {
     /// A network change, three seconds after the last path update (`NetworkChangeWork`).
     private func networkSettled() async {
         offlineSwitch.isOn = isOffline
+        applyLookAhead()
+        if network.isConnected { streamWindow.networkReturned() }
         let work = NetworkChangeWork.after(inForeground: isInForeground)
         if work.chooseAddresses { await chooseAddresses() } else { addressesStale = true }
         if work.flushProgress { await flushPendingProgress() }
@@ -878,7 +887,7 @@ final class AppModel {
                 detail = book.files == nil ? try await source.book(id: book.id) : book
                 let made = try await source.playPlan(for: detail, maxBitrateKbps: maxBitrateKbps)
                 plan = made
-                parts = await partLocator.parts(compositeId: composite, files: [], streams: made.parts)
+                parts = await partLocator.parts(compositeId: composite, files: [], streams: made.parts, original: maxBitrateKbps == nil)
             }
             let serverProgress = isOffline ? progress[composite] : try? await source.progress(bookId: book.id)
             if let serverProgress { progress[composite] = serverProgress }
@@ -938,6 +947,13 @@ final class AppModel {
         engine.skipForwardSecs = settings.skipForwardSecs
         engine.skipBackwardSecs = settings.skipBackwardSecs
         engine.smartRewind = SmartRewind(isEnabled: settings.smartRewind)
+        applyLookAhead()
+    }
+
+    /// The window is the listener's choice, and the smallest with Low Data Mode on.
+    private func applyLookAhead() {
+        let minutes = network.isConstrained ? PlaybackSettings.constrainedLookAheadMinutes : settings.lookAheadMinutes
+        streamWindow.lookAheadSecs = Double(minutes) * 60
     }
 
     func setRate(_ rate: Float) {
@@ -971,14 +987,29 @@ final class AppModel {
     private func scheduleListeningCache(for book: SpokenBook) {
         listeningCacheTask?.cancel()
         listeningCacheTask = nil
+        Task { await enforceListeningCap(protecting: book) }
         guard !network.isExpensive, !network.isConstrained else { return }
-        Task { await listeningCache.enforce(capBytes: Self.listeningCacheCapBytes) }
         Task { await cacheFollowingParts() }
         listeningCacheTask = Task { [weak self] in
             try? await Task.sleep(for: .seconds(45))
             guard let self, !Task.isCancelled, self.engine.book?.id == book.id else { return }
             await self.cacheCurrentPart()
         }
+    }
+
+    /// The listening cache and the look-ahead window share one cap. The window's stretches go
+    /// first (a few minutes each, quick to fetch again), then the oldest whole files; the book
+    /// playing keeps its window.
+    private func enforceListeningCap(protecting book: SpokenBook) async {
+        let cap = Self.listeningCacheCapBytes
+        let cacheBytes = await listeningCache.totalBytes()
+        let window = streamWindow
+        let keys = Set(book.timeline.parts.map { book.id + "#" + $0.id })
+        let windowBytes = await Task.detached(priority: .utility) {
+            window.enforce(capBytes: max(0, cap - cacheBytes), protecting: keys)
+            return window.totalBytes()
+        }.value
+        await listeningCache.enforce(capBytes: max(0, cap - windowBytes))
     }
 
     /// The part after the one playing, if it streams and isn't cached yet.
@@ -1004,7 +1035,9 @@ final class AppModel {
     private func freshPartURL(serverId: UUID, bookId: String, partId: String) async throws -> URL {
         if isOffline { throw PartNotOnPhone() }
         guard let source = sources[serverId], let book = nowPlayingBook, book.id == bookId else { throw SourceError.notFound }
-        let part = try await source.partURL(for: book, fileId: partId, startMs: nil, maxBitrateKbps: maxBitrateKbps)
+        // A part streaming through the look-ahead window stays the original file.
+        let windowed = engine.book?.timeline.parts.first { $0.id == partId }?.streamsByRange ?? false
+        let part = try await source.partURL(for: book, fileId: partId, startMs: nil, maxBitrateKbps: windowed ? nil : maxBitrateKbps)
         return part.url
     }
 

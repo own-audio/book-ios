@@ -34,16 +34,21 @@ struct PartLocator {
     /// The engine's parts for a book: each file from the phone where it is there, else from
     /// `streams` (the play plan's links). With no streams (no network), a file not on the phone
     /// is left unresolved; the engine asks for it when its turn comes. An HLS part is the
-    /// server's transcode of the whole book, never a copy on the phone.
+    /// server's transcode of the whole book, never a copy on the phone. `original`: the streams
+    /// are the original files (no data saver), which answer Range and can stream through the
+    /// look-ahead window.
     @MainActor
-    func parts(compositeId: String, files: [(id: String, durationMs: Int64)], streams: [PlayPlan.Part]?) async -> [SpokenPart] {
+    func parts(compositeId: String, files: [(id: String, durationMs: Int64)], streams: [PlayPlan.Part]?, original: Bool = false) async -> [SpokenPart] {
         if let streams {
             var out: [SpokenPart] = []
             for part in streams {
                 if !part.isHLS, let local = await locate(compositeId: compositeId, fileId: part.fileId).localURL {
                     out.append(SpokenPart(id: part.fileId, url: local, durationMs: part.durationMs))
                 } else {
-                    out.append(SpokenPart(id: part.fileId, url: part.url, durationMs: part.durationMs, isHLS: part.isHLS))
+                    out.append(SpokenPart(
+                        id: part.fileId, url: part.url, durationMs: part.durationMs, isHLS: part.isHLS,
+                        streamsByRange: original && !part.isHLS, contentType: part.contentType
+                    ))
                 }
             }
             return out
@@ -61,7 +66,7 @@ struct PartLocator {
 }
 
 /// The engine asked for a file that is not on the phone while there is no network.
-struct PartNotOnPhone: LocalizedError {
+struct PartNotOnPhone: LocalizedError, NetworkUnavailable {
     var errorDescription: String? {
         String(localized: "This part of the book is not on this iPhone. It plays when there is a network again.")
     }

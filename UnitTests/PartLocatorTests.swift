@@ -45,6 +45,32 @@ struct PartLocatorTests {
         #expect(parts[0].isHLS && !parts[0].url.isFileURL)
     }
 
+    @Test("original files stream through the look-ahead window; a saver stream or HLS does not")
+    func windowedParts() async {
+        let locator = locator(downloaded: [], cached: [])
+        let original = await locator.parts(compositeId: book, files: [], streams: [stream("f1"), stream("hls", hls: true)], original: true)
+        #expect(original[0].streamsByRange && original[0].contentType == "audio/mp4")
+        #expect(!original[1].streamsByRange, "HLS is made as it plays")
+        let saver = await locator.parts(compositeId: book, files: [], streams: [stream("f1")], original: false)
+        #expect(!saver[0].streamsByRange, "a transcode doesn't answer Range")
+    }
+
+    @Test("the window is 10 minutes unless chosen otherwise, and the choice is kept")
+    func lookAheadSetting() throws {
+        let defaults = try #require(UserDefaults(suiteName: "lookahead-\(UUID().uuidString)"))
+        #expect(PlaybackSettings(defaults: defaults).lookAheadMinutes == 10)
+        PlaybackSettings(defaults: defaults).lookAheadMinutes = 15
+        #expect(PlaybackSettings(defaults: defaults).lookAheadMinutes == 15)
+        #expect(PlaybackSettings.lookAheadChoices == [5, 10, 15] && PlaybackSettings.constrainedLookAheadMinutes == 5)
+        let model = AppModel.shared
+        let before = model.settings.lookAheadMinutes
+        defer { model.settings.lookAheadMinutes = before; model.applyPlaybackSettings() }
+        model.settings.lookAheadMinutes = 5
+        model.applyPlaybackSettings()
+        #expect(model.streamWindow.lookAheadSecs == 300)
+        #expect(model.engine.window === model.streamWindow)
+    }
+
     @Test("offline, a partly downloaded book has its files on the phone and the others unresolved")
     func offline() async {
         let parts = await locator(downloaded: ["f1"], cached: ["f3"]).parts(

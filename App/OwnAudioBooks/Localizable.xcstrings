@@ -493,6 +493,58 @@
         }
       }
     },
+    "%lld min saved": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min saved"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld min saved"
+                }
+              }
+            }
+          }
+        },
+        "cs": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "uloženo %lld min"
+                }
+              },
+              "few": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "uloženo %lld min"
+                }
+              },
+              "many": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "uloženo %lld min"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "uloženo %lld min"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "%lld s": {
       "localizations": {
         "cs": {
@@ -1946,6 +1998,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Připojit se k jiné rodině…"
+          }
+        }
+      }
+    },
+    "Keep Ahead": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uchovávat dopředu"
           }
         }
       }
@@ -4340,6 +4402,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Co do knihovny přidáte, je vaše. Knihu sdílejte z její nabídky; pak si ji může poslechnout každý v rodině, každý od své vlastní pozice."
+          }
+        }
+      }
+    },
+    "While a book streams, its next minutes are kept on this iPhone, on mobile data too, so a tunnel or a gap in the signal goes unheard; with Low Data Mode, 5 minutes. Saver streams are not kept.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Během streamování se v tomto iPhonu uchovávají další minuty knihy, i přes mobilní data, takže tunel ani výpadek signálu nebude slyšet; v režimu nízkých dat 5 minut. Úsporné streamy se neuchovávají."
           }
         }
       }
