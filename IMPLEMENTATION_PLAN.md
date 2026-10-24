@@ -310,10 +310,10 @@ client's mojibake repair, applied to display only).
   (`IPadTests` on the iPad Air simulator). Continue Listening widget — done 2026-10-16: the
   `OwnAudioBooksWidgets` extension reads a snapshot the app writes into the App Group
   `group.audio.own.bookplayer` (`Shared/WidgetSnapshot.swift`), small and medium, a tap opens
-  `ownbook://play/<id>`. Live Activity — done 2026-10-16: `LiveActivityController` follows the
-  engine (started with the book, moved at most every 15 s, ended with it), the view and the
-  `PlaybackControlIntent` buttons in the widget extension (`Shared/BookActivity.swift`). CarPlay,
-  the widget and the activity are each to be seen on a device before B10 is ticked.
+  `ownbook://play/<id>`. Live Activity — built 2026-10-16, removed 2026-10-24: it was a
+  second player on the lock screen under the system's Now Playing controls, and its updates
+  every 15 s cost battery; the lock screen, Dynamic Island and CarPlay keep the system's Now
+  Playing. CarPlay and the widget are each to be seen on a device before B10 is ticked.
 - [ ] **B11: Polish, accessibility, tests.** In progress 2026-10-16: every icon button carries
   a label and the scrubber reads "12:04 of 49:23" (audited); Reduce Motion and 44 pt targets
   are in `Theme`; `MisuseTests` (wrong sign-ins, hammered player, stop while loading, restless

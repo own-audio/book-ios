@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Removed
+
+- The Live Activity. The lock screen showed two players, the system's Now Playing controls and
+  the app's own activity below them; only the system's stays, also in the Dynamic Island and on
+  CarPlay. Its updates every 15 s while playing and its cover fetches go with it. The
+  Continue Listening widget, the `ownbook://play/` links and the Siri phrases are unchanged.
+
 ### Tests
 
 - CarPlay unit tests (`UnitTests/CarPlayContentTests`, a new unit-test target hosted by the app):

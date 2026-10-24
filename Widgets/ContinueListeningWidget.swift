@@ -5,7 +5,6 @@ import WidgetKit
 struct OwnAudioBooksWidgets: WidgetBundle {
     var body: some Widget {
         ContinueListeningWidget()
-        BookLiveActivity()
     }
 }
 

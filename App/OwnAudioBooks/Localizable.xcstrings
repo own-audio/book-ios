@@ -613,16 +613,6 @@
         }
       }
     },
-    "Action": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akce"
-          }
-        }
-      }
-    },
     "Add": {
       "localizations": {
         "cs": {
@@ -1252,16 +1242,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pokračovat přes Google"
-          }
-        }
-      }
-    },
-    "Control Playback": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ovládat přehrávání"
           }
         }
       }
@@ -2826,16 +2806,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přehrát knihu"
-          }
-        }
-      }
-    },
-    "Play or Pause": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Přehrát nebo pozastavit"
           }
         }
       }

@@ -26,7 +26,6 @@ targets:
         UILaunchScreen: {}
         UIBackgroundModes: [audio, fetch]
         BGTaskSchedulerPermittedIdentifiers: [audio.own.bookplayer.refresh]
-        NSSupportsLiveActivities: true
         # Only standard HTTPS, which is exempt; saves answering the export question per build.
         ITSAppUsesNonExemptEncryption: false
         UIApplicationSceneManifest:
