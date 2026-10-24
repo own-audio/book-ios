@@ -409,7 +409,8 @@ cs = {
  "Remove Server": "Odebrat server",
  "Remove %@?": "Odebrat %@?",
  "Its downloads leave this iPhone. Nothing changes on the server.": "Jeho stažené položky z tohoto iPhonu zmizí. Na serveru se nic nezmění.",
- "This part of the book is not on this iPhone. It plays when there is a network again.": "Tato část knihy v tomto iPhonu není. Přehraje se, až bude zase k dispozici síť.",
+ "This part of the book is not on this iPhone. Offline, only what is downloaded plays.": "Tato část knihy v tomto iPhonu není. Offline se přehrává jen to, co je stažené.",
+ "No signal — waiting": "Bez signálu — čekám",
  "Keep Ahead": "Uchovávat dopředu",
  "While a book streams, its next minutes are kept on this iPhone, on mobile data too, so a tunnel or a gap in the signal goes unheard; with Low Data Mode, 5 minutes. Saver streams are not kept.": "Během streamování se v tomto iPhonu uchovávají další minuty knihy, i přes mobilní data, takže tunel ani výpadek signálu nebude slyšet; v režimu nízkých dat 5 minut. Úsporné streamy se neuchovávají.",
 }

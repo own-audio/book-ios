@@ -143,7 +143,13 @@ struct PlayerView: View {
                 .font(.caption.monospacedDigit())
                 .foregroundStyle(Theme.Colors.muted)
             }
-            if let saved = engine.savedAheadMs {
+            if engine.isWaitingForSignal {
+                // Not an error: it plays on by itself when the signal returns.
+                Label("No signal — waiting", systemImage: "wifi.slash")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Theme.Colors.foreground)
+                    .accessibilityIdentifier("player.noSignal")
+            } else if let saved = engine.savedAheadMs {
                 // How long the book plays on with no signal: worth knowing before the metro.
                 Label("\(saved / 60_000) min saved", systemImage: "arrow.down.circle")
                     .font(.caption2.monospacedDigit())

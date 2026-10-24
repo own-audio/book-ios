@@ -65,9 +65,16 @@ struct PartLocator {
     }
 }
 
-/// The engine asked for a file that is not on the phone while there is no network.
-struct PartNotOnPhone: LocalizedError, NetworkUnavailable {
+/// The engine asked for a file that is not on the phone in Offline Mode (the listener's choice):
+/// a message, since no signal is coming to end it.
+struct PartNotOnPhone: LocalizedError {
     var errorDescription: String? {
-        String(localized: "This part of the book is not on this iPhone. It plays when there is a network again.")
+        String(localized: "This part of the book is not on this iPhone. Offline, only what is downloaded plays.")
     }
+}
+
+/// The engine asked for a link while there is no network: it waits for one ("No signal —
+/// waiting") and tries again when the network returns.
+struct NoSignal: LocalizedError, NetworkUnavailable {
+    var errorDescription: String? { String(localized: "No signal — waiting") }
 }

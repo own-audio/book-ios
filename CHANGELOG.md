@@ -25,6 +25,26 @@ All notable changes to this project are documented here. The format follows
   Ahead: 5, 10 or 15 minutes, 10 by default; 5 with Low Data Mode. Saver streams (a transcode
   or HLS made as it plays) are not kept. The player shows how much is saved ahead ("8 min
   saved"). `StreamWindowTests`, `PartLocatorTests`.
+- A gap in the signal longer than what is saved ahead is ridden out instead of ending
+  playback. When the player runs out of bytes with no network (or a server that does not
+  answer), it shows "No signal — waiting" in the player and the mini player, not an error; the
+  position is saved as at a pause and the wait is not counted as listening. The player itself
+  is held rather than paused, since a paused audio app is suspended in the background and could
+  not come back by itself. The window keeps trying, 2 s doubling to 30 s; a stream that failed
+  (a Saver transcode, HLS) or a file not on the phone gets a fresh link on the same backoff,
+  where it used to try once and stop for good. When the network is back it plays on by itself
+  (smart rewind applies), unless the listener paused meanwhile. In Offline Mode a file that is not on the phone still stops with a message,
+  since no signal is coming. `SignalWaitTests` (the state machine, and a gap with no network
+  and with a dead server, played through the window).
+
+### Fixed
+
+- The look-ahead window could fetch a whole file at the start: the player picks up its read
+  where the last one stopped, beyond the window's end, and such a read was taken for a lookup
+  and not held back. A read that continues the last one is held back now; reads within the
+  player's own forward buffer never are, and an empty playback buffer counts as a stall at once
+  (the player's own state can take seconds), so held-back bytes never starve it.
+- A request the player let go of was logged as a failure of the window.
 
 ### Changed
 

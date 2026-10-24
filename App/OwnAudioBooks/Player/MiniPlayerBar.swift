@@ -17,7 +17,7 @@ struct MiniPlayerBar: View {
                     CoverView(book: book, serverId: serverId, pointSize: 40, radius: 8)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(book.title).font(.subheadline.weight(.semibold)).foregroundStyle(Theme.Colors.foreground).lineLimit(1)
-                        Text(ProgressText.leftAtSpeed(engine.durationMs - engine.positionMs, rate: engine.rate))
+                        Text(engine.isWaitingForSignal ? String(localized: "No signal — waiting") : ProgressText.leftAtSpeed(engine.durationMs - engine.positionMs, rate: engine.rate))
                             .font(.caption)
                             .foregroundStyle(Theme.Colors.muted)
                             .lineLimit(1)

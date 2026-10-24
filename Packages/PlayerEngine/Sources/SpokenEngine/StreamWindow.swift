@@ -60,6 +60,7 @@ public final class StreamWindow: @unchecked Sendable {
 
     private let lock = NSLock()
     private var _lookAheadSecs: Double = 600
+    private var _playerAheadSecs: Double = 180
     private var _onStarved: (@Sendable (String, Bool) -> Void)?
     private var _onUnsupported: (@Sendable (String) -> Void)?
     private var files: [String: PartCacheFile] = [:]
@@ -68,6 +69,9 @@ public final class StreamWindow: @unchecked Sendable {
     private var refreshers: [String: @Sendable () async throws -> URL] = [:]
     private var inFlight: [String: [Range<Int64>]] = [:]
     private var refreshing: [String: Task<URL, Error>] = [:]
+    private var starved: Set<String> = []
+    /// Where the player's last read of each part stopped.
+    private var readHeads: [String: Int64] = [:]
     private var active: Active?
     private var upcoming: Upcoming?
     private var stalled = false
@@ -92,7 +96,14 @@ public final class StreamWindow: @unchecked Sendable {
     /// How far ahead of the playhead to keep on disk.
     public var lookAheadSecs: Double {
         get { lock.withLock { _lookAheadSecs } }
-        set { lock.withLock { _lookAheadSecs = max(30, newValue) } }
+        set { lock.withLock { _lookAheadSecs = max(1, newValue) } }
+    }
+
+    /// How far ahead the player itself buffers in memory: reads within that are never held
+    /// back, whatever the window, or the player would starve with bytes it was promised.
+    var playerAheadSecs: Double {
+        get { lock.withLock { _playerAheadSecs } }
+        set { lock.withLock { _playerAheadSecs = max(0, newValue) } }
     }
 
     // MARK: - For the engine
@@ -255,6 +266,7 @@ public final class StreamWindow: @unchecked Sendable {
                 guard let data = file.read(offset..<upto) else { throw Failure.unsupported }
                 dataRequest.respond(with: data)
                 offset = upto
+                lock.withLock { readHeads[key] = upto }
                 continue
             }
             if isInFlight(key: key, offset: offset) {
@@ -279,11 +291,14 @@ public final class StreamWindow: @unchecked Sendable {
         while true {
             do {
                 try await fetch(key: key, file: file, range: range)
-                if attempt > 0 { onStarved?(key, false) }
+                // Fed again — whichever request it was that starved.
+                if lock.withLock({ starved.remove(key) }) != nil { onStarved?(key, false) }
                 return
             } catch Failure.unreachable {
                 attempt += 1
-                if attempt == 1 { onStarved?(key, true) }
+                lock.withLock { _ = starved.insert(key) }
+                // Every failed try, so a player that resumed too early hears it again.
+                onStarved?(key, true)
                 try await waitBeforeRetry(attempt: attempt)
             }
         }
@@ -293,11 +308,15 @@ public final class StreamWindow: @unchecked Sendable {
         lock.withLock {
             guard !stalled, let active, active.key == key, active.durationMs > 0 else { return false }
             let playhead = Self.byte(atMs: active.offsetMs, durationMs: active.durationMs, total: total)
-            let windowEnd = playhead + windowBytesLocked(durationMs: active.durationMs, total: total)
-            // A read that began far from the playhead is the player looking something up (an
-            // index at the end of the file), not listening: it gets what it asks for.
-            let sequential = requestStart >= playhead - (2 << 20) && requestStart <= windowEnd
-            return sequential && offset >= windowEnd
+            let bytesPerSec = Double(total) / Double(active.durationMs) * 1000
+            let playerBytes = Int64(bytesPerSec * _playerAheadSecs * margin) + servingChunkBytes
+            let windowEnd = playhead + max(windowBytesLocked(durationMs: active.durationMs, total: total), playerBytes)
+            // A read that begins near the playhead, or goes on where the last one stopped, is
+            // listening. One that begins elsewhere is the player looking something up (an index
+            // at the end of the file): it gets what it asks for.
+            let nearPlayhead = requestStart >= playhead - (2 << 20) && requestStart <= windowEnd
+            let continues = readHeads[key].map { abs(requestStart - $0) <= servingChunkBytes } ?? false
+            return (nearPlayhead || continues) && offset >= windowEnd
         }
     }
 
@@ -345,6 +364,8 @@ public final class StreamWindow: @unchecked Sendable {
             do {
                 (data, response) = try await session.data(for: request)
             } catch {
+                // The player let go of the request: nothing failed.
+                if Task.isCancelled || (error as? URLError)?.code == .cancelled { throw CancellationError() }
                 throw SpokenEngine.isNetworkUnavailable(error) ? Failure.unreachable : error
             }
             guard let http = response as? HTTPURLResponse else { throw Failure.server(0) }
@@ -457,8 +478,9 @@ public final class StreamWindow: @unchecked Sendable {
         guard let active else { return [] }
         let current = file(for: active.key)
         guard let total = current.totalLength, active.durationMs > 0 else {
-            // Size not known yet: the first chunk tells it.
-            return [(active.key, 0..<prefetchChunkBytes)]
+            // Size not known yet: the player's own first request tells it, and the window is
+            // planned at the next tick rather than fetching the same bytes twice.
+            return []
         }
         var out: [(String, Range<Int64>)] = []
         let playhead = Self.byte(atMs: active.offsetMs, durationMs: active.durationMs, total: total)

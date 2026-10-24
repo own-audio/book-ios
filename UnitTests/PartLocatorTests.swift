@@ -80,9 +80,13 @@ struct PartLocatorTests {
         #expect(parts[1].isUnresolved && parts[1].durationMs == 2000)
     }
 
-    @Test("the missing part's message, in words for the listener")
+    @Test("no network makes the player wait; Offline Mode by choice is a message")
     func message() {
         #expect(PartNotOnPhone().errorDescription?.isEmpty == false)
+        #expect(!SpokenEngine.isNetworkUnavailable(PartNotOnPhone()), "nothing to wait for in Offline Mode")
+        #expect(SpokenEngine.isNetworkUnavailable(NoSignal()))
+        #expect(SpokenEngine.isNetworkUnavailable(URLError(.notConnectedToInternet)))
+        #expect(!SpokenEngine.isNetworkUnavailable(SourceError.notFound))
     }
 
     @Test("a download finishing mid-book reaches the book playing, and only that book")

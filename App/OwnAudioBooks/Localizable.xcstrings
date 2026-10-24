@@ -2522,6 +2522,16 @@
         }
       }
     },
+    "No signal — waiting": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bez signálu — čekám"
+          }
+        }
+      }
+    },
     "Nobody here yet.": {
       "localizations": {
         "cs": {
@@ -4156,12 +4166,12 @@
         }
       }
     },
-    "This part of the book is not on this iPhone. It plays when there is a network again.": {
+    "This part of the book is not on this iPhone. Offline, only what is downloaded plays.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tato část knihy v tomto iPhonu není. Přehraje se, až bude zase k dispozici síť."
+            "value": "Tato část knihy v tomto iPhonu není. Offline se přehrává jen to, co je stažené."
           }
         }
       }

@@ -165,7 +165,10 @@ final class AppModel {
         reporter.onSignInRefused = { [weak self] serverId in self?.signInRefused.insert(serverId) }
         applyPlaybackSettings()
         followWidgetTriggers()
-        network.onChange = { [weak self] _ in
+        network.onChange = { [weak self] connected in
+            // Lost: the player is told at once, so a stalled stream waits rather than fails.
+            // Back: once it has settled.
+            if !connected { self?.engine.networkChanged(isConnected: false) }
             self?.networkDebounce.schedule { [weak self] in await self?.networkSettled() }
         }
     }
@@ -760,7 +763,8 @@ final class AppModel {
     private func networkSettled() async {
         offlineSwitch.isOn = isOffline
         applyLookAhead()
-        if network.isConnected { streamWindow.networkReturned() }
+        // A book waiting for a signal plays on (the link renewed if it has to be).
+        engine.networkChanged(isConnected: network.isConnected && !Self.isSimulatingOffline)
         let work = NetworkChangeWork.after(inForeground: isInForeground)
         if work.chooseAddresses { await chooseAddresses() } else { addressesStale = true }
         if work.flushProgress { await flushPendingProgress() }
@@ -1033,7 +1037,8 @@ final class AppModel {
     }
 
     private func freshPartURL(serverId: UUID, bookId: String, partId: String) async throws -> URL {
-        if isOffline { throw PartNotOnPhone() }
+        if isOfflineByChoice { throw PartNotOnPhone() }
+        if isOffline { throw NoSignal() }
         guard let source = sources[serverId], let book = nowPlayingBook, book.id == bookId else { throw SourceError.notFound }
         // A part streaming through the look-ahead window stays the original file.
         let windowed = engine.book?.timeline.parts.first { $0.id == partId }?.streamsByRange ?? false

@@ -59,6 +59,10 @@ final class RangeServer: @unchecked Sendable {
     private var _ranges: [String] = []
     var refusedToken: String?
     var ignoresRange = false
+    /// After this many answers the network is gone (`offline` turns on by itself).
+    var cutAfter: Int?
+    /// How the network is gone: no network at all, or a server that does not answer.
+    var failure: URLError.Code = .notConnectedToInternet
 
     var offline: Bool {
         get { lock.withLock { _offline } }
@@ -71,7 +75,11 @@ final class RangeServer: @unchecked Sendable {
     }
 
     func respond(_ request: URLRequest) throws -> MockURLProtocol.StubbedResponse {
-        if offline { throw URLError(.notConnectedToInternet) }
+        let cut: Bool = lock.withLock {
+            if let cutAfter, _ranges.count >= cutAfter { _offline = true }
+            return _offline
+        }
+        if cut { throw URLError(failure) }
         let url = request.url!
         if let refusedToken, url.query?.contains("token=\(refusedToken)") == true {
             return .init(statusCode: 403, body: Data())
@@ -187,6 +195,24 @@ struct StreamWindowTests {
         #expect(await wait(until: { engine.positionMs > 1000 }, seconds: 10), "plays with the new link")
         #expect(calls.count == 1 && engine.errorMessage == nil)
         #expect(engine.book?.timeline.parts[0].url.query == "token=new", "the timeline keeps the new link")
+        engine.stop()
+    }
+
+    @Test("past the window the player waits for the playhead: the file is not fetched whole at once, and plays to the end")
+    func boundedWindow() async throws {
+        let server = RangeServer()
+        try server.add("/files/book.m4b", fixture: "test-book.m4b", type: "audio/mp4")
+        let (engine, window) = await setUp(server)
+        // One second ahead of a 6-second file: about 4 kB.
+        window.lookAheadSecs = 1
+        engine.forwardBufferSecs = 1
+        engine.load(streamedBook(), at: 0, autoplay: true)
+        #expect(await wait(until: { engine.positionMs > 1000 }, seconds: 10))
+        let file = window.file(for: "book1#p1")
+        let total = file.totalLength ?? 0
+        #expect(total > 0 && file.storedBytes < total - 4096, "only the window and the player's next read: \(file.storedBytes) of \(total)")
+        #expect(await wait(until: { engine.positionMs > 5500 || !engine.isPlaying }, seconds: 15))
+        #expect(engine.positionMs > 5500 && engine.errorMessage == nil, "held back, never stuck")
         engine.stop()
     }
 
