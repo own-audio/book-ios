@@ -7,6 +7,10 @@ struct HomeView: View {
     @Environment(AppModel.self) private var model
     @State private var state: LoadState<[Shelf]> = .loading
     @State private var isShowingSettings = false
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var isOnScreen = false
+    /// A pause happened while Home was out of sight; the shelves are read again on return.
+    @State private var shelvesStale = false
 
     var body: some View {
         ScrollView {
@@ -52,9 +56,14 @@ struct HomeView: View {
         .refreshable { await reload() }
         .task(id: "\(model.activeServerId?.uuidString ?? "")|\(model.isOffline)") { await reload() }
         .onChange(of: model.engine.isPlaying) { was, now in
-            // A pause moves a book up the Continue Listening shelf.
-            if was && !now { Task { await reload(quietly: true) } }
+            // A pause moves a book up the Continue Listening shelf. Out of sight (another tab,
+            // the lock screen, CarPlay) the request waits until Home is seen again.
+            guard was && !now else { return }
+            if isVisible { Task { await reload(quietly: true) } } else { shelvesStale = true }
         }
+        .onAppear { isOnScreen = true; reloadIfStale() }
+        .onDisappear { isOnScreen = false }
+        .onChange(of: scenePhase) { _, _ in reloadIfStale() }
     }
 
     /// The switch's entries: one per server, and on an Audiobookshelf account with several book
@@ -130,6 +139,14 @@ struct HomeView: View {
 
     private func load() {
         Task { await reload() }
+    }
+
+    private var isVisible: Bool { isOnScreen && scenePhase == .active }
+
+    private func reloadIfStale() {
+        guard shelvesStale, isVisible else { return }
+        shelvesStale = false
+        Task { await reload(quietly: true) }
     }
 
     private func reload(quietly: Bool = false) async {

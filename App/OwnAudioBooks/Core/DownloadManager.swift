@@ -52,6 +52,8 @@ final class DownloadManager: NSObject {
     /// iOS (`handleEventsForBackgroundURLSession`).
     var backgroundCompletion: (() -> Void)?
 
+    /// The session reports bytes many times a second; the main thread hears of it twice.
+    @ObservationIgnored nonisolated let progressThrottle = ProgressThrottle(interval: 0.5)
     private let directory: URL
     private let indexURL: URL
     private var session: URLSession!
@@ -310,6 +312,8 @@ extension DownloadManager: URLSessionDownloadDelegate {
 
     nonisolated func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         let key = downloadTask.taskDescription ?? ""
+        let done = totalBytesExpectedToWrite > 0 && totalBytesWritten >= totalBytesExpectedToWrite
+        guard progressThrottle.shouldPass(key, done: done) else { return }
         Task { @MainActor in
             self.written[key] = totalBytesWritten
             let compositeId = String(key.split(separator: "#", maxSplits: 1).first ?? "")
@@ -338,5 +342,29 @@ extension DownloadManager: URLSessionDownloadDelegate {
             self.backgroundCompletion?()
             self.backgroundCompletion = nil
         }
+    }
+}
+
+/// Lets a stream of progress callbacks through at most once per `interval` per key, and always
+/// the last one. Called on the download session's queue.
+final class ProgressThrottle: @unchecked Sendable {
+    private let interval: TimeInterval
+    private let lock = NSLock()
+    private var lastPassed: [String: Date] = [:]
+
+    init(interval: TimeInterval) {
+        self.interval = interval
+    }
+
+    func shouldPass(_ key: String, done: Bool = false, now: Date = Date()) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        if done {
+            lastPassed[key] = nil
+            return true
+        }
+        if let last = lastPassed[key], now.timeIntervalSince(last) < interval { return false }
+        lastPassed[key] = now
+        return true
     }
 }

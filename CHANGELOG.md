@@ -8,6 +8,18 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- Less work in the background and while nothing changes:
+  - narration jobs are asked about 4 s after a change, then half as often each time nothing
+    moved, up to once a minute; the polling stops when no running job's server is set up, and
+    `narrations.json` is written only when something changed;
+  - other devices' positions are fetched every three minutes only while the app is in front;
+  - Home reads its shelves again after a pause only when it is on screen, else when it is seen
+    again;
+  - the app counts as in the background until a window is active, so a launch by CarPlay, a
+    download or a background refresh opens no event stream and starts no polling (CarPlay
+    plays as before);
+  - download progress reaches the main thread at most twice a second per file.
+  `BatteryTests`.
 - Network changes are settled before the app acts on them: three seconds after the last path
   update, and a change that only reorders the same interfaces is none. In the background (a
   car handing over between cells) only queued positions are sent; the addresses are raced again

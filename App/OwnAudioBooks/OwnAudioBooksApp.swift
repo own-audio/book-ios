@@ -36,7 +36,9 @@ struct OwnAudioBooksApp: App {
                 .environment(model)
                 .task { if !model.hasLoaded { await model.load() } }
         }
-        .onChange(of: scenePhase) { _, phase in
+        // `initial`: the model starts out as in the background, and the first active phase
+        // must reach it even when the window is already active at the first look.
+        .onChange(of: scenePhase, initial: true) { _, phase in
             // Audio keeps playing in the background, so this is a save, not a pause.
             if phase == .background { model.engine.saveForTeardown() }
             model.sceneBecame(active: phase != .background)

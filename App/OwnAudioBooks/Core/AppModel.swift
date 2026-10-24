@@ -72,7 +72,9 @@ final class AppModel {
     let narrations = NarrationManager()
     private var loadTask: Task<Void, Never>?
     private var liveUpdates: Task<Void, Never>?
-    private var isInForeground = true
+    /// False until a window scene is active: CarPlay, a background download or a refresh can
+    /// start the app with no screen, and then no event stream or polling is opened.
+    private(set) var isInForeground = false
     @ObservationIgnored private let networkDebounce = Debouncer(delay: .seconds(3))
     /// A network change came while in the background; the addresses are chosen on return.
     private var addressesStale = false
@@ -227,8 +229,9 @@ final class AppModel {
         let saved = UserDefaults.standard.string(forKey: Self.activeServerKey).flatMap(UUID.init)
         activeServerId = servers.contains { $0.id == saved } ? saved : servers.first?.id
         hasLoaded = true
+        followLibraryChanges()
         Task { await refreshModules() }
-        narrations.startPolling()
+        if isInForeground { narrations.startPolling() }
         downloads.resume()
         imports.resume()
         keepProgressFresh()
@@ -773,7 +776,8 @@ final class AppModel {
     private var progressRefresh: Task<Void, Never>?
 
     /// Positions made elsewhere, from the active server: at foreground, and every few minutes
-    /// while a book plays (own.audio's feed brings them too; Audiobookshelf has no feed).
+    /// while a book plays with the app in front (own.audio's feed brings them too;
+    /// Audiobookshelf has no feed).
     func refreshProgress() async {
         guard !isOffline, let id = activeServerId, let source = sources[id], let all = try? await source.allProgress() else { return }
         for (bookId, p) in all {
@@ -787,7 +791,8 @@ final class AppModel {
         progressRefresh = Task { [weak self] in
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(180))
-                guard !Task.isCancelled, let self, self.engine.isPlaying else { continue }
+                // In the background nobody sees the screens these positions are for.
+                guard !Task.isCancelled, let self, self.engine.isPlaying, self.isInForeground else { continue }
                 await self.refreshProgress()
             }
         }
