@@ -57,9 +57,11 @@ final class AppModel {
     private let responseCache = DiskResponseCache()
     private let offlineSwitch = OfflineSwitch()
     private let catalogueStore = CatalogueStore()
-    private let pendingProgress = PendingProgress()
+    /// Positions on their way to the servers; see `ProgressReporter` for when they are sent.
+    private let reporter = ProgressReporter(pending: PendingProgress())
+    private var pendingProgress: PendingProgress { reporter.pending }
     private let knownPositions = KnownPositions()
-    private let resumeStore = UserDefaultsResumeStore(key: "books.resume")
+    private let resumeStore = CheckpointedResumeStore(UserDefaultsResumeStore(key: "books.resume"))
     /// Files of books being streamed, kept as they are heard (Wi-Fi only, up to a gigabyte, the
     /// oldest let go first), so the next part starts from disk and a book heard once again needs
     /// no network. Separate from the listener's downloads, which it never counts as.
@@ -71,7 +73,6 @@ final class AppModel {
     private var loadTask: Task<Void, Never>?
     private var liveUpdates: Task<Void, Never>?
     private var isInForeground = true
-    private var flushing = false
 
     /// The hosted service's edge refuses requests with no User-Agent.
     static let session: URLSession = {
@@ -132,6 +133,19 @@ final class AppModel {
         imports.uploaderProvider = { [weak self] serverId in self?.sources[serverId] as? any BookUploader }
         narrations.narratorProvider = { [weak self] serverId in self?.sources[serverId] as? any BookNarrator }
         narrations.onCompleted = { [weak self] _ in Task { await self?.syncCatalogues() } }
+        reporter.send = { [weak self] entry in
+            guard let self, let source = self.sources[entry.serverId] else { throw ProgressReporter.NoServer() }
+            return try await source.report(PlaybackReport(
+                bookId: entry.bookId, sessionId: entry.sessionId, positionMs: entry.positionMs, listenedMs: entry.listenedMs,
+                durationMs: entry.durationMs, finished: entry.finished, at: entry.at, closes: entry.closes
+            ))
+        }
+        reporter.onAnswer = { [weak self] entry, answer in
+            guard let self else { return }
+            let composite = BookID.make(serverId: entry.serverId, bookId: entry.bookId)
+            if let answer, self.engine.book?.id != composite { self.progress[composite] = answer }
+        }
+        reporter.onSignInRefused = { [weak self] serverId in self?.signInRefused.insert(serverId) }
         applyPlaybackSettings()
         network.onChange = { [weak self] _ in
             Task { await self?.chooseAddresses(); await self?.flushPendingProgress() }
@@ -198,6 +212,7 @@ final class AppModel {
             forgetLastBook()
         }
         lastBook = LastBook.load()
+        recoverUnsavedPositions()
         servers = await store.loadAll()
         await addServerFromLaunchArguments()
         for server in servers where server.kind == .ownAudio {
@@ -997,24 +1012,58 @@ final class AppModel {
 
     // MARK: - ListeningProgress
 
-    /// Every position the engine reports: to disk first, then to the server.
+    /// Every position the engine reports: to disk first, then to the server. A playing tick
+    /// (every 10 s) writes only the queue in `PendingProgress`; the other stores — the resume
+    /// point, the known positions, the last book — and the server follow at a checkpoint: at once
+    /// on pause, seek, chapter, stop, a book change, the end and going to the background, and
+    /// every minute while playing. A kill in between loses nothing: the queue is replayed at
+    /// launch (`recoverUnsavedPositions`).
     private func positionReported(_ position: SpokenEngine.Position) {
         guard let (serverId, bookId) = BookID.parse(position.bookId) else { return }
         let composite = position.bookId
         progress[composite] = ListeningProgress(positionMs: position.positionMs, finished: position.finished, updatedAt: position.at, devices: progress[composite]?.devices ?? [])
-        knownPositions.set(composite, .init(positionMs: position.positionMs, finished: position.finished, at: position.at))
         let closes = position.reason == .stop || position.reason == .finished || position.reason == .teardown
-        pendingProgress.record(.init(
+        let due = reporter.record(.init(
             id: UUID().uuidString, serverId: serverId, bookId: bookId, sessionId: nowPlayingPlan?.sessionId,
             positionMs: position.positionMs, listenedMs: position.listenedMs, durationMs: engine.durationMs,
             finished: position.finished, at: position.at, closes: closes
-        ))
+        ), reason: position.reason)
+        guard due else {
+            Task { await cacheFollowingParts() }
+            return
+        }
+        knownPositions.set(composite, .init(positionMs: position.positionMs, finished: position.finished, at: position.at))
+        resumeStore.commit()
         if position.finished {
             forgetLastBook()
         } else if position.reason != .stop, let book = nowPlayingBook, nowPlayingServerId == serverId, book.id == bookId {
             LastBook(serverId: serverId, book: book, positionMs: position.positionMs, durationMs: engine.durationMs).save()
         }
         Task { await flushPendingProgress(); await refreshWidget(force: closes); await cacheFollowingParts() }
+    }
+
+    /// The app was killed between two checkpoints: positions still queued that are newer than
+    /// the saved ones become the saved ones, so the next play resumes there, also offline.
+    private func recoverUnsavedPositions() {
+        for (composite, entry) in ProgressReporter.newerThanSaved(pendingProgress.all(), saved: { knownPositions[$0] }) {
+            knownPositions.set(composite, .init(positionMs: entry.positionMs, finished: entry.finished, at: entry.at))
+            if entry.finished {
+                resumeStore.clearResume(containerId: composite)
+            } else {
+                let track = resumeStore.loadResume(containerId: composite)?.trackId ?? ""
+                resumeStore.saveResume(containerId: composite, trackId: track, positionSecs: Double(entry.positionMs) / 1000)
+            }
+            if let last = lastBook, last.serverId == entry.serverId, last.book.id == entry.bookId {
+                if entry.finished {
+                    forgetLastBook()
+                } else {
+                    let moved = LastBook(serverId: last.serverId, book: last.book, positionMs: entry.positionMs, durationMs: last.durationMs)
+                    moved.save()
+                    lastBook = moved
+                }
+            }
+        }
+        resumeStore.commit()
     }
 
     // MARK: - The widget
@@ -1083,39 +1132,9 @@ final class AppModel {
         await play(book, serverId: serverId)
     }
 
-    /// Sends what is on disk, oldest first; what the server refuses for good is dropped, what
-    /// could not reach it stays for the next try.
+    /// Sends what is on disk, oldest first (`ProgressReporter.flush`).
     func flushPendingProgress() async {
-        guard !flushing, !isOffline else { return }
-        flushing = true
-        defer { flushing = false }
-        for entry in pendingProgress.all().sorted(by: { $0.at < $1.at }) {
-            guard let source = sources[entry.serverId] else { continue }
-            do {
-                let answer = try await source.report(PlaybackReport(
-                    bookId: entry.bookId, sessionId: entry.sessionId, positionMs: entry.positionMs, listenedMs: entry.listenedMs,
-                    durationMs: entry.durationMs, finished: entry.finished, at: entry.at, closes: entry.closes
-                ))
-                pendingProgress.remove(id: entry.id)
-                let composite = BookID.make(serverId: entry.serverId, bookId: entry.bookId)
-                if let answer, engine.book?.id != composite { progress[composite] = answer }
-            } catch SourceError.network, SourceError.offline {
-                return
-            } catch SourceError.notFound {
-                // The session is over or the book is gone: the position goes without a session.
-                if entry.sessionId != nil {
-                    pendingProgress.remove(id: entry.id)
-                    pendingProgress.record(.init(id: UUID().uuidString, serverId: entry.serverId, bookId: entry.bookId, sessionId: nil, positionMs: entry.positionMs, listenedMs: entry.listenedMs, durationMs: entry.durationMs, finished: entry.finished, at: entry.at, closes: false))
-                } else {
-                    pendingProgress.remove(id: entry.id)
-                }
-            } catch SourceError.signInRejected {
-                signInRefused.insert(entry.serverId)
-                return
-            } catch {
-                pendingProgress.remove(id: entry.id)
-            }
-        }
+        await reporter.flush(isOffline: isOffline)
     }
 
     /// The position for a screen: what the app knows, else what the server says.

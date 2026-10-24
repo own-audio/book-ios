@@ -58,6 +58,21 @@ final class PendingProgress: @unchecked Sendable {
         write(read().filter { $0.id != id })
     }
 
+    /// After `entry` reached the server. A newer position recorded into it while it was on its
+    /// way stays, with only the listening not yet sent.
+    func markSent(_ entry: Entry) {
+        lock.lock()
+        defer { lock.unlock() }
+        var entries = read()
+        guard let index = entries.firstIndex(where: { $0.id == entry.id }) else { return }
+        if entries[index].at == entry.at {
+            entries.remove(at: index)
+        } else {
+            entries[index].listenedMs = max(0, entries[index].listenedMs - entry.listenedMs)
+        }
+        write(entries)
+    }
+
     /// Everything queued for one book, when its position is being forgotten.
     func remove(serverId: UUID, bookId: String) {
         lock.lock()

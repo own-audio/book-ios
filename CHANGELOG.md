@@ -6,6 +6,28 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Fewer progress reports and file writes while a book plays. Every 10 s the position is
+  written to one file (the queue in `PendingProgress`) instead of five places and a request.
+  The server gets it once a minute while playing, and at once on pause, seek, chapter change,
+  stop, a book change, the end and going to the background, so the phone's radio can sleep in
+  between; Audiobookshelf's play session is synced at the same pace. The resume point, the known
+  positions and the last book are written at the same moments (`ProgressReporter`,
+  `CheckpointedResumeStore`). A kill between two of them loses nothing: the queue is replayed
+  at the next launch. A dead server is tried once a minute, not on every tick.
+
+### Fixed
+
+- A pause while a report was on its way could drop the paused position from the queue when the
+  report came back; it is now sent right after.
+
+### Tests
+
+- `ProgressReporterTests`: the minute cadence, the reasons sent at once, offline (nothing tried,
+  everything on disk), a dead server (tried once a minute, position kept), a refused sign-in,
+  an ended play session, a pause during a slow report, and recovery after a kill.
+
 ### Removed
 
 - The Live Activity. The lock screen showed two players, the system's Now Playing controls and
