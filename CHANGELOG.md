@@ -39,6 +39,9 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- A file that cannot be played asks the server for one fresh link, then shows the error. It
+  asked again on every failure, without end (found in own.audio Podcasts, which has the same
+  engine; ported with its test).
 - The look-ahead window could fetch a whole file at the start: the player picks up its read
   where the last one stopped, beyond the window's end, and such a read was taken for a lookup
   and not held back. A read that continues the last one is held back now; reads within the

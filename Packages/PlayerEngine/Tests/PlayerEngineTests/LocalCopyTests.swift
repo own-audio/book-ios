@@ -110,4 +110,21 @@ struct LocalCopyTests {
         #expect(await wait(until: { engine.positionMs > 2300 }), "plays once the copy is there")
         engine.stop()
     }
+
+    @Test("a file that can't be played asks for one fresh link, then shows the error instead of asking again and again")
+    func oneFreshLinkPerFailure() async {
+        let engine = engine()
+        let asked = Asked()
+        let missing = FileManager.default.temporaryDirectory.appendingPathComponent("missing-\(UUID().uuidString).mp3")
+        engine.partRefresher = { _, partId in
+            asked.ids.append(partId)
+            return missing
+        }
+        engine.load(SpokenBook(id: "ep1", title: "T", author: nil, parts: [SpokenPart(id: "audio", url: missing, durationMs: 3000)], chapters: []), at: 0, autoplay: true)
+        #expect(await wait(until: { engine.errorMessage != nil }, seconds: 8), "the failure is shown")
+        try? await Task.sleep(for: .seconds(2))
+        #expect(asked.ids.count == 1, "asked \(asked.ids.count) times")
+        #expect(!engine.isPlaying)
+        engine.stop()
+    }
 }

@@ -95,6 +95,9 @@ public final class SpokenEngine {
     private var listenedSinceTickMs: Int64 = 0
     private var lastTickAt = Date()
     private var refreshing = false
+    /// The current item already came from a fresh link: a second failure is shown, not
+    /// refreshed again (a file that can't be played would otherwise be asked for in a loop).
+    private var retriedWithFreshLink = false
     /// The link or file the current item was made from. When the timeline names another one
     /// (a download finished meanwhile), the item is made again at the next pause or seek.
     private(set) var loadedURL: URL?
@@ -157,6 +160,7 @@ public final class SpokenEngine {
         stopsAtEndOfChapter = false
         self.positionMs = book.timeline.clamp(positionMs)
         loadGeneration += 1
+        retriedWithFreshLink = false
         switchingPart = false
         resetSignal()
         artwork = nil
@@ -232,6 +236,7 @@ public final class SpokenEngine {
         loadedURL = nil
         switchingPart = false
         loadGeneration += 1
+        retriedWithFreshLink = false
         resetSignal()
         window?.update(key: nil, offsetMs: 0, durationMs: 0, next: nil)
         savedAheadMs = nil
@@ -310,6 +315,7 @@ public final class SpokenEngine {
         // Waiting for a signal for this very part: the copy ends the wait.
         let resumes = signal.isWaiting && signal.resumes
         resetSignal()
+        retriedWithFreshLink = false
         loadPart(at: positionMs, thenPlay: resumes)
     }
 
@@ -318,6 +324,7 @@ public final class SpokenEngine {
     /// right part.
     private func switchPart(to index: Int) {
         loadGeneration += 1
+        retriedWithFreshLink = false
         let generation = loadGeneration
         currentIndex = index
         switchingPart = true
@@ -409,6 +416,7 @@ public final class SpokenEngine {
                 switch status {
                 case .readyToPlay:
                     self.isLoading = false
+                    self.retriedWithFreshLink = false
                     self.updateStalled()
                 case .failed: await self.recover(from: message ?? "The file could not be played.")
                 default: break
@@ -442,7 +450,7 @@ public final class SpokenEngine {
     /// A link that failed: one fresh link from the app, the same position again; otherwise the
     /// error is shown — the app's own words when it gave a reason (no network, say).
     private func recover(from message: String, thenPlay: Bool? = nil) async {
-        guard let book, let index = currentIndex, let partRefresher, !refreshing else {
+        guard let book, let index = currentIndex, let partRefresher, !refreshing, !retriedWithFreshLink else {
             isLoading = false
             isPlaying = false
             errorMessage = message
@@ -457,6 +465,7 @@ public final class SpokenEngine {
             let url = try await partRefresher(book.id, part.id)
             guard self.book?.id == book.id else { return }
             self.book = self.book?.replacing(partId: part.id, with: url)
+            retriedWithFreshLink = true
             loadPart(at: positionMs, thenPlay: thenPlay ?? isPlaying)
         } catch where SpokenEngine.isNetworkUnavailable(error) {
             // No network to bring a link: wait for one rather than fail.
@@ -499,6 +508,7 @@ public final class SpokenEngine {
     private func windowRefused(_ key: String) {
         guard directOnly.insert(key).inserted, let book, let index = currentIndex,
               windowKey(book.id, book.timeline.parts[index].id) == key, !switchingPart else { return }
+        retriedWithFreshLink = false
         loadPart(at: positionMs, thenPlay: isPlaying)
     }
 
@@ -628,6 +638,7 @@ public final class SpokenEngine {
         guard self.book?.id == book.id, currentIndex == index, signal.way == .reload else { return true }
         self.book = self.book?.replacing(partId: part.id, with: url)
         _ = signal.handle(.reloaded)
+        retriedWithFreshLink = false
         reloadRetry = nil
         windowStarvedNow = false
         log.info("signal back: part \(part.id, privacy: .public) loaded again at \(self.positionMs, privacy: .public) ms")
