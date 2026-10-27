@@ -1335,7 +1335,11 @@ final class AppModel {
 
     func coverImage(_ book: Book, serverId: UUID, size: Int) async -> UIImage? {
         let url = book.coverURL
-        return await covers.image(compositeId: BookID.make(serverId: serverId, bookId: book.id), size: size) { url }
+        let bookId = book.id
+        return await covers.image(compositeId: BookID.make(serverId: serverId, bookId: book.id), size: size, url: { url }, fresh: { [weak self] in
+            guard let source = await self?.sources[serverId] else { return nil }
+            return await source.currentCoverURL(bookId: bookId)
+        })
     }
 
     /// For the lock screen: the cover of the book in the engine.

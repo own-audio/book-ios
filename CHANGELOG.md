@@ -39,6 +39,11 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- Covers from an own.audio server load again. The library comes from the synced snapshot, and
+  a book that never changed kept the image link it came with: signed for a week or two, and
+  built for the address the server had then (a home address, before a tunnel gave it a public
+  one). A cover that does not load now asks the server for the book's current link once
+  (`BookSource.currentCoverURL`).
 - A file that cannot be played asks the server for one fresh link, then shows the error. It
   asked again on every failure, without end (found in own.audio Podcasts, which has the same
   engine; ported with its test).

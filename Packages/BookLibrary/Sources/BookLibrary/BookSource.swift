@@ -38,6 +38,9 @@ public protocol BookSource: Sendable {
     func books(_ query: BookQuery, cursor: String?, limit: Int) async throws -> BooksPage
     /// With files and chapters.
     func book(id: String) async throws -> Book
+    /// The cover's address as the server gives it now, never from a cached copy of the
+    /// record: what to try when the cover link in hand no longer loads.
+    func currentCoverURL(bookId: String) async -> URL?
     func authors() async throws -> [Person]
     func narrators() async throws -> [Person]
     func series() async throws -> [SeriesSummary]
@@ -72,6 +75,10 @@ public protocol BookSource: Sendable {
 }
 
 extension BookSource {
+    public func currentCoverURL(bookId: String) async -> URL? {
+        try? await book(id: bookId).coverURL
+    }
+
     public func books(_ query: BookQuery = BookQuery(), limit: Int = 100) async throws -> BooksPage {
         try await books(query, cursor: nil, limit: limit)
     }

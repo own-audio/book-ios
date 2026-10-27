@@ -97,6 +97,16 @@ public struct OwnAudioSource: BookSource, ChangeFeedCatalogue, LiveLibraryUpdate
         }
     }
 
+    /// Straight from the server: a record from the synced snapshot keeps the image link it was
+    /// sent with, and that link is signed for a week or two and built for the address the
+    /// server had then (a home address, say, before it got a public one).
+    public func currentCoverURL(bookId: String) async -> URL? {
+        try? await translating {
+            let answer = try await client.book(id: bookId)
+            return answer.record.image.flatMap { Self.image($0, width: 600) }
+        }
+    }
+
     public func authors() async throws -> [Person] {
         try await synced().authors
     }
