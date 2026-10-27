@@ -54,6 +54,9 @@ final class DownloadManager: NSObject {
     /// Called when the session reports that its background work is done, so the app can tell
     /// iOS (`handleEventsForBackgroundURLSession`).
     var backgroundCompletion: (() -> Void)?
+    /// Where own.audio storage is blocked on this network, files come through the server's
+    /// media proxy (`StorageRoute`).
+    var storageRoute: ProxyMemory?
 
     /// The session reports bytes many times a second; the main thread hears of it twice.
     @ObservationIgnored nonisolated let progressThrottle = ProgressThrottle(interval: 0.5)
@@ -61,6 +64,9 @@ final class DownloadManager: NSObject {
     private let indexURL: URL
     private var session: URLSession!
     private var tasks: [String: URLSessionDownloadTask] = [:]
+    /// Files whose download was blocked at storage and was started again the other way; a
+    /// second failure is shown.
+    private var rerouted: Set<String> = []
     static let sessionIdentifier = "audio.own.bookplayer.downloads"
 
     override init() {
@@ -133,6 +139,7 @@ final class DownloadManager: NSObject {
             for name in book.files.values { try? FileManager.default.removeItem(at: directory.appendingPathComponent(name)) }
         }
         resumeData = resumeData.filter { !$0.key.hasPrefix(compositeId + "#") }
+        rerouted = rerouted.filter { !$0.hasPrefix(compositeId + "#") }
         states[compositeId] = nil
         written = written.filter { !$0.key.hasPrefix(compositeId + "#") }
         saveIndex()
@@ -207,16 +214,31 @@ final class DownloadManager: NSObject {
             do {
                 let url = try await urlProvider(compositeId, fileId)
                 guard let self, self.books[compositeId] != nil, self.tasks[key] == nil else { return }
-                var request = URLRequest(url: url)
-                request.allowsCellularAccess = !self.wifiOnly
-                let task = self.session.downloadTask(with: request)
-                task.taskDescription = key
-                self.tasks[key] = task
-                task.resume()
+                self.launch(key: key, url: self.storageRoute?.route(url) ?? url)
             } catch {
                 self?.states[compositeId] = .failed((error as? SourceError)?.userMessage ?? error.localizedDescription)
             }
         }
+    }
+
+    private func launch(key: String, url: URL) {
+        var request = URLRequest(url: url)
+        request.allowsCellularAccess = !wifiOnly
+        let task = session.downloadTask(with: request)
+        task.taskDescription = key
+        tasks[key] = task
+        task.resume()
+    }
+
+    /// A download of an own.audio link that was blocked at storage: once more the other way —
+    /// through the server's media proxy, or straight to storage when the proxy is what failed.
+    /// True when it was started.
+    private func rerouteIfBlocked(key: String, link: URL?, blocked: Bool) -> Bool {
+        guard blocked, let link, !rerouted.contains(key), let other = StorageRoute.alternate(to: link) else { return false }
+        rerouted.insert(key)
+        resumeData[key] = nil
+        launch(key: key, url: other)
+        return true
     }
 
     private func fraction(of book: DownloadedBook) -> Double {
@@ -231,7 +253,7 @@ final class DownloadManager: NSObject {
         return files.isEmpty ? 0 : Double(files.filter { book.files[$0.id] != nil }.count) / Double(files.count)
     }
 
-    private func finished(key: String, file: URL, response: URLResponse?) {
+    private func finished(key: String, file: URL, response: URLResponse?, link: URL?) {
         let parts = key.split(separator: "#", maxSplits: 1).map(String.init)
         guard parts.count == 2, var book = books[parts[0]] else {
             try? FileManager.default.removeItem(at: file)
@@ -240,9 +262,15 @@ final class DownloadManager: NSObject {
         let (compositeId, fileId) = (parts[0], parts[1])
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             try? FileManager.default.removeItem(at: file)
+            var blocked = false
+            if let link, let response { blocked = StorageRoute.isBlocked(response: response, link: link) }
+            if rerouteIfBlocked(key: key, link: link, blocked: blocked) { return }
+            rerouted.remove(key)
             states[compositeId] = .failed(String(localized: "The server did not send the file."))
             return
         }
+        // The other way worked after this one was blocked: remembered for this network.
+        if rerouted.remove(key) != nil, let link { storageRoute?.worked(link) }
         // AVFoundation types a local file by its extension, so one is worked out: from the
         // bytes, else the server's content type, else what the record says.
         let head = (try? FileHandle(forReadingFrom: file)).flatMap { handle -> Data? in
@@ -306,11 +334,12 @@ extension DownloadManager: URLSessionDownloadDelegate {
     nonisolated func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         let key = downloadTask.taskDescription ?? ""
         let response = downloadTask.response
+        let link = downloadTask.originalRequest?.url
         let holding = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try? FileManager.default.moveItem(at: location, to: holding)
         Task { @MainActor in
             self.tasks[key] = nil
-            self.finished(key: key, file: holding, response: response)
+            self.finished(key: key, file: holding, response: response, link: link)
         }
     }
 
@@ -330,8 +359,15 @@ extension DownloadManager: URLSessionDownloadDelegate {
         let key = task.taskDescription ?? ""
         let resume = (error as NSError).userInfo[NSURLSessionDownloadTaskResumeData] as? Data
         let cancelled = (error as NSError).code == NSURLErrorCancelled
+        let link = task.originalRequest?.url
+        let blocked = link.map { StorageRoute.isBlocked(error: error, link: $0, current: task.currentRequest?.url) } ?? false
         Task { @MainActor in
             self.tasks[key] = nil
+            if !cancelled, self.rerouteIfBlocked(key: key, link: link, blocked: blocked) {
+                self.saveIndex()
+                return
+            }
+            self.rerouted.remove(key)
             if let resume { self.resumeData[key] = resume }
             let compositeId = String(key.split(separator: "#", maxSplits: 1).first ?? "")
             if !cancelled, self.books[compositeId] != nil {

@@ -12,6 +12,9 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
         /// that takes a while, as a real song's does.
         var pieces = 1
         var pieceDelay: Double = 0
+        /// A redirect (the status should be 302) to this address; the session follows it with the
+        /// same headers, as it does for a real server.
+        var redirectTo: URL?
     }
 
     typealias Handler = @Sendable (URLRequest) async throws -> StubbedResponse
@@ -80,6 +83,15 @@ final class MockURLProtocol: URLProtocol, @unchecked Sendable {
             }
             do {
                 let stub = try await handler(request)
+                if let target = stub.redirectTo {
+                    var headers = stub.headers
+                    headers["Location"] = target.absoluteString
+                    let response = HTTPURLResponse(url: request.url!, statusCode: stub.statusCode, httpVersion: "HTTP/1.1", headerFields: headers)!
+                    var next = request
+                    next.url = target
+                    client?.urlProtocol(self, wasRedirectedTo: next, redirectResponse: response)
+                    return
+                }
                 let response = HTTPURLResponse(
                     url: request.url!, statusCode: stub.statusCode,
                     httpVersion: "HTTP/1.1", headerFields: stub.headers

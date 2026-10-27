@@ -69,6 +69,9 @@ public final class SpokenEngine {
     /// Keeps the next minutes of a streamed file on disk, so a gap in the signal goes unheard;
     /// nil streams as `AVPlayer` does on its own.
     public var window: StreamWindow? { didSet { connectWindow() } }
+    /// Where own.audio storage is blocked on this network, the server's media proxy is used
+    /// instead — by the window and by the player itself; nil plays every link as it is.
+    public var storageRoute: ProxyMemory? { didSet { window?.storageRoute = storageRoute } }
     /// While a part streams through the window: how much of what follows the playhead is on
     /// disk, in book time. Nil otherwise.
     public private(set) var savedAheadMs: Int64?
@@ -105,6 +108,11 @@ public final class SpokenEngine {
     /// end mean nothing, and only the last of several quick moves is loaded.
     private var switchingPart = false
     private var loadGeneration = 0
+    /// The address the player itself streams the current item from (not through the window),
+    /// after `storageRoute`: what a failure is checked against.
+    private(set) var loadedRoute: URL?
+    /// The current item was already loaded again by the other way to storage.
+    private var rerouted = false
     /// Parts the window could not play (Range ignored, an unknown type): streamed directly.
     private(set) var directOnly: Set<String> = []
     private var signal = SignalWait() {
@@ -161,6 +169,7 @@ public final class SpokenEngine {
         self.positionMs = book.timeline.clamp(positionMs)
         loadGeneration += 1
         retriedWithFreshLink = false
+        rerouted = false
         switchingPart = false
         resetSignal()
         artwork = nil
@@ -325,6 +334,7 @@ public final class SpokenEngine {
     private func switchPart(to index: Int) {
         loadGeneration += 1
         retriedWithFreshLink = false
+        rerouted = false
         let generation = loadGeneration
         currentIndex = index
         switchingPart = true
@@ -343,6 +353,7 @@ public final class SpokenEngine {
         isLoading = true
         errorMessage = nil
         loadedURL = part.url
+        loadedRoute = nil
         if part.isUnresolved {
             // Nothing to play from yet: straight to the app for a link.
             player.replaceCurrentItem(with: nil)
@@ -362,7 +373,9 @@ public final class SpokenEngine {
         } else {
             window?.update(key: nil, offsetMs: 0, durationMs: 0, next: nil)
             savedAheadMs = nil
-            asset = AVURLAsset(url: part.url)
+            let routed = storageRoute?.route(part.url) ?? part.url
+            loadedRoute = routed
+            asset = AVURLAsset(url: routed)
         }
         let item = AVPlayerItem(asset: asset)
         // Speech keeps its pitch at any speed; the other algorithms are for music.
@@ -417,8 +430,11 @@ public final class SpokenEngine {
                 case .readyToPlay:
                     self.isLoading = false
                     self.retriedWithFreshLink = false
+                    self.rerouted = false
                     self.updateStalled()
-                case .failed: await self.recover(from: message ?? "The file could not be played.")
+                case .failed:
+                    if await self.rerouteAfterFailure() { return }
+                    await self.recover(from: message ?? "The file could not be played.")
                 default: break
                 }
             }
@@ -466,6 +482,7 @@ public final class SpokenEngine {
             guard self.book?.id == book.id else { return }
             self.book = self.book?.replacing(partId: part.id, with: url)
             retriedWithFreshLink = true
+            rerouted = false
             loadPart(at: positionMs, thenPlay: thenPlay ?? isPlaying)
         } catch where SpokenEngine.isNetworkUnavailable(error) {
             // No network to bring a link: wait for one rather than fail.
@@ -478,6 +495,31 @@ public final class SpokenEngine {
             log.error("part failed and no fresh link came: \(message, privacy: .public)")
             updateNowPlaying()
         }
+    }
+
+    /// A part the player streamed itself failed. When it is an own.audio link, one small request
+    /// tells whether the storage it redirects to is blocked on this network (`ProxyMemory`
+    /// tries the other way and remembers the one that works); if the way has changed, the part
+    /// is loaded again by the new one. Once per item; otherwise the usual recovery follows.
+    private func rerouteAfterFailure() async -> Bool {
+        guard let storageRoute, !rerouted, let tried = loadedRoute, StorageRoute.takesProxyRoute(tried),
+              let book, let index = currentIndex else { return false }
+        rerouted = true
+        let generation = loadGeneration
+        let link = book.timeline.parts[index].url
+        let session = window?.session ?? URLSession.shared
+        var probe = URLRequest(url: link, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 20)
+        probe.setValue("bytes=0-0", forHTTPHeaderField: "Range")
+        _ = try? await storageRoute.fetch(link) { [probe] url in
+            var request = probe
+            request.url = url
+            return try await session.data(for: request)
+        }
+        guard loadGeneration == generation, self.book?.id == book.id, currentIndex == index, !switchingPart else { return true }
+        guard storageRoute.route(link) != tried else { return false }
+        log.info("storage is \(StorageRoute.isProxied(tried) ? "reachable again" : "blocked", privacy: .public) on this network; loading the part again")
+        loadPart(at: positionMs, thenPlay: isPlaying)
+        return true
     }
 
     // MARK: - The look-ahead window
@@ -497,6 +539,7 @@ public final class SpokenEngine {
 
     private func connectWindow() {
         window?.playerAheadSecs = forwardBufferSecs
+        if let storageRoute { window?.storageRoute = storageRoute }
         window?.onUnsupported = { [weak self] key in
             Task { @MainActor [weak self] in self?.windowRefused(key) }
         }

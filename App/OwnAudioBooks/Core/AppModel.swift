@@ -75,6 +75,10 @@ final class AppModel {
         directory: FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("listening-window", isDirectory: true),
         session: AppModel.session
     )
+    /// Where own.audio storage is blocked on a network (a company firewall), its files come
+    /// through the server's media proxy instead: for the player, the window, the listening
+    /// cache and downloads alike. Kept per server and network.
+    let storageRoute = ProxyMemory()
     let narrations = NarrationManager()
     private var loadTask: Task<Void, Never>?
     private var liveUpdates: Task<Void, Never>?
@@ -128,8 +132,10 @@ final class AppModel {
             // Always the original file, as a download would be.
             let book = await self.nowPlayingBook?.id == bookId ? await self.nowPlayingBook! : try await source.book(id: bookId)
             return try await source.partURL(for: book, fileId: fileId, startMs: nil, maxBitrateKbps: nil).url
-        }, session: Self.session, cacheDirectory: cachesDirectory)
+        }, session: Self.session, cacheDirectory: cachesDirectory, storageRoute: storageRoute)
         engine.window = streamWindow
+        engine.storageRoute = storageRoute
+        downloads.storageRoute = storageRoute
         engine.partLocator = { [weak self] compositeId, partId in
             guard let self else { return nil }
             let local = await self.partLocator.locate(compositeId: compositeId, fileId: partId).localURL
@@ -166,6 +172,7 @@ final class AppModel {
         applyPlaybackSettings()
         followWidgetTriggers()
         network.onChange = { [weak self] connected in
+            if let self { self.storageRoute.network = self.network.signature }
             // Lost: the player is told at once, so a stalled stream waits rather than fails.
             // Back: once it has settled.
             if !connected { self?.engine.networkChanged(isConnected: false) }

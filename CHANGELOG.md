@@ -8,6 +8,20 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- An own.audio book plays on a network that blocks cloud storage (a company firewall, say).
+  own.audio's stream link redirects to the file in storage; when that host does not resolve,
+  refuses or resets the connection, fails TLS, or a proxy in between answers 403, 407 or 451,
+  the same link is tried once more with `route=proxy`, which the server (1.0.0-beta.43 and
+  later) redirects to its media proxy on its own domain; older servers ignore it. That the
+  proxy worked is remembered per server and network (the network monitor's signature) for a
+  week, so later streams and downloads go straight to it; if the proxy fails there and
+  storage works again, it is forgotten. A 403 from the server itself is still an expired link
+  and is renewed as before, and no network at all is still a gap in the signal. It applies to
+  the player streaming a file itself, the look-ahead window's chunks, the listening cache and
+  downloads; only own.audio stream links are ever changed. The decision is `StorageRoute` and
+  `ProxyMemory` in `PlayerCore`, copied as is to own.audio Podcasts and own.audio Music.
+  `StorageRouteTests`, and `StreamWindowTests` with storage blocked by a failing name and by a
+  proxy's 403/451.
 - The next minutes of a streamed book are kept on the phone, so a tunnel or a car with no
   signal goes unheard. A streamed file plays through `StreamWindow`, an
   `AVAssetResourceLoaderDelegate` that serves the player from a sparse file per part and

@@ -19,10 +19,13 @@ public actor TrackFileCache {
     /// So a quick next/previous during a download doesn't start a second one.
     private var inFlight: [String: Task<URL, Error>] = [:]
     private let cacheDirectory: URL
+    /// Where own.audio storage is blocked, its files come through the server's media proxy.
+    public nonisolated let storageRoute: ProxyMemory?
 
-    public init(remoteURL: @escaping RemoteURLResolver, session: URLSession = .shared, cacheDirectory: URL? = nil) {
+    public init(remoteURL: @escaping RemoteURLResolver, session: URLSession = .shared, cacheDirectory: URL? = nil, storageRoute: ProxyMemory? = nil) {
         self.remoteURL = remoteURL
         self.session = session
+        self.storageRoute = storageRoute
         self.cacheDirectory = cacheDirectory ?? FileManager.default.temporaryDirectory
             .appendingPathComponent("player-engine-cache", isDirectory: true)
         try? FileManager.default.createDirectory(at: self.cacheDirectory, withIntermediateDirectories: true)
@@ -109,7 +112,13 @@ public actor TrackFileCache {
 
     private func download(trackId: String) async throws -> URL {
         let url = try await remoteURL(trackId)
-        let (tempURL, response) = try await session.download(from: url)
+        let session = session
+        let tempURL: URL, response: URLResponse
+        if let storageRoute {
+            (tempURL, response) = try await storageRoute.fetch(url) { try await session.download(from: $0) }
+        } else {
+            (tempURL, response) = try await session.download(from: url)
+        }
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             try? FileManager.default.removeItem(at: tempURL)
             throw PlaybackError.network("Could not download track \(trackId)")
