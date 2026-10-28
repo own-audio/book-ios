@@ -139,11 +139,29 @@ public actor ServerStore {
         try persist(records)
     }
 
-    public func update(_ record: ServerRecord) throws {
+    /// Saves a changed record and returns it as saved. The tokens are kept as stored unless
+    /// `signIn` says the record carries a new sign-in: the caller's copy holds the tokens from
+    /// when it was loaded, and the server has rotated them since. Saving that copy brought back
+    /// a refresh token already used, which the server takes for theft and signs the device out
+    /// at the next launch.
+    @discardableResult
+    public func update(_ record: ServerRecord, signIn: Bool = false) throws -> ServerRecord {
         var records = loadAll()
-        guard let index = records.firstIndex(where: { $0.id == record.id }) else { return }
-        records[index] = record
+        guard let index = records.firstIndex(where: { $0.id == record.id }) else { return record }
+        var saved = record
+        if !signIn {
+            switch (record.auth, records[index].auth) {
+            case (.ownAudio(let username, _), .ownAudio(let storedName, let stored)) where username == storedName:
+                saved.auth = .ownAudio(username: username, tokens: stored)
+            case (.audiobookshelf(let username, _), .audiobookshelf(let storedName, let stored)) where username == storedName:
+                saved.auth = .audiobookshelf(username: username, tokens: stored)
+            default:
+                break
+            }
+        }
+        records[index] = saved
         try persist(records)
+        return saved
     }
 
     /// Rotated tokens; nil after a refused refresh.

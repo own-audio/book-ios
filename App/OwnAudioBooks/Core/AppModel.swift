@@ -374,8 +374,8 @@ final class AppModel {
         let refs = list.map { ServerLibraryRef(id: $0.id, name: $0.name) }
         if var record = server(serverId), record.libraries != refs {
             record.libraries = refs
-            try? await store.update(record)
-            if let index = servers.firstIndex(where: { $0.id == serverId }) { servers[index] = record }
+            if let saved = try? await store.update(record),
+               let index = servers.firstIndex(where: { $0.id == serverId }) { servers[index] = saved }
         }
         return list
     }
@@ -551,7 +551,7 @@ final class AppModel {
         if record.kind == .audiobookshelf, record.libraryId == nil { record.libraryId = fresh.libraryId }
         sessions.forget(id)
         signInRefused.remove(id)
-        try await update(record)
+        try await update(record, signIn: true)
     }
 
     /// The public demo: a shared own.audio server with sample books.
@@ -607,8 +607,8 @@ final class AppModel {
     }
 
     /// Saves a changed server (addresses, connection mode, library) and uses it at once.
-    func update(_ record: ServerRecord) async throws {
-        try await store.update(record)
+    func update(_ record: ServerRecord, signIn: Bool = false) async throws {
+        let record = try await store.update(record, signIn: signIn)
         if let index = servers.firstIndex(where: { $0.id == record.id }) { servers[index] = record }
         if case .fixed(let url) = record.connection {
             activeAddresses[record.id] = url

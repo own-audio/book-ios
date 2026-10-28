@@ -6,6 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- own.audio and Audiobookshelf no longer sign the phone out after the app restarts. Saving a
+  server for any other reason (an address it learned on a new network, the libraries, a chosen
+  address) wrote back the tokens from when the app started, over the ones refreshed since; at
+  the next launch the app presented a refresh token already rotated, which own.audio treats as
+  theft and ends the device's sign-in. `ServerStore.update` now keeps the stored tokens unless
+  the save is a new sign-in (`signIn: true`). Test: `ServerStoreTokenTests`.
+
 ### Added
 
 - An own.audio book plays on a network that blocks cloud storage (a company firewall, say).
