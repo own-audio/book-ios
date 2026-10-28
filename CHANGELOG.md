@@ -8,6 +8,11 @@ All notable changes to this project are documented here. The format follows
 
 ### Fixed
 
+- Accent Colour: the ring followed the first colour picked and then stayed on it while the
+  colour itself changed on (iOS 27). The picker now keeps its own choice and saves each change.
+
+### Fixed
+
 - own.audio and Audiobookshelf no longer sign the phone out after the app restarts. Saving a
   server for any other reason (an address it learned on a new network, the libraries, a chosen
   address) wrote back the tokens from when the app started, over the ones refreshed since; at

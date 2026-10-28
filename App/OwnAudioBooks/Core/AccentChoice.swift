@@ -49,7 +49,10 @@ enum AccentChoice: String, CaseIterable, Identifiable {
 
 /// Settings → Accent Colour: a row of swatches, the chosen one ringed.
 struct AccentColorPicker: View {
-    @AppStorage(AccentChoice.storageKey) private var choice: AccentChoice = .app
+    @AppStorage(AccentChoice.storageKey) private var stored: AccentChoice = .app
+    /// What the ring shows. Drawn from `stored` alone, the ring followed the first change and
+    /// then stayed on it (iOS 27), while the colour itself changed on.
+    @State private var choice = AccentChoice.current
 
     var body: some View {
         Section {
@@ -58,6 +61,7 @@ struct AccentColorPicker: View {
                     Button {
                         Haptics.selection()
                         choice = option
+                        stored = option
                     } label: {
                         Circle()
                             .fill(option.color)
