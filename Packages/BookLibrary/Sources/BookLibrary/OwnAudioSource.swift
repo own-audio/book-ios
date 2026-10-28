@@ -538,6 +538,38 @@ extension OwnAudioSource {
     }
 }
 
+// The listening statistics as OwnAudioKit decodes them; the app sees the kit only through here.
+public typealias ListeningStats = OwnAudioKit.ListeningStats
+public typealias MemberListening = OwnAudioKit.MemberListening
+public typealias StatsRange = OwnAudioKit.StatsRange
+
+extension OwnAudioSource {
+    /// Deletes the account and everything it owns on the server. A refusal keeps its status:
+    /// `.http(400)` for the server's last admin, `.http(403)` for an account nobody may delete.
+    public func deleteAccount() async throws {
+        do {
+            try await client.deleteAccount()
+        } catch OwnAudioError.problem(let p) where p.status == 400 || p.status == 403 {
+            throw SourceError.http(p.status)
+        } catch let error as OwnAudioError {
+            throw Self.sourceError(error)
+        }
+    }
+
+    public func listeningStats(_ range: StatsRange) async throws -> ListeningStats {
+        try await translating { try await client.listeningStats(range) }
+    }
+
+    /// The family admin's overview; `.notAllowed` or `.http(403)` for anyone else.
+    public func familyListening(_ range: StatsRange) async throws -> [MemberListening] {
+        try await translating { try await client.familyListening(range) }
+    }
+
+    public func setStatsShared(withFamilyAdmin shared: Bool) async throws {
+        try await translating { try await client.setStatsShared(withFamilyAdmin: shared) }
+    }
+}
+
 /// One own.audio server's library as the change feed brought it, shared by the sources the
 /// app rebuilds, so a new address does not mean a new snapshot. The app saves `state` between
 /// launches and hands it back through `syncCatalogue`.

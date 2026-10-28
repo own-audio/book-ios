@@ -85,6 +85,8 @@ struct SettingsView: View {
             }
             .onChange(of: settings.lookAheadMinutes) { model.applyPlaybackSettings() }
 
+            AccentColorPicker()
+
             Section {
                 LabeledContent("Version", value: version)
                 Link("Source Code and Licence", destination: URL(string: "https://github.com/own-audio/book-ios")!)

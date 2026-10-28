@@ -229,6 +229,7 @@ final class AppModel {
             await store.clear()
             UserDefaults.standard.removeObject(forKey: Self.activeServerKey)
             UserDefaults.standard.removeObject(forKey: "books.resume")
+            UserDefaults.standard.removeObject(forKey: AccentChoice.storageKey)
             await covers.clear()
             responseCache.removeAll()
             catalogueStore.removeAll()
@@ -494,6 +495,50 @@ final class AppModel {
         guard let source = sources[serverId] as? OwnAudioSource else { throw SourceError.unsupported }
         try await source.signOutEverywhere()
         signInRefused.insert(serverId)
+    }
+
+    // MARK: The account and its listening (own.audio)
+
+    func listeningStats(serverId: UUID, range: StatsRange) async throws -> ListeningStats {
+        guard let source = sources[serverId] as? OwnAudioSource else { throw SourceError.unsupported }
+        return try await source.listeningStats(range)
+    }
+
+    /// Everyone's totals, for the family's admin; anyone else is refused.
+    func familyListening(serverId: UUID, range: StatsRange) async throws -> [MemberListening] {
+        guard let source = sources[serverId] as? OwnAudioSource else { throw SourceError.unsupported }
+        return try await source.familyListening(range)
+    }
+
+    func setStatsShared(serverId: UUID, _ shared: Bool) async throws {
+        guard let source = sources[serverId] as? OwnAudioSource else { throw SourceError.unsupported }
+        try await source.setStatsShared(withFamilyAdmin: shared)
+    }
+
+    /// Deletes the own.audio account on the server, then the server from this iPhone. The
+    /// server's last admin can't: the server answers 400.
+    func deleteAccount(serverId id: UUID) async throws {
+        guard let source = sources[id] as? OwnAudioSource else { return }
+        do {
+            try await source.deleteAccount()
+        } catch SourceError.http(400) {
+            throw AccountDeletionError.lastAdmin
+        } catch SourceError.http(403), SourceError.notAllowed {
+            throw AccountDeletionError.refused
+        }
+        try await removeServer(id: id)
+    }
+
+    enum AccountDeletionError: LocalizedError {
+        case lastAdmin
+        /// The public demo's shared account, which nobody may change.
+        case refused
+        var errorDescription: String? {
+            switch self {
+            case .lastAdmin: String(localized: "This is the server's only admin account. Make someone else an admin on the server first, or delete the account there.")
+            case .refused: String(localized: "The server doesn't let this account be deleted. A shared demo account stays for everyone.")
+            }
+        }
     }
 
     // MARK: Two-factor and signing in again

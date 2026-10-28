@@ -70,8 +70,8 @@ struct HouseholdView: View {
                         Text("Credit")
                     } footer: {
                         Text(credit.isDepleted
-                             ? "The credit has run out: the family's admin can top it up."
-                             : "Storage is paid from the family's prepaid credit, day by day; the family's admin tops it up.")
+                             ? "The family's credit has run out."
+                             : "Storage is paid from the family's prepaid credit, day by day.")
                     }
                 }
 
@@ -155,9 +155,9 @@ struct HouseholdView: View {
             FamilyPicture(name: household.picture) {
                 Image(systemName: "person.3.fill")
                     .font(.system(size: 36))
-                    .foregroundStyle(Theme.Colors.accent)
+                    .foregroundStyle(.tint)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Theme.Colors.accent.opacity(0.12))
+                    .background(.tint.opacity(0.12))
             }
             .frame(width: 104, height: 104)
             .clipShape(Circle())

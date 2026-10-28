@@ -17,6 +17,31 @@ All notable changes to this project are documented here. The format follows
 
 ### Added
 
+- Account, listening and colour, ported from own.audio Music:
+  - Delete Account on an own.audio server's page (Settings → the server → Account): asks once,
+    then deletes the account and everything it added on the server (`DELETE /api/v1/users/me`)
+    and the server from this iPhone. The server's last admin is told to hand over first; the
+    public demo's shared account is refused by the server and the app says so. App Store
+    guideline 5.1.1(v): an app that can create an account (own.audio's Apple and Google
+    sign-in can) must let it be deleted in the app. Never offered for Audiobookshelf, whose
+    accounts the server's admin makes.
+  - Listening, on the same page: time listened in a week, month, year or ever, days in a row,
+    audiobooks finished, minutes per day as a chart, by kind and the most played, from every
+    own.audio app on the account (`/api/v1/stats/me`). The family's admin also sees each
+    member's total, or "Private" for those who don't share it (`/api/v1/stats/family`);
+    everyone else gets a switch to share theirs with the admin, on servers that say whether it
+    is shared (1.0.0-beta.49 and later). `OwnAudioKit/Account.swift` is Music's file;
+    `getV1` takes a query. `BookLibrary` passes the calls through `OwnAudioSource`. Tests:
+    `AccountTests`.
+  - Accent Colour in Settings: the app's brown or one of ten others (pink in the place of
+    Music's brown), for buttons, links, progress and what's playing; alerts and menus follow.
+    The icon, the widgets, the own.audio mark and the audiobook colour in the family's storage
+    bar keep the brown. Places that drew in `Theme.Colors.accent` or `Color.accentColor` now
+    draw in the tint.
+  - The family's credit is only shown, without telling who tops it up: an app that may not sell
+    anything shouldn't point to where it is sold.
+  - UI test `DemoTests.testSettingsOnTheDemo`: the welcome screen's demo, the colours,
+    Listening, and the delete dialog (cancelled).
 - An own.audio book plays on a network that blocks cloud storage (a company firewall, say).
   own.audio's stream link redirects to the file in storage; when that host does not resolve,
   refuses or resets the connection, fails TLS, or a proxy in between answers 403, 407 or 451,

@@ -65,7 +65,7 @@ struct MiniPlayerBar: View {
                 // The book's progress as a thin line along the bottom edge.
                 GeometryReader { geometry in
                     let fraction = engine.durationMs > 0 ? CGFloat(engine.positionMs) / CGFloat(engine.durationMs) : 0
-                    Theme.Colors.accent.frame(width: geometry.size.width * min(max(fraction, 0), 1), height: 2)
+                    Rectangle().fill(.tint).frame(width: geometry.size.width * min(max(fraction, 0), 1), height: 2)
                         .frame(maxHeight: .infinity, alignment: .bottom)
                 }
                 .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.miniPlayer, style: .continuous))

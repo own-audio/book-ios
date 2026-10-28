@@ -194,8 +194,8 @@ public struct OwnAudioClient: Sendable {
 
     /// GET `path` under `/api/v1`, for the few things only that version has; the same
     /// access token works there.
-    func getV1<T: Decodable>(_ path: String) async throws -> T {
-        let data = try await raw("GET", path, query: [:], body: Optional<Empty>.none, idempotencyKey: nil, api: "api/v1")
+    func getV1<T: Decodable>(_ path: String, query: [String: String?] = [:]) async throws -> T {
+        let data = try await raw("GET", path, query: query, body: Optional<Empty>.none, idempotencyKey: nil, api: "api/v1")
         do {
             return try JSONDecoder.ownAudio.decode(T.self, from: data)
         } catch {

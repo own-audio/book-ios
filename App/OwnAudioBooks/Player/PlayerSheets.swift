@@ -5,6 +5,7 @@ import SwiftUI
 /// Speed: a stepper in 0.05 steps, with the common speeds one tap away.
 struct SpeedSheet: View {
     @Environment(AppModel.self) private var model
+    @AppStorage(AccentChoice.storageKey) private var accent: AccentChoice = .app
     @Environment(\.dismiss) private var dismiss
 
     private let presets: [Float] = [0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0]
@@ -35,7 +36,7 @@ struct SpeedSheet: View {
                                 .frame(maxWidth: .infinity, minHeight: Theme.minTarget)
                         }
                         .buttonStyle(.bordered)
-                        .tint(abs(model.engine.rate - preset) < 0.01 ? .accentColor : .secondary)
+                        .tint(abs(model.engine.rate - preset) < 0.01 ? accent.color : .secondary)
                         .accessibilityIdentifier("speed.preset.\(preset)")
                     }
                 }

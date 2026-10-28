@@ -171,7 +171,6 @@ struct HeroBackground: View {
 /// Reduce Motion but keeps the two poses apart.
 struct NowPlayingIndicator: View {
     let isPlaying: Bool
-    var accent: Color = Theme.Colors.accent
     @State private var isTall = [false, false, false]
     private static let durations: [Double] = [0.45, 0.62, 0.53]
     private static let resting: [CGFloat] = [6, 10, 7]
@@ -180,7 +179,7 @@ struct NowPlayingIndicator: View {
         HStack(alignment: .bottom, spacing: 2) {
             ForEach(0..<3, id: \.self) { index in
                 RoundedRectangle(cornerRadius: 1)
-                    .fill(accent)
+                    .fill(.tint)
                     .frame(width: 3, height: isTall[index] ? 12 : Self.resting[index])
                     .accessibleAnimation(
                         isPlaying ? .easeInOut(duration: Self.durations[index]).repeatForever(autoreverses: true).delay(Double(index) * 0.12) : .easeInOut(duration: 0.25),
@@ -221,7 +220,7 @@ struct FamilyBadge: View {
             .font(.caption2.weight(.semibold))
             .padding(6)
             .background(.ultraThinMaterial, in: Circle())
-            .foregroundStyle(Theme.Colors.accent)
+            .foregroundStyle(.tint)
             .accessibilityLabel("Shared with family")
     }
 }

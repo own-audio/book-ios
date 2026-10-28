@@ -85,7 +85,7 @@ struct PlayerView: View {
                                 .lineLimit(1)
                             Image(systemName: "chevron.down").font(.caption2)
                         }
-                        .foregroundStyle(Theme.Colors.accent)
+                        .foregroundStyle(.tint)
                     }
                     .accessibilityIdentifier("player.chapter")
                     .accessibilityLabel("Chapter: \(engine.currentChapter?.title ?? "")")
@@ -132,7 +132,6 @@ struct PlayerView: View {
                         self.scrubbing = nil
                     }
                 }
-                .tint(Theme.Colors.accent)
                 .accessibilityIdentifier("player.scrubber")
                 .accessibilityValue("\(ProgressText.clock(Int64(scrubbing ?? inChapter))) of \(ProgressText.clock(rangeEnd - rangeStart))")
                 HStack {
@@ -244,7 +243,7 @@ struct PlayerView: View {
                 icon().frame(height: 24)
                 Text(caption).font(.caption2)
             }
-            .foregroundStyle(tinted ? Theme.Colors.accent : Theme.Colors.foreground)
+            .foregroundStyle(tinted ? AnyShapeStyle(.tint) : AnyShapeStyle(Theme.Colors.foreground))
             .frame(maxWidth: .infinity, minHeight: Theme.minTarget)
             .contentShape(Rectangle())
         }

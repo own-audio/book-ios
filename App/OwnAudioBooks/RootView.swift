@@ -7,6 +7,7 @@ struct RootView: View {
     @Environment(AppModel.self) private var model
     @State private var isShowingPlayer = false
     @State private var tab: AppTab = .home
+    @AppStorage(AccentChoice.storageKey) private var accent: AccentChoice = .app
 
     private enum AppTab: Hashable { case home, library, downloads, search }
 
@@ -50,6 +51,13 @@ struct RootView: View {
         }
         .onOpenURL { url in
             if let id = WidgetSnapshot.bookId(from: url) { Task { await model.play(compositeId: id) } }
+        }
+        .tint(accent.color)
+        // Alerts and menus are drawn by UIKit, which takes the window's tint.
+        .onChange(of: accent, initial: true) { _, choice in
+            for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
+                for window in scene.windows { window.tintColor = UIColor(choice.color) }
+            }
         }
     }
 

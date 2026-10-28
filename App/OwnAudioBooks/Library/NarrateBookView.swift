@@ -225,7 +225,7 @@ struct NarrationsView: View {
                         } else if entry.stage == "complete" {
                             Text("Done · \(NarrateBookView.price(entry.quotedPriceCents, entry.currency))").font(.caption).foregroundStyle(Theme.Colors.muted)
                         } else {
-                            ProgressView(value: Self.fraction(entry)).tint(Theme.Colors.accent)
+                            ProgressView(value: Self.fraction(entry))
                             Text(Self.stageText(entry)).font(.caption).foregroundStyle(Theme.Colors.muted)
                         }
                     }

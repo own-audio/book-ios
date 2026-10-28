@@ -100,7 +100,7 @@ struct BookCard: View {
                 }
             if let fraction {
                 HStack(spacing: Theme.Spacing.sm) {
-                    ProgressView(value: fraction).tint(Theme.Colors.accent)
+                    ProgressView(value: fraction)
                     Text(fraction, format: .percent.precision(.fractionLength(0)))
                         .font(.caption2.monospacedDigit())
                         .foregroundStyle(Theme.Colors.muted)

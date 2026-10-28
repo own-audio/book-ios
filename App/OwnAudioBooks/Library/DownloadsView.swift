@@ -124,9 +124,9 @@ struct SetDownloadButton: View {
             .accessibilityIdentifier("setDownload.done")
         } else if active {
             ZStack {
-                Circle().stroke(Theme.Colors.accent.opacity(0.25), lineWidth: 2.5)
+                Circle().stroke(.tint.opacity(0.25), lineWidth: 2.5)
                 Circle().trim(from: 0, to: max(Double(done) / Double(books.count), 0.03))
-                    .stroke(Theme.Colors.accent, style: StrokeStyle(lineWidth: 2.5, lineCap: .round)).rotationEffect(.degrees(-90))
+                    .stroke(.tint, style: StrokeStyle(lineWidth: 2.5, lineCap: .round)).rotationEffect(.degrees(-90))
                 Text("\(done)").font(.system(size: 9).monospacedDigit())
             }
             .frame(width: 26, height: 26)
@@ -169,8 +169,8 @@ struct DownloadButton: View {
                     Image(systemName: "checkmark.circle.fill").font(.title2)
                 case .downloading(let fraction):
                     ZStack {
-                        Circle().stroke(Theme.Colors.accent.opacity(0.25), lineWidth: 3)
-                        Circle().trim(from: 0, to: max(fraction, 0.02)).stroke(Theme.Colors.accent, style: StrokeStyle(lineWidth: 3, lineCap: .round)).rotationEffect(.degrees(-90))
+                        Circle().stroke(.tint.opacity(0.25), lineWidth: 3)
+                        Circle().trim(from: 0, to: max(fraction, 0.02)).stroke(.tint, style: StrokeStyle(lineWidth: 3, lineCap: .round)).rotationEffect(.degrees(-90))
                     }
                     .frame(width: 22, height: 22)
                 case .failed:
@@ -182,7 +182,6 @@ struct DownloadButton: View {
             .frame(minWidth: Theme.minTarget, minHeight: 50)
         }
         .buttonStyle(.bordered)
-        .tint(Theme.Colors.accent)
         .disabled(model.isOffline && state == nil)
         .accessibilityIdentifier("detail.download")
         .accessibilityLabel(label(state))
@@ -212,11 +211,11 @@ struct DownloadBadge: View {
                 .font(.caption)
                 .foregroundStyle(.white)
                 .padding(5)
-                .background(Theme.Colors.accent, in: Circle())
+                .background(.tint, in: Circle())
                 .accessibilityLabel("Downloaded")
         case .downloading(let fraction):
             ZStack {
-                Circle().fill(Theme.Colors.accent)
+                Circle().fill(.tint)
                 Circle().trim(from: 0, to: max(fraction, 0.02)).stroke(.white, style: StrokeStyle(lineWidth: 2, lineCap: .round)).rotationEffect(.degrees(-90)).padding(4)
             }
             .frame(width: 22, height: 22)

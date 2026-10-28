@@ -174,6 +174,7 @@ struct ServerDetailView: View {
     @State private var isAddingAddress = false
     @State private var newAddress = ""
     @State private var addressError: String?
+    @State private var confirmDeleteAccount = false
 
     /// The record as it is now: addresses change while the page is open.
     private var current: ServerRecord { model.server(server.id) ?? server }
@@ -218,6 +219,14 @@ struct ServerDetailView: View {
             Section {
                 Button("Sign In Again") { isSigningIn = true }
                     .accessibilityIdentifier("serverDetail.signInAgain")
+                // App Store guideline 5.1.1(v): an account the app can create (own.audio's Apple
+                // and Google sign-in can) must be deletable in the app. Audiobookshelf accounts
+                // are made by the server's admin, never here.
+                if server.kind == .ownAudio, case .ownAudio(_, .some) = current.auth {
+                    Button("Delete Account…", role: .destructive) { confirmDeleteAccount = true }
+                        .foregroundStyle(.red)
+                        .accessibilityIdentifier("serverDetail.deleteAccount")
+                }
             } header: {
                 Text("Account")
             } footer: {
@@ -233,6 +242,8 @@ struct ServerDetailView: View {
                     }
                     NavigationLink { DevicesView(serverId: server.id) } label: { Label("Devices", systemImage: "iphone.gen3") }
                         .accessibilityIdentifier("serverDetail.devices")
+                    NavigationLink { ListeningView(serverId: server.id) } label: { Label("Listening", systemImage: "chart.bar") }
+                        .accessibilityIdentifier("serverDetail.listening")
                 }
             }
             Section {
@@ -360,6 +371,15 @@ struct ServerDetailView: View {
             }
         } message: {
             Text("Its downloads leave this iPhone. Nothing changes on the server.")
+        }
+        .confirmationDialog("Delete Your Account?", isPresented: $confirmDeleteAccount, titleVisibility: .visible) {
+            Button("Delete Account", role: .destructive) {
+                let id = server.id
+                dismiss()
+                model.perform { try await model.deleteAccount(serverId: id) }
+            }
+        } message: {
+            Text("Your account on \(server.host.host() ?? server.displayName) is deleted for good, with everything you added to it: music, audiobooks, podcasts, playlists and your listening history. What others in your family added stays with them.")
         }
         .alert("Add Address", isPresented: $isAddingAddress) {
             TextField("http://192.168.1.20:13378", text: $newAddress)

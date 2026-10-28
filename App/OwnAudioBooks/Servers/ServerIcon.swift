@@ -35,7 +35,7 @@ struct ServerIcon: View {
                     Theme.Colors.backgroundAlt
                     Image(systemName: brand.symbol)
                         .font(.system(size: size * 0.5, weight: .medium))
-                        .foregroundStyle(Theme.Colors.accent)
+                        .foregroundStyle(.tint)
                 }
             }
         }

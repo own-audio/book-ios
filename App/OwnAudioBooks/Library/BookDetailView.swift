@@ -103,11 +103,11 @@ struct BookDetailView: View {
                 }
                 ForEach(book.series, id: \.id) { series in
                     NavigationLink(value: LibraryRoute.oneSeries(SeriesSummary(id: series.id, name: series.name, bookCount: 0), serverId: serverId)) {
-                        Text(series.sequence.map { "\(series.name) #\($0)" } ?? series.name).font(.caption).foregroundStyle(Theme.Colors.accent)
+                        Text(series.sequence.map { "\(series.name) #\($0)" } ?? series.name).font(.caption).foregroundStyle(.tint)
                     }
                 }
                 if book.visibility == .family {
-                    Label("Shared with the family", systemImage: "person.2.fill").font(.caption).foregroundStyle(Theme.Colors.accent)
+                    Label("Shared with the family", systemImage: "person.2.fill").font(.caption).foregroundStyle(.tint)
                 }
                 Spacer(minLength: 0)
                 Text(ProgressText.summary(book: book, progress: progress))
@@ -153,8 +153,8 @@ struct BookDetailView: View {
                 // The button's own background is the progress bar.
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
-                        Theme.Colors.accent.opacity(0.55)
-                        Theme.Colors.accent.frame(width: geometry.size.width * (fraction >= 0.01 ? fraction : 0))
+                        Rectangle().fill(.tint.opacity(0.55))
+                        Rectangle().fill(.tint).frame(width: geometry.size.width * (fraction >= 0.01 ? fraction : 0))
                     }
                 }
             }
@@ -206,7 +206,7 @@ struct BookDetailView: View {
                             let isCurrent = isPlayingThis && model.engine.currentChapter?.startMs == chapter.startMs
                             HStack {
                                 if isCurrent { NowPlayingIndicator(isPlaying: model.engine.isPlaying) }
-                                Text(chapter.title).font(.subheadline.weight(isCurrent ? .semibold : .regular)).foregroundStyle(isCurrent ? Theme.Colors.accent : Theme.Colors.foreground).lineLimit(2)
+                                Text(chapter.title).font(.subheadline.weight(isCurrent ? .semibold : .regular)).foregroundStyle(isCurrent ? AnyShapeStyle(.tint) : AnyShapeStyle(Theme.Colors.foreground)).lineLimit(2)
                                 Spacer()
                                 Text(ProgressText.clock(chapter.durationMs)).font(.caption.monospacedDigit()).foregroundStyle(Theme.Colors.muted)
                             }

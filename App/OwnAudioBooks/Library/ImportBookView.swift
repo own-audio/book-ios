@@ -214,7 +214,7 @@ struct ImportsView: View {
                             }
                             .font(.caption.weight(.semibold))
                         } else {
-                            ProgressView(value: model.imports.progress(of: item.id)).tint(Theme.Colors.accent)
+                            ProgressView(value: model.imports.progress(of: item.id))
                             Text("\(item.files.count) files · \(ByteCountFormatter.string(fromByteCount: item.totalBytes, countStyle: .file))").font(.caption).foregroundStyle(Theme.Colors.muted)
                         }
                     }
