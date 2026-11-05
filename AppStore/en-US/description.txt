@@ -14,6 +14,11 @@ Your whole library
 • Sort and filter: not started, in progress, finished
 • Search by title, author, narrator and series
 
+Offline
+• Download a book, or a whole series, author or collection
+• Downloads go on in the background; Wi-Fi only and a storage limit if you want
+• Keep the whole library on the iPhone, to browse it with no signal
+
 Your place, everywhere
 • One position per book, saved on this iPhone first and then on your server, so a lost signal never loses your place
 • Positions and bookmarks follow you between devices and apps that use the same server
@@ -26,8 +31,9 @@ At home and away
 
 With an own.audio server
 • A library shared with the family, where you choose what is shared
+• Add audiobooks from the Files app to your server
 • The library on the iPhone catches up within seconds of a change on the server
 
-Private by design: the app talks only to the servers you add. No account with us, no analytics, no ads. Both kinds of server hand the app a sign-in token; the password is not kept.
+Private by design: the app talks only to the servers you add, and to Apple or Google if you sign in with them. No account with us, no analytics, no ads. Both kinds of server hand the app a sign-in token; the password is not kept.
 
 Free and open source under the MPL-2.0. Made by own.audio.

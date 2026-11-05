@@ -1,0 +1,34 @@
+{
+  "1-library": [
+    "Vaše audioknihy, váš server",
+    "Z Audiobookshelfu nebo own.audio, ze serveru, který provozujete"
+  ],
+  "2-player": [
+    "Stvořený pro poslech",
+    "Rychlost se zachovaným hlasem, vlastní skoky, AirPlay"
+  ],
+  "3-book": [
+    "Každá kniha celá",
+    "Kapitoly, soubory, záložky a vaše místo v ní"
+  ],
+  "4-chapters": [
+    "Každá kapitola",
+    "Ze serveru, nebo přečtené přímo ze souborů"
+  ],
+  "5-sleep": [
+    "Usne s vámi",
+    "Časovač spánku na minuty, do konce kapitoly nebo knihy"
+  ],
+  "6-home": [
+    "Tam, kde jste skončili",
+    "Uloženo nejdřív v iPhonu, pak na vašem serveru"
+  ],
+  "7-family": [
+    "Knihy pro celou rodinu",
+    "Sdílejte, co chcete; každý má své vlastní místo"
+  ],
+  "8-downloads": [
+    "Offline, když je potřeba",
+    "Stáhněte knihu, sérii nebo celého autora"
+  ]
+}

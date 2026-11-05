@@ -1,5 +1,9 @@
-No account is needed to try the app: on the welcome screen, "Try the Demo Library" signs in to the public own.audio demo server (demopi.own.audio) by itself. It holds public-domain audiobooks; play one, and the chapters, speed, sleep timer and bookmarks are all there.
+No account is needed to try the app: on the welcome screen, "Try the Demo Library" signs in to the public own.audio demo server (demopi.own.audio) by itself. It holds public-domain audiobooks from LibriVox; open Library and play one. Chapters, speed, the sleep timer and bookmarks are in the player.
 
-The app also connects to Audiobookshelf servers, which a reviewer would need to run themselves; everything in the app works the same way on both.
+The app plays audiobooks from servers the listener runs or rents: own.audio and Audiobookshelf. A reviewer would need their own Audiobookshelf server for that; everything in the app works the same way on both.
+
+Some parts appear only when the server offers them: the family and its shared books, listening statistics, adding books from the Files app, and sign-in with Apple or Google. The app sells nothing and links to no purchase.
+
+Deleting an account: Settings → the server → Delete Account… The demo's shared account is protected by the server, so deleting it is refused with an explanation; on any other own.audio account it deletes the account and everything it added.
 
 The app is free and open source (MPL-2.0): https://github.com/own-audio/book-ios

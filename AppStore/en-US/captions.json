@@ -1,0 +1,34 @@
+{
+  "1-library": [
+    "Your audiobooks, your server",
+    "From Audiobookshelf or own.audio, the server you run"
+  ],
+  "2-player": [
+    "Made for listening",
+    "Speed with the voice kept, skip intervals, AirPlay"
+  ],
+  "3-book": [
+    "Every book in full",
+    "Chapters, files, bookmarks and your place in it"
+  ],
+  "4-chapters": [
+    "Every chapter",
+    "From the server, or read from the files themselves"
+  ],
+  "5-sleep": [
+    "Falls asleep when you do",
+    "Sleep timer in minutes, to the chapter's or the book's end"
+  ],
+  "6-home": [
+    "Right where you left off",
+    "Saved on the iPhone first, then on your server"
+  ],
+  "7-family": [
+    "Books for the whole family",
+    "Share what you choose; everyone keeps their own place"
+  ],
+  "8-downloads": [
+    "Offline, when you need it",
+    "Download a book, a series or a whole author"
+  ]
+}

@@ -14,6 +14,11 @@ Celá vaše knihovna
 • Řazení a filtry: nezačaté, rozposlouchané, dokončené
 • Hledání podle názvu, autora, vypravěče a série
 
+Offline
+• Stáhněte knihu, nebo celou sérii, autora či kolekci
+• Stahování běží na pozadí; jen přes Wi-Fi a s limitem úložiště, pokud chcete
+• Celá knihovna v iPhonu, abyste ji mohli procházet i bez signálu
+
 Vaše místo, všude
 • Jedna pozice pro každou knihu, uložená nejdřív v iPhonu a pak na serveru, takže výpadek signálu nikdy neztratí vaše místo
 • Pozice a záložky vás sledují mezi zařízeními a aplikacemi se stejným serverem
@@ -26,8 +31,9 @@ Doma i na cestách
 
 Se serverem own.audio
 • Knihovna sdílená s rodinou, kde si volíte, co je sdílené
+• Přidávejte audioknihy z aplikace Soubory na svůj server
 • Knihovna v iPhonu se dozví o změně na serveru během několika sekund
 
-Soukromí už od návrhu: aplikace mluví jen se servery, které přidáte. Žádný účet u nás, žádná analytika, žádné reklamy. Oba druhy serverů dávají aplikaci přihlašovací token; heslo se neukládá.
+Soukromí už od návrhu: aplikace mluví jen se servery, které přidáte, a s Applem nebo Googlem, pokud se přes ně přihlásíte. Žádný účet u nás, žádná analytika, žádné reklamy. Oba druhy serverů dávají aplikaci přihlašovací token; heslo se neukládá.
 
 Zdarma a open source pod licencí MPL-2.0. Vytvořilo own.audio.

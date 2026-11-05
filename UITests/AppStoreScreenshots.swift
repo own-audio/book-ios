@@ -1,19 +1,23 @@
 import XCTest
 
-/// Screenshots for the App Store and the website, taken on the public demo library ("Try the
-/// Demo Library": public-domain LibriVox books, nothing private). Not a test of behaviour: run
-/// it on purpose, on the store's device sizes, with a clean status bar
-/// (`scripts/app-store-screenshots.sh`). `SCREENSHOT_LANGUAGE` is `en` or `cs`,
-/// `SCREENSHOT_DIR` is where the PNGs go. Modelled on the music app's.
+/// The App Store screenshots, taken from a real server. Not a test of behaviour: run it on
+/// purpose, on the device sizes the store wants, with a clean status bar, in light mode (see
+/// `scripts/app-store-screenshots.sh`). Use an own.audio server holding only the demo library
+/// (public-domain LibriVox books), signed in as the account that runs its family, as own.audio
+/// Music's screenshots do, so the three apps' pictures show the same family and server.
+///
+/// `TEST_RUNNER_SCREENSHOT_LANGUAGE` is `en` or `cs`; `TEST_RUNNER_SCREENSHOT_DIR` is where the
+/// PNGs go; `TEST_RUNNER_SCREENSHOT_BOOK` is the book shown, played and downloaded (one whose
+/// files carry chapter titles).
 final class AppStoreScreenshots: XCTestCase {
     private var env: [String: String] { ProcessInfo.processInfo.environment }
     private var czech: Bool { env["SCREENSHOT_LANGUAGE"] == "cs" }
+    private var iPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
 
     override func setUpWithError() throws {
-        // Every picture that can be taken is worth more than stopping at the first miss.
-        continueAfterFailure = true
-        guard env["SCREENSHOT_DIR"] != nil, env["SCREENSHOT_LANGUAGE"] != nil else {
-            throw XCTSkip("Set SCREENSHOT_DIR and SCREENSHOT_LANGUAGE to take store screenshots")
+        continueAfterFailure = false
+        guard env["SERVER_HOST"] != nil, env["SCREENSHOT_DIR"] != nil, env["SCREENSHOT_LANGUAGE"] != nil else {
+            throw XCTSkip("Set SERVER_HOST, SCREENSHOT_DIR and SCREENSHOT_LANGUAGE to take store screenshots")
         }
     }
 
@@ -21,23 +25,28 @@ final class AppStoreScreenshots: XCTestCase {
 
     func testTakeScreenshots() throws {
         let app = XCUIApplication()
-        app.launchArguments = ["-uiTestReset", "-AppleLanguages", "(\(env["SCREENSHOT_LANGUAGE"]!))", "-AppleLocale", czech ? "cs_CZ" : "en_US"]
+        app.launchArguments = [
+            "-uiTestReset", "-AppleLanguages", "(\(env["SCREENSHOT_LANGUAGE"]!))", "-AppleLocale", czech ? "cs_CZ" : "en_US",
+            "-debugServerHost", env["SERVER_HOST"]!, "-debugServerUser", env["SERVER_USER"] ?? "",
+            "-debugServerPassword", env["SERVER_PASSWORD"] ?? "", "-debugServerName", t("Family Books", "Rodinné knihy"),
+        ]
         app.launchChecked()
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 90), "Home should open on the server")
+        sleep(6)
 
-        let demo = app.buttons["addServer.demo"]
-        XCTAssertTrue(demo.waitForExistence(timeout: 15))
-        demo.tap()
-        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 90), "Home should open on the demo")
-        // Covers and shelves in.
-        sleep(8)
-        save(app, "1-home")
-
-        tab(app, t("Library", "Knihovna")).tap()
-        let book = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'")).firstMatch
-        XCTAssertTrue(book.waitForExistence(timeout: 30), "the demo should have books")
+        // The library, with its covers.
+        openLibrary(app)
+        let anyBook = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'library.book.'")).firstMatch
+        XCTAssertTrue(anyBook.waitForExistence(timeout: 30), "the server should have books")
         sleep(5)
-        save(app, "2-library")
+        save(app, "1-library")
 
+        // The book, then the player a little way into it.
+        let title = env["SCREENSHOT_BOOK"] ?? "Just So Stories"
+        let book = app.descendants(matching: .any).matching(NSPredicate(
+            format: "identifier BEGINSWITH 'library.book.' AND label CONTAINS %@", title
+        )).firstMatch
+        XCTAssertTrue(book.waitForExistence(timeout: 15), "\(title) should be in the library")
         book.tap()
         let play = app.buttons["detail.play"]
         XCTAssertTrue(play.waitForExistence(timeout: 30))
@@ -45,42 +54,93 @@ final class AppStoreScreenshots: XCTestCase {
         save(app, "3-book")
 
         play.tap()
+        chooseThisDevice(app)
         let miniPlayer = app.buttons["miniPlayer"]
         XCTAssertTrue(miniPlayer.waitForExistence(timeout: 40))
         let pause = app.buttons["miniPlayer.playPause"]
         _ = waitUntil(timeout: 40) { pause.exists && pause.label == t("Pause", "Pozastavit") }
-        sleep(8)
+        sleep(10)
         miniPlayer.tap()
         XCTAssertTrue(app.descendants(matching: .any)["player.scrubber"].firstMatch.waitForExistence(timeout: 15))
-        sleep(4)
-        save(app, "4-player")
+        sleep(3)
+        save(app, "2-player")
 
-        // The chapters, where the player offers them.
-        let chapter = app.buttons["player.chapter"]
-        if chapter.waitForExistence(timeout: 5) {
-            chapter.tap()
-            sleep(3)
-            save(app, "5-chapters")
-            dismissSheet(app)
-        }
-
-        // The sleep timer and speed, as the player shows them.
-        let speed = app.buttons["speed.value"]
-        if speed.waitForExistence(timeout: 5) {
-            speed.tap()
-            sleep(2)
-            save(app, "6-speed")
-            dismissSheet(app)
-        }
-        if app.buttons["player.close"].exists { app.buttons["player.close"].tap() }
-
-        tab(app, t("Search", "Hledat")).tap()
+        // The chapters: the file titles, as the server has no chapter marks for this book.
+        app.buttons["player.chapter"].tap()
+        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'chapters.'")).firstMatch
+            .waitForExistence(timeout: 10))
         sleep(2)
+        save(app, "4-chapters")
+        dismissSheet(app)
+
+        // The sleep timer's choices.
+        app.buttons["player.sleep"].tap()
+        XCTAssertTrue(app.buttons["sleep.endOfChapter"].waitForExistence(timeout: 10))
+        // The sheet's glass settles a moment after it appears.
+        sleep(4)
+        save(app, "5-sleep")
+        dismissSheet(app)
+
+        // Paused, so the listening position is saved and Home has it first.
+        let playPause = app.buttons["player.playPause"]
+        if playPause.exists && playPause.label == t("Pause", "Pozastavit") { playPause.tap() }
+        app.buttons["player.close"].tap()
+        sleep(1)
+
+        // The book onto the phone, for the Downloads tab.
+        let download = app.buttons["detail.download"]
+        XCTAssertTrue(download.waitForExistence(timeout: 10))
+        download.tap()
+        XCTAssertTrue(waitUntil(timeout: 300) { download.label == t("Downloaded", "Staženo") }, "the book should download: \(download.label)")
+
+        // Home: Continue Listening, Recently Added.
+        tab(app, t("Home", "Domů")).tap()
+        XCTAssertTrue(app.buttons["home.settings"].waitForExistence(timeout: 10))
+        sleep(5)
+        save(app, "6-home")
+
+        tab(app, t("Downloads", "Stažené")).tap()
+        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'downloads.'")).firstMatch
+            .waitForExistence(timeout: 15))
+        sleep(2)
+        save(app, "8-downloads")
+
+        // The family, from the server's page in Settings.
+        tab(app, t("Home", "Domů")).tap()
+        app.buttons["home.settings"].tap()
+        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'servers.row.'")).firstMatch
+        XCTAssertTrue(row.waitForExistence(timeout: 10), "Settings should list the server")
+        row.tap()
+        let family = app.buttons["serverDetail.family"]
+        XCTAssertTrue(family.waitForExistence(timeout: 15), "an own.audio server signed in to has a family")
+        family.tap()
+        XCTAssertTrue(app.staticTexts[t("Members", "Členové")].waitForExistence(timeout: 15))
+        sleep(3)
+        save(app, "7-family")
+    }
+
+    // MARK: - Steps
+
+    private func openLibrary(_ app: XCUIApplication) {
+        // A tab on the iPhone; on the iPad, the sidebar's Books.
+        let sidebar = app.descendants(matching: .any)["sidebar.books"].firstMatch
+        for _ in 0..<4 {
+            if sidebar.exists { sidebar.tap(); return }
+            let library = tab(app, t("Library", "Knihovna"))
+            if library.exists { library.tap(); return }
+            sleep(1)
+        }
+    }
+
+    /// Another device's place in the book (from earlier runs) asks where to go on; this one.
+    private func chooseThisDevice(_ app: XCUIApplication) {
+        let here = app.buttons["resume.local"]
+        if here.waitForExistence(timeout: 3) { here.tap() }
     }
 
     private func dismissSheet(_ app: XCUIApplication) {
         let done = app.buttons.matching(NSPredicate(format: "label IN %@", ["Done", "Hotovo"])).firstMatch
-        if done.waitForExistence(timeout: 2) { done.tap(); return }
+        if done.waitForExistence(timeout: 2) { done.tap(); sleep(1); return }
         app.swipeDown(velocity: .fast)
         sleep(1)
     }
@@ -104,7 +164,7 @@ final class AppStoreScreenshots: XCTestCase {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
             if condition() { return true }
-            RunLoop.current.run(until: Date().addingTimeInterval(0.25))
+            RunLoop.current.run(until: Date().addingTimeInterval(0.5))
         }
         return condition()
     }

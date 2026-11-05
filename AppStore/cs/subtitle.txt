@@ -1,1 +1,1 @@
-Přehrávač pro váš server knih
+Přehrávač pro server audioknih
