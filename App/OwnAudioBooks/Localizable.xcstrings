@@ -655,7 +655,7 @@
         }
       }
     },
-    "Accent Colour": {
+    "Accent Color": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -785,7 +785,7 @@
         }
       }
     },
-    "Add to Favourites": {
+    "Add to Favorites": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -925,7 +925,7 @@
         }
       }
     },
-    "App Colour": {
+    "App Color": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -1718,7 +1718,7 @@
         }
       }
     },
-    "Favourite": {
+    "Favorite": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -1728,7 +1728,7 @@
         }
       }
     },
-    "Favourites": {
+    "Favorites": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -1830,7 +1830,7 @@
         }
       }
     },
-    "For buttons, links and what's playing. The icon and the widgets keep the app's colour.": {
+    "For buttons, links and what's playing. The icon and the widgets keep the app's color.": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -2168,6 +2168,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Připojit se k jiné rodině…"
+          }
+        }
+      }
+    },
+    "Just Me": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jen já"
           }
         }
       }
@@ -2712,7 +2722,7 @@
         }
       }
     },
-    "No favourite books yet. Mark one with the heart in its menu.": {
+    "No favorite books yet. Mark one with the heart in its menu.": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -2778,6 +2788,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zatím tu nikdo není."
+          }
+        }
+      }
+    },
+    "Not Shared": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nesdíleno"
           }
         }
       }
@@ -2912,12 +2932,12 @@
         }
       }
     },
-    "Offline Mode shows and plays only what is on this device, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this device, with the books not downloaded greyed out; only downloaded books play.": {
+    "Offline Mode shows and plays only what is on this device, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this device, with the books not downloaded grayed out; only downloaded books play.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Režim offline zobrazí a přehraje jen to, co je v tomto zařízení, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.\n\nS celou knihovnou se knihovna serveru own.audio ukazuje offline z kopie v tomto zařízení, nestažené knihy jsou zašedlé; přehrají se jen stažené."
+            "value": "Režim offline zobrazí a přehraje jen to, co je v tomto zařízení, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odeberou dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.\n\nS celou knihovnou se knihovna serveru own.audio ukazuje offline z kopie v tomto zařízení, nestažené knihy jsou zašedlé; přehrají se jen stažené."
           }
         }
       }
@@ -2988,16 +3008,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Jeden na kapitolu"
-          }
-        }
-      }
-    },
-    "Only me": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jen já"
           }
         }
       }
@@ -3232,16 +3242,6 @@
         }
       }
     },
-    "Private": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Soukromé"
-          }
-        }
-      }
-    },
     "Published": {
       "localizations": {
         "cs": {
@@ -3377,7 +3377,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odstranit všechna stažení"
+            "value": "Odebrat všechna stažení"
           }
         }
       }
@@ -3387,7 +3387,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odstranit všechna stažení?"
+            "value": "Odebrat všechna stažení?"
           }
         }
       }
@@ -3397,7 +3397,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odstranit stažení"
+            "value": "Odebrat stažení"
           }
         }
       }
@@ -3407,12 +3407,12 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odstranit stažení?"
+            "value": "Odebrat stažení?"
           }
         }
       }
     },
-    "Remove Favourite": {
+    "Remove Favorite": {
       "localizations": {
         "cs": {
           "stringUnit": {
@@ -3437,7 +3437,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odstranit tato stažení"
+            "value": "Odebrat tato stažení"
           }
         }
       }
@@ -3839,7 +3839,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odhlásit všude"
+            "value": "Odhlásit se všude"
           }
         }
       }
@@ -3849,7 +3849,7 @@
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Odhlásit všude?"
+            "value": "Odhlásit se všude?"
           }
         }
       }

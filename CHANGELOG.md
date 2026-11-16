@@ -6,6 +6,16 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Wording follows the glossary shared by the own.audio apps. English is American:
+  **Favorites**, **Add to Favorites**, **Remove Favorite**, **Accent Color**, **App Color**,
+  "grayed out". Importing a book offers **Just Me** (cs "Jen já") instead of "Only me", and the
+  admin's Listening view shows **Not Shared** (cs "Nesdíleno") instead of "Private" for members
+  who keep their time to themselves. Czech: **Odhlásit se všude** (signing out a device stays
+  "Odhlásit"), and downloads are removed with **Odebrat** ("Odebrat stažení", "Odebrat všechna
+  stažení", "Odebrat tato stažení").
+
 ## [1.0.1] - 2026-11-16
 
 ### Added

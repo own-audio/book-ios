@@ -57,7 +57,7 @@ struct BookDetailView: View {
                         Button {
                             toggleFavourite()
                         } label: {
-                            Label(isFavourite ? "Remove Favourite" : "Add to Favourites", systemImage: isFavourite ? "heart.slash" : "heart")
+                            Label(isFavourite ? "Remove Favorite" : "Add to Favorites", systemImage: isFavourite ? "heart.slash" : "heart")
                         }
                     }
                     if model.canShare(book, serverId: serverId) {

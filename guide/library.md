@@ -31,7 +31,7 @@ The round button with lines at the top right opens a menu:
 - **Sort**: **Title**, **Author**, **Recently Added** or **Length**, and **Descending** to
   reverse the order.
 - **Show**: **All**, **Not Started**, **In Progress**, **Finished**, and on own.audio
-  **Favourites**.
+  **Favorites**.
 - **Grid**: on for covers, off for a list. In the list, each row shows the cover, title,
   author, and the length with the time left ("4 h 12 min · 1 h 3 min left") or **Finished**.
   The book that is playing has a small moving indicator.

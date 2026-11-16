@@ -58,7 +58,7 @@ The **⋯** button at the top right has:
 
 | Item | What it does | Where |
 |---|---|---|
-| **Add to Favourites** / **Remove Favourite** | Marks the book with a heart. Favourites can be shown with the library's **Show** filter. | own.audio |
+| **Add to Favorites** / **Remove Favorite** | Marks the book with a heart. Favorites can be shown with the library's **Show** filter. | own.audio |
 | **Share with the Family** / **Keep to Myself** | Shares a book you added with everyone in your family, or takes it back. Shown only for your own books. | own.audio |
 | **Mark as Finished** / **Mark as Not Finished** | Sets the book finished or not, on the server too. | Both |
 | **Reset Progress** | After asking, forgets your position in the book on every device. | Both, once you have started the book |

@@ -79,7 +79,7 @@ struct ImportBookView: View {
                         }
                     }
                     Picker("Who sees it", selection: $visibility) {
-                        Text("Only me").tag(BookLibrary.Visibility.private)
+                        Text("Just Me").tag(BookLibrary.Visibility.private)
                         Text("The family").tag(BookLibrary.Visibility.family)
                     }
                     .accessibilityIdentifier("import.visibility")

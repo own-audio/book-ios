@@ -22,7 +22,7 @@ opens a menu: choose **Import Audio Files…**.) The **Import a Book** screen op
 3. Under **Book**, the app fills in **Title**, **Author** and the **Cover** from the first
    file's tags. Change them if you like; **Narrator** can be added too. Separate several
    authors or narrators with a semicolon. Tap **Cover** to choose a picture from Photos.
-4. **Who sees it**: **Only me** (default) or **The family**.
+4. **Who sees it**: **Just Me** (default) or **The family**.
 5. Tap **Add to Library**.
 
 If you are on mobile data and the files are larger than 100 MB, the app asks first: **Upload …

@@ -232,6 +232,6 @@ struct FavouriteBadge: View {
             .foregroundStyle(.white)
             .padding(5)
             .background(.black.opacity(0.45), in: Circle())
-            .accessibilityLabel("Favourite")
+            .accessibilityLabel("Favorite")
     }
 }

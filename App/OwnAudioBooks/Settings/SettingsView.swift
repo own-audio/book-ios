@@ -42,7 +42,7 @@ struct SettingsView: View {
                         .accessibilityIdentifier("settings.wholeLibrary")
                 }
             } footer: {
-                Text("Offline Mode shows and plays only what is on this device, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this device, with the books not downloaded greyed out; only downloaded books play.")
+                Text("Offline Mode shows and plays only what is on this device, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this device, with the books not downloaded grayed out; only downloaded books play.")
             }
             .onChange(of: settings.wifiOnlyDownloads) { model.applyPlaybackSettings() }
             .onChange(of: settings.storageCapBytes) { model.applyPlaybackSettings() }

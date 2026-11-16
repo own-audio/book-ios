@@ -89,7 +89,7 @@ struct BooksListView: View {
                         Text("In Progress").tag(BookFilter.inProgress)
                         Text("Finished").tag(BookFilter.finished)
                         if model.capabilitiesFor(serverId).contains(.favourites) {
-                            Text("Favourites").tag(BookFilter.favourites)
+                            Text("Favorites").tag(BookFilter.favourites)
                         }
                     }
                     Divider()
@@ -174,7 +174,7 @@ struct BooksListView: View {
         case .notStarted: String(localized: "Every book has been started.")
         case .inProgress: String(localized: "No book is in progress.")
         case .finished: String(localized: "No book is finished yet.")
-        case .favourites: String(localized: "No favourite books yet. Mark one with the heart in its menu.")
+        case .favourites: String(localized: "No favorite books yet. Mark one with the heart in its menu.")
         }
     }
 

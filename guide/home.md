@@ -28,7 +28,7 @@ The covers carry small badges:
 
 - a progress bar with the percentage under a book you have started,
 - a people icon in the top right corner for a book shared with your family (own.audio),
-- a heart in the top left corner for a favourite (own.audio),
+- a heart in the top left corner for a favorite (own.audio),
 - a download arrow in the bottom right corner for a book on this iPhone, or a ring while it
   downloads.
 

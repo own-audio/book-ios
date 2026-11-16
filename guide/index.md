@@ -40,7 +40,7 @@ buttons only appear on one kind of server.
 | Asks which position to use when another device is ahead | Yes | No |
 | Series, authors, narrators | Yes | Yes |
 | Collections | No | Yes |
-| Favourites | Yes | No |
+| Favorites | Yes | No |
 | Several book libraries in one account | No | Yes |
 | Smaller stream on mobile data (**Saver**) | Yes | Yes |
 | Whole library browsable offline | Yes | No |

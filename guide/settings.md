@@ -40,11 +40,11 @@ More in [Downloads and offline](downloads.md).
 | **On Mobile Data** | **Original** streams the original files. **Saver** asks the server for a smaller stream (64 kbps) where it makes one. **Downloaded Only** plays nothing that is not on this iPhone. Not shown on a Mac. | Original |
 | **Keep Ahead** | While a book streams, how many minutes ahead are kept on the iPhone, so a gap in the signal goes unheard: 5, 10 or 15 min. With Low Data Mode, 5 minutes. Saver streams are not kept. | 10 min |
 
-## Accent Colour
+## Accent Color
 
-A row of colours for buttons, links and what's playing: **App Colour** (the app's brown, the
+A row of colors for buttons, links and what's playing: **App Color** (the app's brown, the
 default), **Blue**, **Indigo**, **Purple**, **Pink**, **Red**, **Orange**, **Yellow**, **Green**,
-**Teal** and **Graphite**. The app icon and the widgets keep the app's colour.
+**Teal** and **Graphite**. The app icon and the widgets keep the app's color.
 
 The app follows your iPhone's light or dark appearance.
 

@@ -11,7 +11,7 @@ The app collects nothing. There is no account with us, no analytics, no ads and 
 It talks only to:
 
 - **the servers you add**: your sign-in, requests for your library, the books and covers you
-  play, your positions, bookmarks and favourites, and how long you listened (servers use that
+  play, your positions, bookmarks and favorites, and how long you listened (servers use that
   for their listening statistics);
 - **Apple or Google**, only if you choose to sign in with them for an own.audio server.
 

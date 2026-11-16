@@ -28,7 +28,7 @@ enum AccentChoice: String, CaseIterable, Identifiable {
 
     var title: LocalizedStringKey {
         switch self {
-        case .app: "App Colour"
+        case .app: "App Color"
         case .blue: "Blue"
         case .indigo: "Indigo"
         case .purple: "Purple"
@@ -78,9 +78,9 @@ struct AccentColorPicker: View {
             }
             .padding(.vertical, Theme.Spacing.xs)
         } header: {
-            Text("Accent Colour")
+            Text("Accent Color")
         } footer: {
-            Text("For buttons, links and what's playing. The icon and the widgets keep the app's colour.")
+            Text("For buttons, links and what's playing. The icon and the widgets keep the app's color.")
         }
     }
 }
