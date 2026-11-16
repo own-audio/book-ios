@@ -4,7 +4,10 @@ A native iPhone and iPad audiobook player for your own server: **own.audio and
 Audiobookshelf**, side by side in one app. Swift and SwiftUI, no web views, no third-party
 dependencies — a few megabytes.
 
-In development; the plan is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
+[<img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us" alt="Download on the App Store" height="40">](https://apps.apple.com/app/own-audio-books/id6823342558)
+
+Free on the [App Store](https://apps.apple.com/app/own-audio-books/id6823342558) for iPhone and iPad
+since 12 November 2026. The plan is in [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
 - Speed with pitch correction, chapters, skip buttons, smart rewind, sleep timer to the end of
   the chapter
