@@ -18,6 +18,8 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- App Store description: keeping the whole library on the device is listed under own.audio, the
+  only server that offers it, not under Offline in general.
 - Wording that named the iPhone now says "this device", since the app also runs on iPad and
   Mac: **On This Device** on Home, **Library on This Device** on a server's page, "Keep this
   device's position" when another device got further, and the footers and messages about
