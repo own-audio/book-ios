@@ -75,6 +75,9 @@ only their downloads when offline.
 - **Downloaded Only**: on mobile data the app behaves as if offline and plays only what is on
   the iPhone.
 
+On a Mac there is no mobile data, so Settings doesn't show **On Mobile Data** or **Download on
+Wi-Fi Only**.
+
 ## Keeping ahead while streaming
 
 While a book streams, its next minutes are kept on the iPhone (mobile data too), so short gaps

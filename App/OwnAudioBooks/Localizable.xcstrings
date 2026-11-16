@@ -61,12 +61,12 @@
         }
       }
     },
-    "%@ got to %@; this iPhone was at %@.": {
+    "%@ got to %@; this device was at %@.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ se dostalo na %@; tento iPhone byl na %@."
+            "value": "%@ se dostalo na %@; toto zařízení bylo na %@."
           }
         }
       }
@@ -91,12 +91,12 @@
         }
       }
     },
-    "%@ on this iPhone.": {
+    "%@ on this device.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ v tomto iPhonu."
+            "value": "%@ v tomto zařízení."
           }
         }
       }
@@ -2132,12 +2132,12 @@
         }
       }
     },
-    "Its downloads leave this iPhone. Nothing changes on the server.": {
+    "Its downloads leave this device. Nothing changes on the server.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jeho stažené položky z tohoto iPhonu zmizí. Na serveru se nic nezmění."
+            "value": "Jeho stažené položky z tohoto zařízení zmizí. Na serveru se nic nezmění."
           }
         }
       }
@@ -2192,12 +2192,12 @@
         }
       }
     },
-    "Keep this iPhone's position (%@)": {
+    "Keep this device's position (%@)": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zůstat na pozici tohoto iPhonu (%@)"
+            "value": "Zůstat na pozici tohoto zařízení (%@)"
           }
         }
       }
@@ -2292,12 +2292,12 @@
         }
       }
     },
-    "Library on This iPhone": {
+    "Library on This Device": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Knihovna v tomto iPhonu"
+            "value": "Knihovna v tomto zařízení"
           }
         }
       }
@@ -2912,22 +2912,12 @@
         }
       }
     },
-    "Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.": {
+    "Offline Mode shows and plays only what is on this device, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this device, with the books not downloaded greyed out; only downloaded books play.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Režim offline zobrazí a přehraje jen to, co je v tomto iPhonu, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje."
-          }
-        }
-      }
-    },
-    "Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Režim offline zobrazí a přehraje jen to, co je v tomto iPhonu, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.\n\nS celou knihovnou se knihovna serveru own.audio ukazuje offline z kopie v tomto iPhonu, nestažené knihy jsou zašedlé; přehrají se jen stažené."
+            "value": "Režim offline zobrazí a přehraje jen to, co je v tomto zařízení, stejně jako aplikace sama bez sítě. Po překročení limitu se nejdřív odstraní dokončené knihy, pak nejdéle nepřehrávané; nikdy ta, která právě hraje.\n\nS celou knihovnou se knihovna serveru own.audio ukazuje offline z kopie v tomto zařízení, nestažené knihy jsou zašedlé; přehrají se jen stažené."
           }
         }
       }
@@ -2952,16 +2942,6 @@
         }
       }
     },
-    "Offline, an own.audio server's whole library is listed from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Offline se celá knihovna serveru own.audio vypíše z kopie v tomto iPhonu; nestažené knihy jsou zašedlé a hrají jen ty stažené."
-          }
-        }
-      }
-    },
     "Offline, only downloaded books are here. Turn Offline Mode off, or download books to listen with no network.": {
       "localizations": {
         "cs": {
@@ -2982,12 +2962,12 @@
         }
       }
     },
-    "On This iPhone": {
+    "On This Device": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "V tomto iPhonu"
+            "value": "V tomto zařízení"
           }
         }
       }
@@ -3158,6 +3138,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přehrát knihu"
+          }
+        }
+      }
+    },
+    "Play or Pause": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přehrát nebo pozastavit"
           }
         }
       }
@@ -3584,6 +3574,16 @@
         }
       }
     },
+    "Right-click a device to sign it out. Signing out everywhere ends every session, this device's too, and asks for a fresh sign-in.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zařízení odhlásíte kliknutím pravým tlačítkem. Odhlášení všude ukončí všechny relace včetně tohoto zařízení a vyžádá si nové přihlášení."
+          }
+        }
+      }
+    },
     "Save": {
       "localizations": {
         "cs": {
@@ -3604,12 +3604,12 @@
         }
       }
     },
-    "Saver asks the server for a smaller stream where it makes one (%lld kbps is plenty for speech). Downloaded Only plays nothing that is not on this iPhone.": {
+    "Saver asks the server for a smaller stream where it makes one (%lld kbps is plenty for speech). Downloaded Only plays nothing that is not on this device.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Úsporný režim požádá server o menší stream, pokud ho umí vytvořit (%lld kb/s na mluvené slovo bohatě stačí). Jen stažené nepřehraje nic, co není v tomto iPhonu."
+            "value": "Úsporný režim požádá server o menší stream, pokud ho umí vytvořit (%lld kb/s na mluvené slovo bohatě stačí). Jen stažené nepřehraje nic, co není v tomto zařízení."
           }
         }
       }
@@ -3904,12 +3904,12 @@
         }
       }
     },
-    "Signed in as %@. Downloads and the library on this iPhone stay as they are.": {
+    "Signed in as %@. Downloads and the library on this device stay as they are.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Přihlášeno jako %@. Stažené knihy a knihovna v tomto iPhonu zůstanou, jak jsou."
+            "value": "Přihlášeno jako %@. Stažené knihy a knihovna v tomto zařízení zůstanou, jak jsou."
           }
         }
       }
@@ -4156,12 +4156,12 @@
         }
       }
     },
-    "Swipe a device to sign it out. Signing out everywhere ends every session, this iPhone's too, and asks for a fresh sign-in.": {
+    "Swipe a device, or touch and hold it, to sign it out. Signing out everywhere ends every session, this device's too, and asks for a fresh sign-in.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Přejetím zařízení odhlásíte. Odhlášení všude ukončí všechny relace včetně tohoto iPhonu a vyžádá si nové přihlášení."
+            "value": "Zařízení odhlásíte přejetím nebo podržením prstu. Odhlášení všude ukončí všechny relace včetně tohoto zařízení a vyžádá si nové přihlášení."
           }
         }
       }
@@ -4476,12 +4476,12 @@
         }
       }
     },
-    "This book is not on this iPhone. Download it, or turn Offline Mode off.": {
+    "This book is not on this device. Download it, or turn Offline Mode off.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tato kniha není v tomto iPhonu. Stáhněte ji, nebo vypněte režim offline."
+            "value": "Tato kniha není v tomto zařízení. Stáhněte ji, nebo vypněte režim offline."
           }
         }
       }
@@ -4526,12 +4526,12 @@
         }
       }
     },
-    "This part of the book is not on this iPhone. Offline, only what is downloaded plays.": {
+    "This part of the book is not on this device. Offline, only what is downloaded plays.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tato část knihy v tomto iPhonu není. Offline se přehrává jen to, co je stažené."
+            "value": "Tato část knihy v tomto zařízení není. Offline se přehrává jen to, co je stažené."
           }
         }
       }
@@ -4786,12 +4786,22 @@
         }
       }
     },
-    "While a book streams, its next minutes are kept on this iPhone, on mobile data too, so a tunnel or a gap in the signal goes unheard; with Low Data Mode, 5 minutes. Saver streams are not kept.": {
+    "While a book streams, its next minutes are kept on this device, on mobile data too, so a tunnel or a gap in the signal goes unheard; with Low Data Mode, 5 minutes. Saver streams are not kept.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Během streamování se v tomto iPhonu uchovávají další minuty knihy, i přes mobilní data, takže tunel ani výpadek signálu nebude slyšet; v režimu nízkých dat 5 minut. Úsporné streamy se neuchovávají."
+            "value": "Během streamování se v tomto zařízení uchovávají další minuty knihy, i přes mobilní data, takže tunel ani výpadek signálu nebude slyšet; v režimu nízkých dat 5 minut. Úsporné streamy se neuchovávají."
+          }
+        }
+      }
+    },
+    "While a book streams, its next minutes are kept on this device, so a gap in the network goes unheard.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Během streamování se v tomto zařízení uchovávají další minuty knihy, takže výpadek sítě nebude slyšet."
           }
         }
       }
@@ -4856,12 +4866,12 @@
         }
       }
     },
-    "Works with own.audio and Audiobookshelf; the app finds out which. Your sign-in stays in this phone's Keychain.": {
+    "Works with own.audio and Audiobookshelf; the app finds out which. Your sign-in stays in this device's Keychain.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Funguje s own.audio i Audiobookshelf; aplikace sama pozná, o který jde. Přihlášení zůstává v klíčence tohoto telefonu."
+            "value": "Funguje s own.audio i Audiobookshelf; aplikace sama pozná, o který jde. Přihlášení zůstává v klíčence tohoto zařízení."
           }
         }
       }
@@ -4916,12 +4926,12 @@
         }
       }
     },
-    "Your sign-in stays in this iPhone's Keychain; both kinds of server hand out tokens, and the password is not kept.": {
+    "Your sign-in stays in this device's Keychain; both kinds of server hand out tokens, and the password is not kept.": {
       "localizations": {
         "cs": {
           "stringUnit": {
             "state": "translated",
-            "value": "Přihlášení zůstává v klíčence tohoto iPhonu; oba druhy serverů vydávají tokeny a heslo se neukládá."
+            "value": "Přihlášení zůstává v klíčence tohoto zařízení; oba druhy serverů vydávají tokeny a heslo se neukládá."
           }
         }
       }

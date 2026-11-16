@@ -35,15 +35,17 @@ server.)
   prepaid credit, day by day; top-ups are not made in the app.
 - **Invitations** (the admin only): **Invite Someone** makes a code for one person, shown with
   a QR code and a **Share Invitation** button. They sign in to the same server and enter the
-  code, or open its link. Swipe an invitation to **Withdraw** it.
+  code, or open its link. Swipe an invitation to **Withdraw** it, or touch and hold it
+  (right-click on a Mac).
 - **Join Another Family…**: enter a code from another family's admin. You then leave this
   family, and what the other family shares appears instead.
 
 ## Devices
 
 On the server's page in Settings, **Devices** lists every device signed in to your account,
-with **This device** marked and when each was last used. Swipe a device to **Sign Out**.
-**Sign Out Everywhere** ends every session, this iPhone's too, and you sign in again.
+with **This device** marked and when each was last used. Swipe a device to **Sign Out**, or
+touch and hold it (right-click on a Mac). **Sign Out Everywhere** ends every session, this
+device's too, and you sign in again.
 
 ## Listening
 

@@ -83,9 +83,9 @@ struct LogsView: View {
         return Array(out.suffix(2000))
     }
 
-    /// A text file to share: the app's version and the iOS version first.
+    /// A text file to share: the app's version and the system's version first.
     private func export(_ lines: [Line]) -> URL {
-        let header = "own.book \(AppModel.appVersion), iOS \(UIDevice.current.systemVersion)\n\n"
+        let header = "own.book \(AppModel.appVersion), \(Platform.isMac ? "macOS" : "iOS") \(UIDevice.current.systemVersion)\n\n"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("own-book-log.txt")
         try? (header + lines.map(\.text).joined(separator: "\n")).write(to: url, atomically: true, encoding: .utf8)
         return url

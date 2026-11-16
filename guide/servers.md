@@ -28,7 +28,7 @@ From the top:
 - **Library** (Audiobookshelf): when your account has several book libraries, choose which one
   the app shows. Each is also in the server menu on Home.
 - **Connection** and **Addresses** (below).
-- **Library on This iPhone** (own.audio, below).
+- **Library on This Device** (own.audio, below).
 - **Remove Server**.
 
 ## Addresses
@@ -42,13 +42,13 @@ as the same server.
 
 Under **Addresses**, each address says where it came from: **Added with** (the address you
 signed in with), **From the server** or **Added by you**. **Add Address** adds one, such as
-`http://192.168.1.20:13378` or a Tailscale address. Swipe an address to remove it (except the
-one you signed in with).
+`http://192.168.1.20:13378` or a Tailscale address. Swipe an address to remove it, or touch and hold it (right-click on a Mac) and choose
+**Remove** (except the one you signed in with).
 
 Under **Connection**, **Automatic** (the default) lets the app choose; pick an address to always
 use that one.
 
-## Library on This iPhone (own.audio)
+## Library on This Device (own.audio)
 
 The app keeps a list of everything on an own.audio server, without the audio, so the library
 can be browsed offline. This section shows how many books and authors it holds and when it was

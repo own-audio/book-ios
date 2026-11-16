@@ -105,6 +105,10 @@ struct HouseholdView: View {
                             .swipeActions {
                                 Button("Withdraw", role: .destructive) { withdraw(invite) }
                             }
+                            // The same for a pointer: right-click on a Mac, touch and hold on iOS.
+                            .contextMenu {
+                                Button("Withdraw", role: .destructive) { withdraw(invite) }
+                            }
                         }
                     } header: {
                         Text("Invitations")

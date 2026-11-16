@@ -35,7 +35,7 @@ The covers carry small badges:
 Pull down to reload the shelves. Pausing a book also moves it up Continue Listening.
 
 When the app is offline, Home shows only what is on this iPhone: **Continue Listening** with
-the downloaded books you have started, and **On This iPhone** with every downloaded book.
+the downloaded books you have started, and **On This Device** with every downloaded book.
 
 ## The buttons at the top
 
@@ -62,6 +62,6 @@ this iPhone and another device of yours has got noticeably further (or less far)
 asks which place to use, for example:
 
 - **Continue from iPad (1:02:07)**
-- **Keep this iPhone's position (48:10)**
+- **Keep this device's position (48:10)**
 
 Audiobookshelf keeps one position per book; the app starts from the newer one without asking.

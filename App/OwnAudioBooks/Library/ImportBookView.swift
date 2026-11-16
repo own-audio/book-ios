@@ -4,7 +4,7 @@ import SpokenEngine
 import SwiftUI
 import UniformTypeIdentifiers
 
-/// A book from the phone: audio files from the Files app, the tags read to fill the form,
+/// A book from this device: audio files from the Files app, the tags read to fill the form,
 /// the files in order, a cover, who sees it — then the upload goes on by itself.
 struct ImportBookView: View {
     @Environment(AppModel.self) private var model
@@ -105,8 +105,13 @@ struct ImportBookView: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .primaryAction) { EditButton() }
             }
-            .sheet(isPresented: $isPicking) {
-                DocumentPicker(types: [.audio, .mp3, .mpeg4Audio, .folder]) { urls in Task { await add(urls) } }
+            // SwiftUI's own importer rather than the UIKit picker in a sheet: on a Mac the system
+            // shows its open panel, and a sheet wrapped around the picker can be left empty.
+            .fileImporter(isPresented: $isPicking, allowedContentTypes: [.audio, .mp3, .mpeg4Audio, .folder], allowsMultipleSelection: true) { result in
+                switch result {
+                case .success(let urls): Task { await add(urls) }
+                case .failure(let error): errorMessage = error.localizedDescription
+                }
             }
             .onChange(of: coverItem) { _, item in
                 Task { coverData = try? await item?.loadTransferable(type: Data.self) }
@@ -172,29 +177,6 @@ struct ImportBookView: View {
     }
 }
 
-/// The Files app's picker, for audio files and folders of them.
-struct DocumentPicker: UIViewControllerRepresentable {
-    let types: [UTType]
-    let onPick: ([URL]) -> Void
-
-    func makeUIViewController(context: Context) -> UIDocumentPickerViewController {
-        let picker = UIDocumentPickerViewController(forOpeningContentTypes: types, asCopy: false)
-        picker.allowsMultipleSelection = true
-        picker.delegate = context.coordinator
-        return picker
-    }
-
-    func updateUIViewController(_ uiViewController: UIDocumentPickerViewController, context: Context) {}
-
-    func makeCoordinator() -> Coordinator { Coordinator(onPick: onPick) }
-
-    final class Coordinator: NSObject, UIDocumentPickerDelegate {
-        let onPick: ([URL]) -> Void
-        init(onPick: @escaping ([URL]) -> Void) { self.onPick = onPick }
-        func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) { onPick(urls) }
-    }
-}
-
 /// Imports on their way, with a bar each; a failed one can be tried again or dropped.
 struct ImportsView: View {
     @Environment(AppModel.self) private var model
@@ -219,6 +201,8 @@ struct ImportsView: View {
                         }
                     }
                     .swipeActions { Button(role: .destructive) { model.imports.cancel(item.id) } label: { Label("Cancel", systemImage: "xmark") } }
+                    // The same for a pointer: right-click on a Mac, touch and hold on iOS.
+                    .contextMenu { Button(role: .destructive) { model.imports.cancel(item.id) } label: { Label("Cancel", systemImage: "xmark") } }
                 }
             }
         }

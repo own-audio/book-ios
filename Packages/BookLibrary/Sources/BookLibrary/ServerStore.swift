@@ -245,13 +245,16 @@ public struct DeviceIdentity: Sendable, Equatable {
     public let model: String
     public let appVersion: String
     public let systemVersion: String
+    /// What own.audio lists the device as ("ios", "macos"); it picks the icon in its devices list.
+    public let kind: String
 
-    public init(id: String, name: String, model: String, appVersion: String, systemVersion: String) {
+    public init(id: String, name: String, model: String, appVersion: String, systemVersion: String, kind: String = "ios") {
         self.id = id
         self.name = name
         self.model = model
         self.appVersion = appVersion
         self.systemVersion = systemVersion
+        self.kind = kind
     }
 
     var audiobookshelf: DeviceInfo {
@@ -259,7 +262,7 @@ public struct DeviceIdentity: Sendable, Equatable {
     }
 
     var ownAudio: OwnAudioClient.Device {
-        OwnAudioClient.Device(name: name, kind: "ios")
+        OwnAudioClient.Device(name: name, kind: kind)
     }
 }
 

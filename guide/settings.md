@@ -18,7 +18,7 @@ Your servers and **Add a Server**. See [Servers](servers.md).
 |---|---|---|
 | **Downloads** | Opens the list of downloaded books; shows their total size. | — |
 | **Offline Mode** | Shows and plays only what is on this iPhone, and asks nothing of the servers. | Off |
-| **Download on Wi-Fi Only** | Downloads wait for Wi-Fi. | On |
+| **Download on Wi-Fi Only** | Downloads wait for Wi-Fi. Not shown on a Mac. | On |
 | **Keep at Most** | A limit for downloads: **No Limit**, 1 GB, 2 GB, 5 GB or 10 GB. Over it, finished books go first, then the ones not played for longest; never the one playing. | No Limit |
 | **Whole Library When Offline** | Offline, an own.audio server's whole library is listed from the copy on this iPhone, with books not downloaded greyed out. Only downloaded books play. Shown only when you have an own.audio server. | Off |
 
@@ -37,7 +37,7 @@ More in [Downloads and offline](downloads.md).
 
 | Setting | What it does | Default |
 |---|---|---|
-| **On Mobile Data** | **Original** streams the original files. **Saver** asks the server for a smaller stream (64 kbps) where it makes one. **Downloaded Only** plays nothing that is not on this iPhone. | Original |
+| **On Mobile Data** | **Original** streams the original files. **Saver** asks the server for a smaller stream (64 kbps) where it makes one. **Downloaded Only** plays nothing that is not on this iPhone. Not shown on a Mac. | Original |
 | **Keep Ahead** | While a book streams, how many minutes ahead are kept on the iPhone, so a gap in the signal goes unheard: 5, 10 or 15 min. With Low Data Mode, 5 minutes. Saver streams are not kept. | 10 min |
 
 ## Accent Colour

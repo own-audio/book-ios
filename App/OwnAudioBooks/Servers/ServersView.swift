@@ -159,7 +159,7 @@ struct LibraryPickerView: View {
 }
 
 /// One server: its account and address, a connection check, and for own.audio the library on
-/// this iPhone with when it was last updated.
+/// this device with when it was last updated.
 struct ServerDetailView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismiss) private var dismiss
@@ -230,7 +230,7 @@ struct ServerDetailView: View {
             } header: {
                 Text("Account")
             } footer: {
-                Text("Signed in as \(server.auth.username). Downloads and the library on this iPhone stay as they are.")
+                Text("Signed in as \(server.auth.username). Downloads and the library on this device stay as they are.")
             }
             // The account's family and signed-in devices, on its server's page as in the
             // podcasts app.
@@ -309,15 +309,9 @@ struct ServerDetailView: View {
                     }
                     .accessibilityElement(children: .combine)
                     .accessibilityIdentifier("serverDetail.address.\(address.url.absoluteString)")
-                    .swipeActions {
-                        if address.origin != .added {
-                            Button(role: .destructive) {
-                                Task { await model.removeAddress(address.url, from: server.id) }
-                            } label: {
-                                Label("Remove", systemImage: "trash")
-                            }
-                        }
-                    }
+                    .swipeActions { removeAddressButton(address) }
+                    // The same for a pointer: right-click on a Mac, touch and hold on iOS.
+                    .contextMenu { removeAddressButton(address) }
                 }
                 Button {
                     newAddress = ""
@@ -343,7 +337,7 @@ struct ServerDetailView: View {
                         .disabled(model.catalogueSyncing.contains(server.id) || model.isOffline)
                         .accessibilityIdentifier("serverDetail.syncCatalogue")
                 } header: {
-                    Text("Library on This iPhone")
+                    Text("Library on This Device")
                 } footer: {
                     Text("A list of everything on the server, without the audio, so the library can be browsed offline. Updated at launch and when the app comes to the foreground.")
                 }
@@ -370,7 +364,7 @@ struct ServerDetailView: View {
                 model.perform { try await model.removeServer(id: id) }
             }
         } message: {
-            Text("Its downloads leave this iPhone. Nothing changes on the server.")
+            Text("Its downloads leave this device. Nothing changes on the server.")
         }
         .confirmationDialog("Delete Your Account?", isPresented: $confirmDeleteAccount, titleVisibility: .visible) {
             Button("Delete Account", role: .destructive) {
@@ -420,6 +414,17 @@ struct ServerDetailView: View {
             .accessibilityIdentifier("serverDetail.catalogue")
         } else {
             Text("Not synced yet").foregroundStyle(Theme.Colors.muted)
+        }
+    }
+
+    @ViewBuilder
+    private func removeAddressButton(_ address: ServerAddress) -> some View {
+        if address.origin != .added {
+            Button(role: .destructive) {
+                Task { await model.removeAddress(address.url, from: server.id) }
+            } label: {
+                Label("Remove", systemImage: "trash")
+            }
         }
     }
 

@@ -63,7 +63,7 @@ buttons only appear on one kind of server.
 - [Servers](servers.md): a server's page, addresses, signing in again, removing a server.
 - [Settings](settings.md): every setting, what it does and its default.
 - [Outside the app](system.md): lock screen, Control Center, widgets, Siri, AirPlay, CarPlay.
-- [iPad](ipad.md): the sidebar and what differs on iPad.
+- [iPad and Mac](ipad.md): the sidebar, the keyboard, and what differs on iPad and Mac.
 - [Privacy](privacy.md): what the app sends, and to whom.
 
 ## Links

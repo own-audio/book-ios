@@ -26,8 +26,11 @@ struct SettingsView: View {
                 .accessibilityIdentifier("settings.downloads")
                 Toggle("Offline Mode", isOn: Binding(get: { model.settings.offlineMode }, set: { model.setOfflineMode($0) }))
                     .accessibilityIdentifier("settings.offlineMode")
-                Toggle("Download on Wi-Fi Only", isOn: $settings.wifiOnlyDownloads)
-                    .accessibilityIdentifier("settings.wifiOnly")
+                // A Mac has no mobile data to save: the setting stays, its control goes.
+                if !Platform.isMac {
+                    Toggle("Download on Wi-Fi Only", isOn: $settings.wifiOnlyDownloads)
+                        .accessibilityIdentifier("settings.wifiOnly")
+                }
                 Picker("Keep at Most", selection: $settings.storageCapBytes) {
                     ForEach(PlaybackSettings.storageCapChoices, id: \.self) { cap in
                         Text(cap.map { ByteCountFormatter.string(fromByteCount: $0, countStyle: .file) } ?? String(localized: "No Limit")).tag(cap)
@@ -39,7 +42,7 @@ struct SettingsView: View {
                         .accessibilityIdentifier("settings.wholeLibrary")
                 }
             } footer: {
-                Text("Offline Mode shows and plays only what is on this iPhone, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this iPhone, with the books not downloaded greyed out; only downloaded books play.")
+                Text("Offline Mode shows and plays only what is on this device, as the app does on its own with no network. Over the limit, finished books go first, then the ones not played for longest; never the one playing.\n\nWith Whole Library, an own.audio server's whole library is listed offline from the copy on this device, with the books not downloaded greyed out; only downloaded books play.")
             }
             .onChange(of: settings.wifiOnlyDownloads) { model.applyPlaybackSettings() }
             .onChange(of: settings.storageCapBytes) { model.applyPlaybackSettings() }
@@ -65,12 +68,14 @@ struct SettingsView: View {
             .onChange(of: settings.smartRewind) { model.applyPlaybackSettings() }
 
             Section {
-                Picker("On Mobile Data", selection: $settings.mobileData) {
-                    Text("Original").tag(PlaybackSettings.MobileData.original)
-                    Text("Saver").tag(PlaybackSettings.MobileData.saver)
-                    Text("Downloaded Only").tag(PlaybackSettings.MobileData.downloadedOnly)
+                if !Platform.isMac {
+                    Picker("On Mobile Data", selection: $settings.mobileData) {
+                        Text("Original").tag(PlaybackSettings.MobileData.original)
+                        Text("Saver").tag(PlaybackSettings.MobileData.saver)
+                        Text("Downloaded Only").tag(PlaybackSettings.MobileData.downloadedOnly)
+                    }
+                    .accessibilityIdentifier("settings.mobileData")
                 }
-                .accessibilityIdentifier("settings.mobileData")
                 Picker("Keep Ahead", selection: $settings.lookAheadMinutes) {
                     ForEach(PlaybackSettings.lookAheadChoices, id: \.self) { Text("\($0) min").tag($0) }
                 }
@@ -78,9 +83,13 @@ struct SettingsView: View {
             } header: {
                 Text("Streaming")
             } footer: {
-                VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
-                    Text("Saver asks the server for a smaller stream where it makes one (\(PlaybackSettings.saverBitrateKbps) kbps is plenty for speech). Downloaded Only plays nothing that is not on this iPhone.")
-                    Text("While a book streams, its next minutes are kept on this iPhone, on mobile data too, so a tunnel or a gap in the signal goes unheard; with Low Data Mode, 5 minutes. Saver streams are not kept.")
+                if Platform.isMac {
+                    Text("While a book streams, its next minutes are kept on this device, so a gap in the network goes unheard.")
+                } else {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.sm) {
+                        Text("Saver asks the server for a smaller stream where it makes one (\(PlaybackSettings.saverBitrateKbps) kbps is plenty for speech). Downloaded Only plays nothing that is not on this device.")
+                        Text("While a book streams, its next minutes are kept on this device, on mobile data too, so a tunnel or a gap in the signal goes unheard; with Low Data Mode, 5 minutes. Saver streams are not kept.")
+                    }
                 }
             }
             .onChange(of: settings.lookAheadMinutes) { model.applyPlaybackSettings() }
@@ -108,7 +117,7 @@ struct SettingsView: View {
         ) { server in
             Button("Remove", role: .destructive) { model.perform { try await model.removeServer(id: server.id) } }
         } message: { _ in
-            Text("Its downloads leave this iPhone. Nothing changes on the server.")
+            Text("Its downloads leave this device. Nothing changes on the server.")
         }
         .navigationTitle("Settings")
         .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }

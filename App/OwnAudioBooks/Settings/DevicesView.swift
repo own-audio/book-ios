@@ -43,20 +43,16 @@ struct DevicesView: View {
                                 .foregroundStyle(Theme.Colors.muted)
                             }
                         }
-                        .swipeActions {
-                            if !session.isThisDevice {
-                                Button(role: .destructive) {
-                                    signOut(session)
-                                } label: {
-                                    Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
-                                }
-                            }
-                        }
+                        .swipeActions { signOutButton(session) }
+                        // The same action for a pointer: right-click on a Mac, touch and hold on iOS.
+                        .contextMenu { signOutButton(session) }
                         .accessibilityIdentifier("devices.\(session.id)")
                     }
                 }
             } footer: {
-                Text("Swipe a device to sign it out. Signing out everywhere ends every session, this iPhone's too, and asks for a fresh sign-in.")
+                Text(Platform.isMac
+                     ? "Right-click a device to sign it out. Signing out everywhere ends every session, this device's too, and asks for a fresh sign-in."
+                     : "Swipe a device, or touch and hold it, to sign it out. Signing out everywhere ends every session, this device's too, and asks for a fresh sign-in.")
             }
             Section {
                 Button("Sign Out Everywhere", role: .destructive) { isConfirmingAll = true }
@@ -100,6 +96,17 @@ struct DevicesView: View {
                 state = .failed(error.userMessage)
             } catch {
                 state = .failed(error.localizedDescription)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func signOutButton(_ session: DeviceSession) -> some View {
+        if !session.isThisDevice {
+            Button(role: .destructive) {
+                signOut(session)
+            } label: {
+                Label("Sign Out", systemImage: "rectangle.portrait.and.arrow.right")
             }
         }
     }

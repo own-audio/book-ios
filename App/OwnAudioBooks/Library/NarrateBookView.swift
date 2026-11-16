@@ -126,10 +126,11 @@ struct NarrateBookView: View {
             .navigationTitle("Narrate an Ebook")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
-            .sheet(isPresented: $isPicking) {
-                DocumentPicker(types: [.epub, .plainText, UTType(filenameExtension: "mobi") ?? .data]) { urls in
-                    guard let picked = urls.first else { return }
-                    Task { await take(picked) }
+            // As in Import a Book: SwiftUI's importer, which on a Mac is the system's open panel.
+            .fileImporter(isPresented: $isPicking, allowedContentTypes: [.epub, .plainText, UTType(filenameExtension: "mobi") ?? .data]) { result in
+                switch result {
+                case .success(let picked): Task { await take(picked) }
+                case .failure(let error): errorMessage = error.localizedDescription
                 }
             }
             .task { await load() }
@@ -231,6 +232,12 @@ struct NarrationsView: View {
                     }
                     .accessibilityIdentifier("narration.\(entry.id)")
                     .swipeActions {
+                        if entry.isTerminal {
+                            Button("Remove", role: .destructive) { model.narrations.forget(entry.id) }
+                        }
+                    }
+                    // The same for a pointer: right-click on a Mac, touch and hold on iOS.
+                    .contextMenu {
                         if entry.isTerminal {
                             Button("Remove", role: .destructive) { model.narrations.forget(entry.id) }
                         }

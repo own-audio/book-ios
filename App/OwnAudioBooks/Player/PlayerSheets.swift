@@ -204,6 +204,11 @@ struct BookmarksSheet: View {
                             Button("Delete", role: .destructive) { delete(bookmark) }
                             Button("Rename") { label = bookmark.label ?? ""; editing = bookmark }
                         }
+                        // The same for a pointer: right-click on a Mac, touch and hold on iOS.
+                        .contextMenu {
+                            Button { label = bookmark.label ?? ""; editing = bookmark } label: { Label("Rename", systemImage: "pencil") }
+                            Button(role: .destructive) { delete(bookmark) } label: { Label("Delete", systemImage: "trash") }
+                        }
                     }
                 }
             }

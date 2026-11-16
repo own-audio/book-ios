@@ -14,7 +14,8 @@ added on the server, so the app has no button for it there.
 In the **Library** tab, tap **+** at the top. (When the server also offers narration, **+**
 opens a menu: choose **Import Audio Files…**.) The **Import a Book** screen opens.
 
-1. Tap **Choose Audio Files** and pick files or folders in the Files app. A folder adds the
+1. Tap **Choose Audio Files** and pick files or folders in the Files app (on a Mac, in the
+   open panel). A folder adds the
    audio files inside it, in name order. **Add More Files** adds more.
 2. The files are listed under **Files, in playing order**, with their lengths and a total. Tap
    **Edit** to drag them into another order or delete one.
@@ -29,7 +30,8 @@ over mobile data?**
 
 The files are copied and uploaded in the background, so you can leave the screen. While they
 upload, the Library shows them under **Importing** with a progress bar. A failed upload can be
-tried again (**Try Again**) or dropped (**Remove**); swipe one to **Cancel** it. The book
+tried again (**Try Again**) or dropped (**Remove**); swipe one, or touch and hold it
+(right-click on a Mac), to **Cancel** it. The book
 appears in the library when the upload is done.
 
 Importing needs a connection; the **+** button is hidden while the app is offline.

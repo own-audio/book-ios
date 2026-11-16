@@ -69,7 +69,7 @@ struct PartLocator {
 /// a message, since no signal is coming to end it.
 struct PartNotOnPhone: LocalizedError {
     var errorDescription: String? {
-        String(localized: "This part of the book is not on this iPhone. Offline, only what is downloaded plays.")
+        String(localized: "This part of the book is not on this device. Offline, only what is downloaded plays.")
     }
 }
 

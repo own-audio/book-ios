@@ -28,6 +28,8 @@ struct PlayerView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button { dismiss() } label: { Image(systemName: "chevron.down") }
+                        // Esc, but not while a sheet is up: there it closes the sheet alone.
+                        .keyboardShortcut(sheet == nil ? .cancelAction : nil)
                         .accessibilityLabel("Close")
                         .accessibilityIdentifier("player.close")
                 }
@@ -49,6 +51,8 @@ struct PlayerView: View {
                 }
             }
         }
+        // Presented over the root, so it carries the keys too.
+        .playerKeyboardShortcuts()
     }
 
     private func content(book: Book, serverId: UUID) -> some View {
@@ -234,6 +238,8 @@ struct PlayerView: View {
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("player.airplay")
         }
+        // In a wide window (iPad, Mac) the five spread too far apart to read as one row.
+        .frame(maxWidth: 500)
         .padding(.top, Theme.Spacing.sm)
     }
 

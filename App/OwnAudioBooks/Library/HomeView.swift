@@ -156,7 +156,7 @@ struct HomeView: View {
             let started = books.filter { model.knownProgress($0, serverId: serverId).map { $0.positionMs > 0 && !$0.finished } ?? false }
             state = .loaded([
                 Shelf(id: "continue-listening", title: String(localized: "Continue Listening"), kind: .books(started)),
-                Shelf(id: "downloaded", title: String(localized: "On This iPhone"), kind: .books(books)),
+                Shelf(id: "downloaded", title: String(localized: "On This Device"), kind: .books(books)),
             ].filter { !$0.isEmpty })
             return
         }

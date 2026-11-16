@@ -110,6 +110,11 @@ final class AppModel {
             UserDefaults.standard.set(made, forKey: key)
             return made
         }()
+        // On a Mac, UIDevice describes the iPad the app believes it runs on; the device list
+        // and "Continue from …?" on the other devices should say Mac.
+        if Platform.isMac {
+            return DeviceIdentity(id: id, name: "Mac", model: "Mac", appVersion: appVersion, systemVersion: UIDevice.current.systemVersion, kind: "macos")
+        }
         return DeviceIdentity(id: id, name: UIDevice.current.name, model: UIDevice.current.model, appVersion: appVersion, systemVersion: UIDevice.current.systemVersion)
     }()
 
@@ -934,7 +939,7 @@ final class AppModel {
                 let files = (known.files ?? []).map { (id: $0.id, durationMs: $0.durationMs) }
                 let offlineParts = await partLocator.parts(compositeId: composite, files: files, streams: nil)
                 guard offlineParts.contains(where: { !$0.isUnresolved }) else {
-                    actionError = String(localized: "This book is not on this iPhone. Download it, or turn Offline Mode off.")
+                    actionError = String(localized: "This book is not on this device. Download it, or turn Offline Mode off.")
                     return
                 }
                 detail = known

@@ -4,6 +4,42 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- On a Mac (the iPad app on Apple silicon) and on an iPad with a keyboard: Space plays or
+  pauses, ⌘← and ⌘→ skip back and forward by the intervals in Settings, and Esc closes the full
+  player. Space and the arrows are off while a text field is being edited.
+- Rows that had their actions only behind a swipe have them in a context menu too (right-click
+  on a Mac, touch and hold on iOS): a bookmark's Rename and Delete, signing out a device,
+  withdrawing an invitation, removing an address, removing a finished narration, cancelling an
+  import.
+
+### Changed
+
+- Wording that named the iPhone now says "this device", since the app also runs on iPad and
+  Mac: **On This Device** on Home, **Library on This Device** on a server's page, "Keep this
+  device's position" when another device got further, and the footers and messages about
+  downloads, Offline Mode and the Keychain. The Czech follows ("v tomto zařízení"); two unused
+  catalog keys that named the iPhone are gone.
+- On a Mac, Settings hides **Download on Wi-Fi Only**, **On Mobile Data** and the tunnel and
+  Low Data Mode note; the settings themselves keep their values.
+- On a Mac, the app signs in to own.audio as a Mac (`device_kind` "macos", name "Mac"), so the
+  devices list shows a laptop and "Continue from Mac?" reads right on the other devices. Takes
+  effect at the next sign-in. `DeviceIdentity` has a `kind`, "ios" by default.
+- The log file's first line says macOS on a Mac.
+- The player's tools row is at most 500 pt wide and centred, so it holds together in a wide
+  window.
+
+### Fixed
+
+- On a Mac, the full player is handed the app's state: without it, the player's new keyboard
+  shortcuts ended the app as it opened.
+- Choosing audio files to import, and an ebook to narrate, uses SwiftUI's `fileImporter`
+  instead of the UIKit document picker wrapped in a sheet, which on a Mac could leave an empty
+  sheet behind the system's open panel. The same types, several files and folders as before.
+
 ## [1.0.0] - 2026-11-05
 
 The first App Store release, alongside own.audio Music 1.0.0.

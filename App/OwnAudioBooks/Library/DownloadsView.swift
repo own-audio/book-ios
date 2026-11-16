@@ -1,7 +1,7 @@
 import BookLibrary
 import SwiftUI
 
-/// What is on this iPhone: every downloaded book with its size, by server when there is more
+/// What is on this device: every downloaded book with its size, by server when there is more
 /// than one, to open, play or remove; failed downloads can be tried again together.
 struct DownloadsView: View {
     @Environment(AppModel.self) private var model
@@ -54,7 +54,7 @@ struct DownloadsView: View {
                     Button("Remove All Downloads", role: .destructive) { isConfirmingRemoveAll = true }
                         .accessibilityIdentifier("downloads.removeAll")
                 } footer: {
-                    Text("\(ByteCountFormatter.string(fromByteCount: model.downloads.totalBytes, countStyle: .file)) on this iPhone.")
+                    Text("\(ByteCountFormatter.string(fromByteCount: model.downloads.totalBytes, countStyle: .file)) on this device.")
                 }
             }
         }

@@ -29,6 +29,8 @@ From the top:
   gone for longer, it says **No signal — waiting** and plays on by itself when the signal returns.
 - **Skip back** and **skip forward**, with play/pause between them. The numbers on the buttons
   are your intervals (15 and 30 seconds unless you change them in [Settings](settings.md)).
+  With a keyboard, Space plays or pauses and ⌘← / ⌘→ skip (see
+  [the keyboard](ipad.md#keyboard)).
 - **Previous chapter** and **next chapter**. On a book without chapter marks, they step by file.
 - The tools: **Speed**, **Sleep**, **Bookmarks**, **Chapters** and **AirPlay**.
 
@@ -70,8 +72,8 @@ stored in the audio files; when there are none there either, each file is a chap
 ## Bookmarks
 
 **Bookmarks** lists the bookmarks in this book. Tap **Add Bookmark at 12:34** to mark where you
-are; you can give it a label or leave it empty. Tap a bookmark to play from there. Swipe one to
-**Rename** or **Delete** it.
+are; you can give it a label or leave it empty. Tap a bookmark to play from there. Swipe one, or
+touch and hold it (right-click on a Mac), to **Rename** or **Delete** it.
 
 Bookmarks are kept on your server, so you see them on your other devices too. They need a
 connection to the server.
