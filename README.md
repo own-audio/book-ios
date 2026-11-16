@@ -12,6 +12,7 @@
 
 <p align="center">
   <a href="https://apps.apple.com/app/own-audio-books/id6823342558">App Store</a> ·
+  <a href="https://own-audio.github.io/book-ios/">User guide</a> ·
   <a href="https://www.own.audio">Website</a> ·
   <a href="PRIVACY.md">Privacy</a> ·
   <a href="CHANGELOG.md">Changelog</a> ·

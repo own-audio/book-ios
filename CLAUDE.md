@@ -6,6 +6,12 @@ for strangers to read.
 
 - Work phase by phase from `IMPLEMENTATION_PLAN.md`; tick phases there.
 - Every change gets a `CHANGELOG.md` entry under `[Unreleased]`.
+- **Keep the user guide current, like the changelog.** `guide/` is the public user guide
+  (GitHub Pages, https://own-audio.github.io/book-ios/): every feature by screen, with
+  screenshots. A change users can see — a new or removed feature, a moved or renamed control, a
+  new setting, a server that gains or loses something — updates the guide page for that screen in
+  the same commit, and a new screen gets a section or a page. Describe only what ships, never a
+  plan. A screenshot that no longer matches the screen is replaced or removed.
 - **No own.audio internals**: no references to closed repositories, internal hosts, team IDs or
   credentials. Comments explain why, for an outside reader.
 - own.audio is one server among the others, never a funnel.
