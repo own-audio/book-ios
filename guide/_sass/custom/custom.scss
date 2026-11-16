@@ -80,6 +80,12 @@ html:not([data-theme="dark"]) .only-dark {
     background-color: $sidebar-color;
   }
 
+  // The theme's own footer sits in the sidebar; made sticky, the sidebar would put it over the
+  // header. The page's footer below the content stays.
+  .side-bar .site-footer {
+    display: none;
+  }
+
   .site-nav.nav-open {
     max-height: calc(100vh - #{$header-height});
     overflow-y: auto;
