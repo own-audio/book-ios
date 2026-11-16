@@ -3,8 +3,9 @@
 <meta name="color-scheme" content="light dark">
 <link rel="stylesheet" id="guide-dark-css" href="{{ '/assets/css/just-the-docs-dark.css' | relative_url }}" media="(prefers-color-scheme: dark)">
 <script>
-  // Follows the system's appearance until the reader picks one with the header button; the
-  // choice is kept in this browser only.
+  /* Follows the system's appearance until the reader picks one with the button; the choice is
+     kept in this browser only. Block comments only: the theme squeezes the page onto one line,
+     and a line comment would swallow the rest of the script. */
   (function () {
     var key = "guide-theme";
     var query = window.matchMedia("(prefers-color-scheme: dark)");
@@ -25,5 +26,33 @@
       try { localStorage.setItem(key, next); } catch (e) {}
       apply(next);
     };
+    /* The button comes in the main header, which a phone hides until the menu opens; next to
+       the title it is always on screen. */
+    document.addEventListener("DOMContentLoaded", function () {
+      var button = document.querySelector(".theme-toggle");
+      var header = document.querySelector(".site-header");
+      if (button && header) header.insertBefore(button, document.getElementById("menu-button"));
+    });
+    /* A screenshot opens full size over the page; a tap or Escape closes it. */
+    document.addEventListener("click", function (e) {
+      var open = document.querySelector(".lightbox");
+      if (open) { open.remove(); return; }
+      var img = e.target.closest ? e.target.closest(".main-content img") : null;
+      if (!img || img.classList.contains("app-icon")) return;
+      e.preventDefault();
+      var box = document.createElement("div");
+      box.className = "lightbox";
+      box.setAttribute("role", "dialog");
+      box.setAttribute("aria-label", img.alt || "Screenshot");
+      var big = document.createElement("img");
+      big.src = img.currentSrc || img.src;
+      big.alt = img.alt;
+      box.appendChild(big);
+      document.body.appendChild(box);
+    });
+    document.addEventListener("keydown", function (e) {
+      var open = document.querySelector(".lightbox");
+      if (open && e.key === "Escape") open.remove();
+    });
   })();
 </script>
