@@ -1,6 +1,7 @@
 ---
 title: Getting started
 nav_order: 2
+description: "The first time you open the app, it asks for one thing: a server. You can't use the app without one, but you can try it with the public demo library first."
 ---
 
 # Getting started

@@ -1,6 +1,7 @@
 ---
 title: Downloads and offline
 nav_order: 7
+description: "Tap the download button beside Play on a book's page, or the download arrow on a series, an author's or narrator's list, or a collection to download every book…"
 ---
 
 # Downloads and offline

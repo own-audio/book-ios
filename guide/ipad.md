@@ -1,6 +1,7 @@
 ---
 title: iPad
 nav_order: 13
+description: "The app works the same way on iPad, with the tabs at the top of the screen. It turns with the iPad; on iPhone it stays upright."
 ---
 
 # iPad

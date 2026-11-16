@@ -1,6 +1,7 @@
 ---
 title: Adding books (own.audio)
 nav_order: 8
+description: "On an own.audio server you can add audiobooks from your iPhone. On Audiobookshelf, books are added on the server, so the app has no button for it there."
 ---
 
 # Adding books (own.audio)

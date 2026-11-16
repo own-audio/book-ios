@@ -1,6 +1,7 @@
 ---
 title: Outside the app
 nav_order: 12
+description: "own.audio Books outside the app: the lock screen and Control Center, the Continue Listening widget, Siri, AirPlay and CarPlay."
 ---
 
 # Outside the app

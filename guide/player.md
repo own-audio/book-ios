@@ -1,6 +1,7 @@
 ---
 title: The player
 nav_order: 6
+description: "Tap the mini player at the bottom of the screen to open the full player."
 ---
 
 # The player

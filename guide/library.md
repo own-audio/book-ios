@@ -1,6 +1,7 @@
 ---
 title: Library and search
 nav_order: 4
+description: "Browse your audiobooks in own.audio Books: grid or list, sort and filter, series, authors, narrators, collections, and search."
 ---
 
 # Library and search

@@ -1,6 +1,7 @@
 ---
 title: Home
 nav_order: 3
+description: "The app opens on Home: a greeting, the selected server's name ('Family Books · ready for your next chapter?'), and the server's shelves."
 ---
 
 # Home

@@ -1,6 +1,7 @@
 ---
 title: A book's page
 nav_order: 5
+description: "Tap a book anywhere in the app to open its page."
 ---
 
 # A book's page

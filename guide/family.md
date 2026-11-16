@@ -1,6 +1,7 @@
 ---
 title: Family (own.audio)
 nav_order: 9
+description: "An own.audio account belongs to a family. Each member has their own books and positions, and chooses which of their books to share with the others."
 ---
 
 # Family (own.audio)

@@ -1,6 +1,7 @@
 ---
 title: Privacy
 nav_order: 14
+description: "The app collects nothing. There is no account with us, no analytics, no ads and no tracking."
 ---
 
 # Privacy

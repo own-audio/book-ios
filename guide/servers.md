@@ -1,6 +1,7 @@
 ---
 title: Servers
 nav_order: 10
+description: "Your servers are listed at the top of Settings, under Servers. Each row shows the server's name, its kind (own.audio or Audiobookshelf) and your account."
 ---
 
 # Servers

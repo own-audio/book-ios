@@ -1,6 +1,7 @@
 ---
 title: Settings
 nav_order: 11
+description: "Open Settings with the gear at the top of Home. Done closes it."
 ---
 
 # Settings

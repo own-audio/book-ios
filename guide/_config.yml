@@ -5,6 +5,8 @@ baseurl: /book-ios
 remote_theme: just-the-docs/just-the-docs@v0.10.1
 plugins:
   - jekyll-remote-theme
+  - jekyll-sitemap
+  - jekyll-seo-tag
 color_scheme: light
 search_enabled: true
 heading_anchors: true

@@ -1,6 +1,7 @@
 ---
 title: Introduction
 nav_order: 1
+description: "own.audio Books is an audiobook player for iPhone and iPad that plays from your own server: own.audio or Audiobookshelf, side by side in one app."
 ---
 
 <img class="app-icon only-light" src="assets/images/app-icon.svg" alt="own.audio Books app icon" width="96" height="96">
