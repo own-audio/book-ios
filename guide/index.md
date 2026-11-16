@@ -3,6 +3,9 @@ title: Introduction
 nav_order: 1
 ---
 
+<img class="app-icon only-light" src="assets/images/app-icon.svg" alt="own.audio Books app icon" width="96" height="96">
+<img class="app-icon only-dark" src="assets/images/app-icon-dark.svg" alt="own.audio Books app icon" width="96" height="96">
+
 # own.audio Books
 
 own.audio Books is an audiobook player for iPhone and iPad that plays from your own server. It

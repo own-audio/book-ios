@@ -1,0 +1,29 @@
+<link rel="icon" type="image/svg+xml" href="{{ '/assets/images/app-icon.svg' | relative_url }}">
+<link rel="apple-touch-icon" href="{{ '/assets/images/app-icon.svg' | relative_url }}">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" id="guide-dark-css" href="{{ '/assets/css/just-the-docs-dark.css' | relative_url }}" media="(prefers-color-scheme: dark)">
+<script>
+  // Follows the system's appearance until the reader picks one with the header button; the
+  // choice is kept in this browser only.
+  (function () {
+    var key = "guide-theme";
+    var query = window.matchMedia("(prefers-color-scheme: dark)");
+    function apply(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      document.getElementById("guide-dark-css").media = theme === "dark" ? "all" : "not all";
+    }
+    var saved = null;
+    try { saved = localStorage.getItem(key); } catch (e) {}
+    apply(saved || (query.matches ? "dark" : "light"));
+    query.addEventListener("change", function (e) {
+      var chosen = null;
+      try { chosen = localStorage.getItem(key); } catch (err) {}
+      if (!chosen) apply(e.matches ? "dark" : "light");
+    });
+    window.toggleGuideTheme = function () {
+      var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      try { localStorage.setItem(key, next); } catch (e) {}
+      apply(next);
+    };
+  })();
+</script>

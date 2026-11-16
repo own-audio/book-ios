@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="#F7F7F8" />
+  <g transform="rotate(0, 50, 50)">
+    <circle cx="50" cy="10" r="4.4" fill="#FABB05" />
+    <circle cx="41.5" cy="11" r="2.2" fill="#FABB05" />
+    <circle cx="58.5" cy="11" r="2.2" fill="#FABB05" />
+  </g>
+  <g transform="rotate(72, 50, 50)">
+    <circle cx="50" cy="10" r="4.4" fill="#29ABE2" />
+    <circle cx="41.5" cy="11" r="2.2" fill="#29ABE2" />
+    <circle cx="58.5" cy="11" r="2.2" fill="#29ABE2" />
+  </g>
+  <g transform="rotate(144, 50, 50)">
+    <circle cx="50" cy="10" r="4.4" fill="#FF3B30" />
+    <circle cx="41.5" cy="11" r="2.2" fill="#FF3B30" />
+    <circle cx="58.5" cy="11" r="2.2" fill="#FF3B30" />
+  </g>
+  <g transform="rotate(216, 50, 50)">
+    <circle cx="50" cy="10" r="4.4" fill="#FFCC00" />
+    <circle cx="41.5" cy="11" r="2.2" fill="#FFCC00" />
+    <circle cx="58.5" cy="11" r="2.2" fill="#FFCC00" />
+  </g>
+  <g transform="rotate(288, 50, 50)">
+    <circle cx="50" cy="10" r="4.4" fill="#34C759" />
+    <circle cx="41.5" cy="11" r="2.2" fill="#34C759" />
+    <circle cx="58.5" cy="11" r="2.2" fill="#34C759" />
+  </g>
+  <g transform="translate(22.903 14.645) scale(2.5806)">
+    <g fill="none" stroke="#7A4A2B" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4.4" y="6.2" width="12.2" height="15" rx="1.8" />
+      <rect x="7.4" y="10.1" width="6.2" height="1.9" rx=".95" fill="#7A4A2B" />
+      <path d="M4.4 18.2h12.2" />
+    </g>
+  </g>
+</svg>

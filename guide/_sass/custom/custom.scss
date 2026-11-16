@@ -1,0 +1,60 @@
+// Shared by the light and the dark stylesheet.
+
+html[data-theme="dark"] .only-light,
+html:not([data-theme="dark"]) .only-dark {
+  display: none !important;
+}
+
+.site-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.app-icon {
+  border-radius: 22%;
+  flex-shrink: 0;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  // On a phone the header is a plain block under the search: keep the button on the right.
+  margin: 0.25rem 0.5rem 0.25rem auto;
+
+  @include mq(md) {
+    margin: 0 0.5rem;
+  }
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(127, 127, 127, 0.15);
+  }
+}
+
+.main-header {
+  align-items: center;
+}
+
+// Screenshots never wider than the column on a phone.
+.main-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.made-by a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  vertical-align: middle;
+}

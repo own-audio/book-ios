@@ -11,4 +11,3 @@ heading_anchors: true
 aux_links:
   "App on GitHub": https://github.com/own-audio/book-ios
   "own.audio": https://www.own.audio
-footer_content: "Made by <a href=\"https://www.own.audio\">own.audio</a>. The app is open source under the MPL-2.0."
