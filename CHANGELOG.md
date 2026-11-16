@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-16
+
 ### Added
 
 - On a Mac (the iPad app on Apple silicon) and on an iPad with a keyboard: Space plays or
