@@ -455,6 +455,23 @@ cs = {
  "Share with the Family's Admin": "Sdílet se správcem rodiny",
  "Lets the admin see how long you listen, and to what kind. Off, your listening stays yours.": "Správce uvidí, jak dlouho a co za druh posloucháte. Když je vypnuto, váš poslech zůstane jen váš.",
  "Sign in to this server again.": "Přihlaste se k tomuto serveru znovu.",
+ "Create an own.audio Account": "Vytvořit účet own.audio",
+ "Your Name": "Vaše jméno",
+ "Email": "E-mail",
+ "At least 12 characters. A few words are fine.": "Alespoň 12 znaků. Klidně několik slov.",
+ "Create Account": "Vytvořit účet",
+ "own.audio emails you a link to confirm the address. By creating an account you agree to the [Terms](https://www.own.audio/terms/) and the [Privacy Policy](https://www.own.audio/privacy/).": "own.audio vám e-mailem pošle odkaz k potvrzení adresy. Vytvořením účtu souhlasíte s [podmínkami](https://www.own.audio/terms/) a [zásadami ochrany osobních údajů](https://www.own.audio/privacy/).",
+ "own.audio Account": "Účet own.audio",
+ "That doesn't look like an email address.": "Tohle nevypadá jako e-mailová adresa.",
+ "The password needs at least 12 characters. A few words are fine.": "Heslo musí mít alespoň 12 znaků. Klidně několik slov.",
+ "Enter your name.": "Zadejte své jméno.",
+ "own.audio isn't taking new accounts right now.": "own.audio teď nové účty nepřijímá.",
+ "There's already an account with this email. Sign in instead.": "Účet s tímto e-mailem už existuje. Přihlaste se k němu.",
+ "own.audio didn't create the account.": "own.audio účet nevytvořil.",
+ "No server? Use own.audio": "Nemáte server? Použijte own.audio",
+ "Or connect your own server": "Nebo připojte vlastní server",
+ "own.audio keeps your audiobooks for you. Upload them once and listen here.": "own.audio vaše audioknihy uchová za vás. Jednou je nahrajte a poslouchejte je tady.",
+ "Public-domain books on a shared own.audio server, no account needed.": "Volně dostupné knihy na sdíleném serveru own.audio, bez účtu.",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {

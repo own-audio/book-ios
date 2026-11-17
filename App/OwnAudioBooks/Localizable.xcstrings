@@ -955,6 +955,16 @@
         }
       }
     },
+    "At least 12 characters. A few words are fine.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alespoň 12 znaků. Klidně několik slov."
+          }
+        }
+      }
+    },
     "Audiobooks": {
       "localizations": {
         "cs": {
@@ -1378,6 +1388,26 @@
         }
       }
     },
+    "Create Account": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit účet"
+          }
+        }
+      }
+    },
+    "Create an own.audio Account": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vytvořit účet own.audio"
+          }
+        }
+      }
+    },
     "Credit": {
       "localizations": {
         "cs": {
@@ -1648,6 +1678,16 @@
         }
       }
     },
+    "Email": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E-mail"
+          }
+        }
+      }
+    },
     "End of Book": {
       "localizations": {
         "cs": {
@@ -1674,6 +1714,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zadejte kód z pozvánky."
+          }
+        }
+      }
+    },
+    "Enter your name.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zadejte své jméno."
           }
         }
       }
@@ -2772,6 +2822,16 @@
         }
       }
     },
+    "No server? Use own.audio": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nemáte server? Použijte own.audio"
+          }
+        }
+      }
+    },
     "No signal — waiting": {
       "localizations": {
         "cs": {
@@ -3022,6 +3082,16 @@
         }
       }
     },
+    "Or connect your own server": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nebo připojte vlastní server"
+          }
+        }
+      }
+    },
     "Orange": {
       "localizations": {
         "cs": {
@@ -3238,6 +3308,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Soukromí"
+          }
+        }
+      }
+    },
+    "Public-domain books on a shared own.audio server, no account needed.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volně dostupné knihy na sdíleném serveru own.audio, bez účtu."
           }
         }
       }
@@ -4226,6 +4306,16 @@
         }
       }
     },
+    "That doesn't look like an email address.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tohle nevypadá jako e-mailová adresa."
+          }
+        }
+      }
+    },
     "The app writes here when something goes wrong.": {
       "localizations": {
         "cs": {
@@ -4302,6 +4392,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Namlouvání se nezdařilo."
+          }
+        }
+      }
+    },
+    "The password needs at least 12 characters. A few words are fine.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heslo musí mít alespoň 12 znaků. Klidně několik slov."
           }
         }
       }
@@ -4462,6 +4562,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Úložiště soubor odmítlo (%lld)."
+          }
+        }
+      }
+    },
+    "There's already an account with this email. Sign in instead.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Účet s tímto e-mailem už existuje. Přihlaste se k němu."
           }
         }
       }
@@ -4906,6 +5016,16 @@
         }
       }
     },
+    "Your Name": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše jméno"
+          }
+        }
+      }
+    },
     "Your account on %@ is deleted for good, with everything you added to it: music, audiobooks, podcasts, playlists and your listening history. What others in your family added stays with them.": {
       "localizations": {
         "cs": {
@@ -4997,6 +5117,16 @@
       },
       "shouldTranslate": false
     },
+    "own.audio Account": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Účet own.audio"
+          }
+        }
+      }
+    },
     "own.audio Books is free and open source (MPL-2.0). It talks only to the servers you add.": {
       "localizations": {
         "cs": {
@@ -5013,6 +5143,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "own.audio canary (testování)"
+          }
+        }
+      }
+    },
+    "own.audio didn't create the account.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio účet nevytvořil."
+          }
+        }
+      }
+    },
+    "own.audio emails you a link to confirm the address. By creating an account you agree to the [Terms](https://www.own.audio/terms/) and the [Privacy Policy](https://www.own.audio/privacy/).": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio vám e-mailem pošle odkaz k potvrzení adresy. Vytvořením účtu souhlasíte s [podmínkami](https://www.own.audio/terms/) a [zásadami ochrany osobních údajů](https://www.own.audio/privacy/)."
+          }
+        }
+      }
+    },
+    "own.audio isn't taking new accounts right now.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio teď nové účty nepřijímá."
+          }
+        }
+      }
+    },
+    "own.audio keeps your audiobooks for you. Upload them once and listen here.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "own.audio vaše audioknihy uchová za vás. Jednou je nahrajte a poslouchejte je tady."
           }
         }
       }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// The first screen, over the own.audio hero: the mark, the wordmark, and the one thing the
-/// app needs, a server.
+/// The first screen, over the own.audio hero: the mark, the wordmark, an own.audio account for
+/// someone without a server, and the server form.
 struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @State private var address = ""
@@ -10,6 +10,7 @@ struct OnboardingView: View {
     @State private var name = ""
     @State private var isConnecting = false
     @State private var isTryingDemo = false
+    @State private var isSigningUp = false
     @State private var errorMessage: String?
     @FocusState private var focus: OnboardingField?
 
@@ -23,6 +24,12 @@ struct OnboardingView: View {
             ScrollView {
                 VStack(spacing: Theme.Spacing.xl) {
                     header
+                    ownAudioAccount
+                    Text("Or connect your own server")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(Theme.Colors.muted)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, -Theme.Spacing.md)
                     ServerForm(address: $address, username: $username, password: $password, name: $name, focus: $focus, canConnect: canConnect, connect: connect)
                     CanaryServerButton(address: $address)
                     if let errorMessage {
@@ -45,7 +52,6 @@ struct OnboardingView: View {
                     .disabled(!canConnect)
                     .accessibilityIdentifier("addServer.connect")
                     ProviderButtons(address: address, name: name, isWorking: $isConnecting)
-                    demo
                     notes
                     Link(destination: URL(string: "https://github.com/own-audio/book-ios")!) {
                         Text("Free and open source · MPL-2.0").font(.footnote)
@@ -60,11 +66,12 @@ struct OnboardingView: View {
             .scrollDismissesKeyboard(.interactively)
         }
         .sheet(item: model.pendingTwoFactorBinding) { _ in TwoFactorView() }
+        .sheet(isPresented: $isSigningUp) { SignUpView() }
     }
 
     private var header: some View {
         VStack(spacing: Theme.Spacing.md) {
-            OwnAudioMark.tribe(size: 72)
+            OwnAudioMark.tribe(size: 120)
             RotatingWordmark()
             Text("Your audiobooks, from your own server.")
                 .font(.subheadline)
@@ -77,30 +84,51 @@ struct OnboardingView: View {
         .padding(.bottom, Theme.Spacing.sm)
     }
 
-    /// Someone without a server yet can still see what the app does.
-    private var demo: some View {
-        VStack(spacing: Theme.Spacing.xs) {
-            Divider().padding(.vertical, Theme.Spacing.sm)
-            Text("No server yet?")
-                .font(.subheadline)
-                .foregroundStyle(Theme.Colors.muted)
+    /// own.audio's hosted service first: an account there is a server, with nothing to run.
+    private var ownAudioAccount: some View {
+        VStack(spacing: Theme.Spacing.md) {
+            VStack(spacing: Theme.Spacing.xs) {
+                Text("No server? Use own.audio")
+                    .font(.headline)
+                Text("own.audio keeps your audiobooks for you. Upload them once and listen here.")
+                    .font(.footnote)
+                    .foregroundStyle(Theme.Colors.muted)
+                    .multilineTextAlignment(.center)
+            }
             Button {
-                tryDemo()
+                isSigningUp = true
             } label: {
-                Group {
-                    if isTryingDemo { ProgressView() } else { Text("Try the Demo Library") }
-                }
-                .frame(maxWidth: .infinity)
+                Text("Create an own.audio Account").bold().frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .controlSize(.large)
+            .accessibilityIdentifier("addServer.signUp")
+            Button {
+                address = AppModel.ownAudioService.absoluteString
+                focus = .username
+            } label: {
+                Text("Sign In").frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
             .controlSize(.large)
+            .accessibilityIdentifier("addServer.ownAudioSignIn")
+            // Someone not ready for an account can still see what the app does.
+            Button {
+                tryDemo()
+            } label: {
+                if isTryingDemo { ProgressView() } else { Text("Try the Demo Library") }
+            }
+            .font(.subheadline.weight(.semibold))
             .disabled(isConnecting || isTryingDemo)
             .accessibilityIdentifier("addServer.demo")
-            Text("A shared own.audio server with public-domain books. Remove it in Settings when you add your own.")
+            Text("Public-domain books on a shared own.audio server, no account needed.")
                 .font(.footnote)
                 .foregroundStyle(Theme.Colors.muted)
                 .multilineTextAlignment(.center)
+                .padding(.top, -Theme.Spacing.sm)
         }
+        .padding(Theme.Spacing.lg)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.miniPlayer, style: .continuous))
     }
 
     private var notes: some View {

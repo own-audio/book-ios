@@ -128,6 +128,51 @@ public struct OwnAudioClient: Sendable {
         return try await send(request, session: session)
     }
 
+    /// Creates an account with a password; sign in afterwards with `signIn`. Refusals come as
+    /// `.problem` with `invalid_email`, `weak_password`, `invalid_display_name`,
+    /// `registration_closed` or `email_taken`.
+    public static func register(host: URL, email: String, password: String, displayName: String, session: URLSession = .shared) async throws {
+        let body = try JSONEncoder().encode(["email": email, "password": password, "display_name": displayName])
+        do {
+            _ = try await data(registerRequest(host: host, api: "api/v2", body: body), session: session)
+        } catch OwnAudioError.problem(let p) where p.status == 404 {
+            // Servers released before v2 had sign-up (own.audio's hosted service among them)
+            // take it on v1, which answers `{"error": "…"}` instead of problem details.
+            try await registerV1(host: host, body: body, session: session)
+        }
+    }
+
+    private static func registerRequest(host: URL, api: String, body: Data) -> URLRequest {
+        var request = URLRequest(url: host.appending(path: "\(api)/auth/register"))
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.httpBody = body
+        return request
+    }
+
+    private static func registerV1(host: URL, body: Data, session: URLSession) async throws {
+        let request = registerRequest(host: host, api: "api/v1", body: body)
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: request)
+        } catch {
+            throw OwnAudioError.network
+        }
+        guard let http = response as? HTTPURLResponse else { throw OwnAudioError.network }
+        guard !(200..<300).contains(http.statusCode) else { return }
+        struct V1Error: Decodable { let error: String }
+        guard let message = try? JSONDecoder().decode(V1Error.self, from: data).error else { throw OwnAudioError.http(http.statusCode) }
+        let lowered = message.lowercased()
+        let code = if lowered.contains("email address") { "invalid_email" }
+            else if lowered.contains("already exists") { "email_taken" }
+            else if lowered.contains("display name") { "invalid_display_name" }
+            else if lowered.contains("password") { "weak_password" }
+            else if lowered.contains("registration") || lowered.contains("invit") { "registration_closed" }
+            else { "bad_request" }
+        throw OwnAudioError.problem(Problem(status: http.statusCode, code: code, detail: message, mfaToken: nil, mfaMethods: nil))
+    }
+
     /// Signs in with an email and password. Throws `.twoFactorRequired` when the account asks
     /// for a second factor, `.problem` with `invalid_grant` for wrong credentials.
     public static func signIn(host: URL, email: String, password: String, device: Device, session: URLSession = .shared) async throws -> Tokens {

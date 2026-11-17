@@ -31,14 +31,9 @@ struct OwnAudioMark: View {
     static func tribe(size: CGFloat = 64) -> OwnAudioMark {
         OwnAudioMark(
             size: size,
-            colors: [
-                Color(light: 0x8A6100, dark: 0xFABB05), // book
-                Color(light: 0x0A6E9C, dark: 0x29ABE2), // podcast
-                Color(light: 0xC42B21, dark: 0xFF6B61), // music
-                Color(light: 0x1E7A3C, dark: 0x34C759), // creator
-                Color(light: 0x6E44FF, dark: 0x9B7BFF), // family
-            ],
-            core: Color(light: 0x6E44FF, dark: 0x9B7BFF)
+            // The master mark's family, clockwise from the top (`src/lib/mark.ts` in audio2-www).
+            colors: [0xFABB05, 0x29ABE2, 0xFF3B30, 0xFFCC00, 0x34C759].map { Color(light: $0, dark: $0) },
+            core: Color(light: 0x6E44FF, dark: 0x6E44FF)
         )
     }
 
@@ -54,7 +49,7 @@ struct OwnAudioMark: View {
             Circle()
                 .fill(core)
                 .frame(width: 22 * unit, height: 22 * unit)
-                .scaleEffect(isAnimating ? 1.24 : 1)
+                .scaleEffect(isAnimating ? 1.25 : 1)
                 .accessibleAnimation(.timingCurve(0.21, 0.98, 0.6, 0.99, duration: 0.42).repeatForever(autoreverses: true), value: isAnimating)
         }
         .frame(width: size, height: size)
@@ -62,22 +57,27 @@ struct OwnAudioMark: View {
         .accessibilityHidden(true)
     }
 
+    /// The master mark's two arcs under the core, `M 35 62 A 20 20` and `M 28 70 A 30 30`: short
+    /// arcs of circles whose centres sit a little above the mark's, spinning around the mark's.
     private func arcs(unit: CGFloat) -> some View {
         ZStack {
             Circle()
-                .trim(from: 0.14, to: 0.86)
-                .stroke(Theme.Colors.muted, style: StrokeStyle(lineWidth: 3.5 * unit, lineCap: .round))
+                .trim(from: 0.1151, to: 0.3849)
+                .stroke(Self.arcColor, style: StrokeStyle(lineWidth: 3.5 * unit, lineCap: .round))
                 .frame(width: 40 * unit, height: 40 * unit)
-                .rotationEffect(.degrees(90))
+                .offset(y: -1.23 * unit)
             Circle()
-                .trim(from: 0.16, to: 0.84)
-                .stroke(Theme.Colors.muted.opacity(0.6), style: StrokeStyle(lineWidth: 2.5 * unit, lineCap: .round))
+                .trim(from: 0.1190, to: 0.3810)
+                .stroke(Self.arcColor.opacity(0.6), style: StrokeStyle(lineWidth: 2.5 * unit, lineCap: .round))
                 .frame(width: 60 * unit, height: 60 * unit)
-                .rotationEffect(.degrees(90))
+                .offset(y: -0.4 * unit)
         }
+        .frame(width: size, height: size)
         .rotationEffect(.degrees(isAnimating ? 360 : 0))
-        .accessibleAnimation(.linear(duration: 7).repeatForever(autoreverses: false), value: isAnimating)
+        .accessibleAnimation(.linear(duration: 6).repeatForever(autoreverses: false), value: isAnimating)
     }
+
+    private static let arcColor = Color(light: 0xD2D2D7, dark: 0x2C2C2E)
 
     private func dancers(unit: CGFloat) -> some View {
         ZStack {

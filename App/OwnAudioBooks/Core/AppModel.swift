@@ -604,6 +604,23 @@ final class AppModel {
         try await update(record, signIn: true)
     }
 
+    /// own.audio's hosted service, where someone without a server of their own can make an account.
+    static let ownAudioService = URL(string: "https://api.own.audio")!
+
+    /// A new account on own.audio's hosted service, then signed in to it as a server.
+    func createOwnAudioAccount(name: String, email: String, password: String) async throws {
+        let email = email.trimmingCharacters(in: .whitespaces)
+        do {
+            try await OwnAudioSignUp.register(
+                host: Self.ownAudioService, email: email, password: password,
+                displayName: name.trimmingCharacters(in: .whitespaces), urlSession: Self.session
+            )
+        } catch SourceError.network {
+            throw AddServerError.unreachable
+        }
+        try await addServer(address: Self.ownAudioService.absoluteString, username: email, password: password, name: "")
+    }
+
     /// The public demo: a shared own.audio server with sample books.
     static let demoHost = URL(string: "https://demopi.own.audio")!
 
@@ -1415,6 +1432,19 @@ final class AppModel {
             } catch {
                 actionError = (error as? SourceError)?.userMessage ?? error.localizedDescription
             }
+        }
+    }
+}
+
+extension SignUpError: @retroactive LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .invalidEmail: String(localized: "That doesn't look like an email address.")
+        case .weakPassword: String(localized: "The password needs at least 12 characters. A few words are fine.")
+        case .missingName: String(localized: "Enter your name.")
+        case .closed: String(localized: "own.audio isn't taking new accounts right now.")
+        case .emailTaken: String(localized: "There's already an account with this email. Sign in instead.")
+        case .refused(let message): message ?? String(localized: "own.audio didn't create the account.")
         }
     }
 }

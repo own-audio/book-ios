@@ -6,8 +6,19 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The welcome screen starts with own.audio's hosted service, for someone without a server:
+  **Create an own.audio Account** (name, email and password, then signed in straight away),
+  **Sign In** (fills in own.audio's address in the server form), and **Try the Demo Library**,
+  which moved up from the bottom of the screen. Sign-up uses `POST /api/v2/auth/register` and
+  falls back to `/api/v1/auth/register` on a server without it. New strings in Czech.
+
 ### Changed
 
+- The own.audio mark matches the master mark on own.audio's website: two short arcs under the
+  core instead of two near-full rings, the family's colors (#FABB05, #29ABE2, #FF3B30, #FFCC00,
+  #34C759) on a #6E44FF core, and a 6-second spin. On the welcome screen it is larger (120 pt).
 - Wording follows the glossary shared by the own.audio apps. English is American:
   **Favorites**, **Add to Favorites**, **Remove Favorite**, **Accent Color**, **App Color**,
   "grayed out". Importing a book offers **Just Me** (cs "Jen já") instead of "Only me", and the

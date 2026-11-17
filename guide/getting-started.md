@@ -1,17 +1,34 @@
 ---
 title: Getting started
 nav_order: 2
-description: "The first time you open the app, it asks for one thing: a server. You can't use the app without one, but you can try it with the public demo library first."
+description: "The first time you open the app, it asks for one thing: a server. Make an own.audio account, add your own server, or try the public demo library first."
 ---
 
 # Getting started
 
-The first time you open the app, it asks for one thing: a server. You can't use the app
-without one, but you can try it with the public demo library first.
+The first time you open the app, it asks for one thing: a server. Make an own.audio account,
+add a server of your own, or try the app with the public demo library first.
+
+## The first screen
+
+The first screen offers two ways in: an account on own.audio's hosted service, or a server of
+your own.
+
+### No server? Use own.audio
+
+The card at the top is for someone without a server. own.audio keeps your audiobooks for you.
+
+- **Create an own.audio Account** asks for **Your Name**, **Email** and a **Password** of at
+  least 12 characters (a few words are fine), then **Create Account**. The app signs in to the
+  new account straight away. own.audio emails you a link to confirm the address.
+- **Sign In** fills in own.audio's address in the form below, for an account you already have.
+- **Try the Demo Library** signs in to a shared own.audio server with public-domain books, with no account
+  needed. The server is called **own.audio demo** in the app. Remove it in Settings when you
+  add your own.
 
 ## Adding your server
 
-On the first screen, fill in:
+Under **Or connect your own server**, fill in:
 
 | Field | What goes in it |
 |---|---|
@@ -41,15 +58,6 @@ Google's page, and the app passes the result to your server.
 If your own.audio account has two-factor sign-in turned on, a **Two-Factor Sign-In** screen
 opens after **Connect**. Type the six-digit code from your authenticator app, or one of your
 recovery codes, and tap **Sign In**.
-
-## Try the Demo Library
-
-No server yet? Under **No server yet?**, tap **Try the Demo Library**. The app signs in to a
-shared own.audio server with public-domain books, with no account needed. You can play,
-download and browse there like on your own server.
-
-When you add your own server, you can remove the demo in Settings (see
-[Servers](servers.md#removing-a-server)).
 
 ## Adding more servers
 
