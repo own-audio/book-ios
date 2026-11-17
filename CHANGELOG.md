@@ -16,6 +16,8 @@ All notable changes to this project are documented here. The format follows
 
 ### Changed
 
+- The wordmark's rotating word: after audio, the app's own word and family, five words of
+  this app's own (story, chapter, novel, page, bedtime), none shared with the other two apps.
 - The own.audio mark matches the master mark on own.audio's website: two short arcs under the
   core instead of two near-full rings, the family's colors (#FABB05, #29ABE2, #FF3B30, #FFCC00,
   #34C759) on a #6E44FF core, and a 6-second spin. On the welcome screen it is larger (120 pt).
