@@ -20,7 +20,6 @@ struct AddServerView: View {
         ScrollView {
             VStack(spacing: Theme.Spacing.xl) {
                 ServerForm(address: $address, username: $username, password: $password, name: $name, focus: $focus, canConnect: canConnect, connect: connect)
-                CanaryServerButton(address: $address)
                 if let errorMessage {
                     Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
                         .font(.callout)

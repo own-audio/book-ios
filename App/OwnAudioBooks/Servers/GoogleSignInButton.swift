@@ -24,10 +24,12 @@ struct GoogleSignInButton: View {
         if GoogleSignIn.isConfigured {
             Button { start() } label: {
                 HStack(spacing: 10) {
-                    Image("GoogleLogo").resizable().frame(width: 20, height: 20).accessibilityHidden(true)
+                    Image("GoogleLogo").resizable().frame(width: 17, height: 17).accessibilityHidden(true)
                     Text("Continue with Google").font(.system(size: 17, weight: .medium))
                 }
                 .frame(maxWidth: .infinity, minHeight: 50)
+                // Google's light theme on a light screen and its dark theme on a dark one; the Apple button
+                // beside it takes the same colours.
                 .foregroundStyle(colorScheme == .dark ? Color(red: 0.89, green: 0.89, blue: 0.89) : Color(red: 0.12, green: 0.12, blue: 0.12))
                 .background(colorScheme == .dark ? Color(red: 0.075, green: 0.075, blue: 0.08) : .white, in: Capsule())
                 .overlay(Capsule().strokeBorder(colorScheme == .dark ? Color(red: 0.56, green: 0.57, blue: 0.56) : Color(red: 0.45, green: 0.47, blue: 0.46), lineWidth: 1))

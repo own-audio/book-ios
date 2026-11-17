@@ -18,13 +18,19 @@ your own.
 
 The card at the top is for someone without a server. own.audio keeps your audiobooks for you.
 
-- **Create an own.audio Account** asks for **Your Name**, **Email** and a **Password** of at
-  least 12 characters (a few words are fine), then **Create Account**. The app signs in to the
-  new account straight away. own.audio emails you a link to confirm the address.
-- **Sign In** fills in own.audio's address in the form below, for an account you already have.
+- **Create an own.audio Account** opens a sheet with **Continue with Apple** and **Continue
+  with Google** at the top: either makes the account on first use. Or fill in **Your Name**,
+  **Email** and a **Password** of at least 12 characters (a few words are fine), then **Create
+  Account**. The app signs in to the new account straight away. own.audio emails you a link to
+  confirm the address.
+- **Sign In** opens the same sheet for an account you already have: Apple, Google, or your
+  **Email** and **Password**.
 - **Try the Demo Library** signs in to a shared own.audio server with public-domain books, with no account
   needed. The server is called **own.audio demo** in the app. Remove it in Settings when you
   add your own.
+
+Both sheets show **Server: own.audio** and can't be pointed anywhere else; for another
+own.audio server, use the server form.
 
 ## Adding your server
 
@@ -48,7 +54,7 @@ after you sign in, and the app doesn't keep your password.
 
 ## Sign in with Apple or Google (own.audio)
 
-When the address you typed is an own.audio server that offers it, **Sign in with Apple** and
+When the address you typed is an own.audio server that offers it, **Continue with Apple** and
 **Continue with Google** buttons appear under **Connect**, with the note "With your own.audio
 account." They never appear for an Audiobookshelf address. The sign-in happens on Apple's or
 Google's page, and the app passes the result to your server.

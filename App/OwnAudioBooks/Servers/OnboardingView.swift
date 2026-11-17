@@ -10,7 +10,7 @@ struct OnboardingView: View {
     @State private var name = ""
     @State private var isConnecting = false
     @State private var isTryingDemo = false
-    @State private var isSigningUp = false
+    @State private var account: OwnAudioAccountView.Mode?
     @State private var errorMessage: String?
     @FocusState private var focus: OnboardingField?
 
@@ -31,7 +31,6 @@ struct OnboardingView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.bottom, -Theme.Spacing.md)
                     ServerForm(address: $address, username: $username, password: $password, name: $name, focus: $focus, canConnect: canConnect, connect: connect)
-                    CanaryServerButton(address: $address)
                     if let errorMessage {
                         Label(errorMessage, systemImage: "exclamationmark.triangle.fill")
                             .font(.callout)
@@ -66,7 +65,7 @@ struct OnboardingView: View {
             .scrollDismissesKeyboard(.interactively)
         }
         .sheet(item: model.pendingTwoFactorBinding) { _ in TwoFactorView() }
-        .sheet(isPresented: $isSigningUp) { SignUpView() }
+        .sheet(item: $account) { OwnAudioAccountView(mode: $0) }
     }
 
     private var header: some View {
@@ -96,7 +95,7 @@ struct OnboardingView: View {
                     .multilineTextAlignment(.center)
             }
             Button {
-                isSigningUp = true
+                account = .signUp
             } label: {
                 Text("Create an own.audio Account").bold().frame(maxWidth: .infinity)
             }
@@ -104,8 +103,7 @@ struct OnboardingView: View {
             .controlSize(.large)
             .accessibilityIdentifier("addServer.signUp")
             Button {
-                address = AppModel.ownAudioService.absoluteString
-                focus = .username
+                account = .signIn
             } label: {
                 Text("Sign In").frame(maxWidth: .infinity)
             }

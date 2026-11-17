@@ -1358,6 +1358,16 @@
         }
       }
     },
+    "Continue with Apple": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pokračovat přes Apple"
+          }
+        }
+      }
+    },
     "Continue with Google": {
       "localizations": {
         "cs": {
@@ -3092,6 +3102,26 @@
         }
       }
     },
+    "Or create an account with your email.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nebo si účet vytvořte e-mailem."
+          }
+        }
+      }
+    },
+    "Or sign in with your email.": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nebo se přihlaste e-mailem."
+          }
+        }
+      }
+    },
     "Orange": {
       "localizations": {
         "cs": {
@@ -3904,6 +3934,16 @@
         }
       }
     },
+    "Sign In to own.audio": {
+      "localizations": {
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Přihlásit se k own.audio"
+          }
+        }
+      }
+    },
     "Sign Out": {
       "localizations": {
         "cs": {
@@ -3940,16 +3980,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Přihlaste se k tomuto serveru znovu."
-          }
-        }
-      }
-    },
-    "Sign in with Apple": {
-      "localizations": {
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Přihlásit se přes Apple"
           }
         }
       }

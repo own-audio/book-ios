@@ -23,20 +23,26 @@ struct AppleSignInButton: View {
 
     var body: some View {
         VStack(spacing: Theme.Spacing.xs) {
-            SignInWithAppleButton(.signIn) { _ in } onCompletion: { _ in }
-                .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
-                .id(colorScheme)
-                .frame(height: 50)
-                .clipShape(Capsule())
-                .allowsHitTesting(false)
-                .overlay {
-                    // The real tap target: Apple's button only draws.
-                    Button { start() } label: { Color.clear.contentShape(Capsule()) }
-                        .accessibilityLabel(Text("Sign in with Apple"))
-                        .accessibilityIdentifier("addServer.apple")
+            // Drawn here rather than with SignInWithAppleButton, whose text has its own size and weight:
+            // this way it matches the Google button beside it. Apple's guidelines allow a custom button
+            // with the Apple logo, the system font and an official title.
+            Button { start() } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "apple.logo").resizable().scaledToFit().frame(width: 17, height: 17).accessibilityHidden(true)
+                    Text("Continue with Apple").font(.system(size: 17, weight: .medium))
                 }
-                .disabled(!hasAddress || isWorking)
-                .opacity(hasAddress ? 1 : 0.5)
+                .frame(maxWidth: .infinity, minHeight: 50)
+                // The same colours as the Google button: white with an outline on a light screen, near
+                // black on a dark one.
+                .foregroundStyle(colorScheme == .dark ? Color(red: 0.89, green: 0.89, blue: 0.89) : Color(red: 0.12, green: 0.12, blue: 0.12))
+                .background(colorScheme == .dark ? Color(red: 0.075, green: 0.075, blue: 0.08) : .white, in: Capsule())
+                .overlay(Capsule().strokeBorder(colorScheme == .dark ? Color(red: 0.56, green: 0.57, blue: 0.56) : Color(red: 0.45, green: 0.47, blue: 0.46), lineWidth: 1))
+                .contentShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("addServer.apple")
+            .disabled(!hasAddress || isWorking)
+            .opacity(hasAddress ? 1 : 0.5)
             if let errorMessage {
                 Text(errorMessage)
                     .font(.footnote)

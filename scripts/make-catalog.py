@@ -237,7 +237,7 @@ cs = {
  "Devices": "Zařízení",
  "Google didn't return a sign-in. Try again.": "Google nevrátil přihlášení. Zkuste to znovu.",
  "Last used %@ ago": "Naposledy použito před %@",
- "Sign in with Apple": "Přihlásit se přes Apple",
+ "Continue with Apple": "Pokračovat přes Apple",
  "Sign Out": "Odhlásit",
  "Sign Out Everywhere": "Odhlásit se všude",
  "Sign Out Everywhere?": "Odhlásit se všude?",
@@ -472,6 +472,9 @@ cs = {
  "Or connect your own server": "Nebo připojte vlastní server",
  "own.audio keeps your audiobooks for you. Upload them once and listen here.": "own.audio vaše audioknihy uchová za vás. Jednou je nahrajte a poslouchejte je tady.",
  "Public-domain books on a shared own.audio server, no account needed.": "Volně dostupné knihy na sdíleném serveru own.audio, bez účtu.",
+ "Or create an account with your email.": "Nebo si účet vytvořte e-mailem.",
+ "Or sign in with your email.": "Nebo se přihlaste e-mailem.",
+ "Sign In to own.audio": "Přihlásit se k own.audio",
 }
 # Plural keys: en variations (one/other) and cs (one/few/many/other).
 plurals = {
